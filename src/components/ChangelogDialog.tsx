@@ -50,6 +50,29 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }
 
   const changelogs: Record<string, VersionData> = {
+    "3.3.1": {
+      icon: <Shield className="w-5 h-5" />,
+      color: "from-cyan-500 to-blue-600",
+      tagline: "PANEL POLISH",
+      overview: "Quality-of-life improvements to the moderation panel: enhanced user list with avatars and online status, access log filtering and export, mod logs now show the acting admin, direct NAVI messaging from user panels, and trial admin stats.",
+      sections: {
+        "👤 User List Enhancements": [
+          { text: "User avatars with online status indicators", isHighlight: true },
+          { text: "Last seen timestamps shown inline" },
+          { text: "Clearance level badges displayed per user" },
+        ],
+        "📋 Access Log Improvements": [
+          { text: "Search, filter by action type, and date range", isHighlight: true },
+          { text: "Export filtered logs as JSON" },
+        ],
+        "🛡️ Mod & Admin Tools": [
+          { text: "Mod logs now display the admin who performed each action", isHighlight: true },
+          { text: "Send NAVI direct messages from user detail panel" },
+          { text: "Stats tab now counts trial admins separately" },
+          { text: "Online user count shown in panel header" },
+        ],
+      }
+    },
     "3.1": {
       icon: <Terminal className="w-5 h-5" />,
       color: "from-green-500 to-cyan-600",
