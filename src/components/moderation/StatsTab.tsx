@@ -9,6 +9,7 @@ interface StatsData {
   totalWarnings: number;
   totalVips: number;
   totalAdmins: number;
+  totalTrialAdmins: number;
   recentActions: number;
 }
 
@@ -27,6 +28,7 @@ export const StatsTab = ({ users }: { users: UserData[] }) => {
     totalWarnings: 0,
     totalVips: 0,
     totalAdmins: 0,
+    totalTrialAdmins: 0,
     recentActions: 0
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -40,6 +42,7 @@ export const StatsTab = ({ users }: { users: UserData[] }) => {
         const totalWarnings = users.reduce((acc, u) => acc + u.warningsCount, 0);
         const totalVips = users.filter(u => u.isVip).length;
         const totalAdmins = users.filter(u => u.role === 'admin').length;
+        const totalTrialAdmins = users.filter(u => u.role === 'trial_admin').length;
 
         // Fetch recent moderation actions count
         const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
@@ -61,6 +64,7 @@ export const StatsTab = ({ users }: { users: UserData[] }) => {
           totalWarnings,
           totalVips,
           totalAdmins,
+          totalTrialAdmins,
           recentActions: recentActions || 0
         });
       } catch (error) {
@@ -113,6 +117,14 @@ export const StatsTab = ({ users }: { users: UserData[] }) => {
       color: 'green',
       bgClass: 'bg-green-500/10 border-green-500/30',
       textClass: 'text-green-400'
+    },
+    { 
+      label: 'Trial Admins', 
+      value: stats.totalTrialAdmins, 
+      icon: Shield, 
+      color: 'orange',
+      bgClass: 'bg-orange-500/10 border-orange-500/30',
+      textClass: 'text-orange-400'
     },
     { 
       label: 'Actions (7d)', 

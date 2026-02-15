@@ -1,4 +1,4 @@
-// Moderation Panel v3.3 - Creator Controls, Access Logs, Enhanced Security
+// Moderation Panel v3.3.1 - Panel Polish: avatars, online status, access log filters, DM, trial admin stats
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -258,6 +258,8 @@ const UserDetailsPanel = ({
   const [notes, setNotes] = useState<AdminNote[]>([]);
   const [newNote, setNewNote] = useState('');
   const [notesLoading, setNotesLoading] = useState(false);
+  const [dmMessage, setDmMessage] = useState('');
+  const [dmSending, setDmSending] = useState(false);
 
   // Fetch notes
   useEffect(() => {
@@ -297,6 +299,20 @@ const UserDetailsPanel = ({
       setNotes(prev => prev.filter(n => n.id !== noteId));
       toast.success('Note deleted');
     } catch { toast.error('Failed to delete note'); }
+  };
+
+  const handleSendDM = async () => {
+    if (!dmMessage.trim()) return;
+    setDmSending(true);
+    try {
+      const response = await supabase.functions.invoke('admin-actions', {
+        body: { action: 'navi_message', message: dmMessage, priority: 'info', target: user.user_id }
+      });
+      if (response.error) throw response.error;
+      toast.success(`NAVI message sent to @${user.username}`);
+      setDmMessage('');
+    } catch { toast.error('Failed to send message'); }
+    finally { setDmSending(false); }
   };
   
   return (
@@ -480,6 +496,27 @@ const UserDetailsPanel = ({
           )}
         </div>
       </ScrollArea>
+
+      {/* Send DM */}
+      {!isDemo && (
+        <div className="p-4 border-t border-slate-800">
+          <h4 className="text-xs font-mono text-slate-400 mb-2 flex items-center gap-2">
+            <Bot className="w-3 h-3" /> SEND NAVI MESSAGE
+          </h4>
+          <div className="flex gap-2">
+            <Input
+              value={dmMessage}
+              onChange={(e) => setDmMessage(e.target.value)}
+              placeholder="Message to this user..."
+              className="bg-slate-900 border-slate-700 text-sm font-mono"
+              onKeyDown={(e) => e.key === 'Enter' && handleSendDM()}
+            />
+            <Button size="sm" onClick={handleSendDM} disabled={!dmMessage.trim() || dmSending} className="bg-cyan-600 hover:bg-cyan-500">
+              <Send className="w-3 h-3" />
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Actions */}
       <div className="p-4 border-t border-slate-800 space-y-2">
@@ -975,6 +1012,9 @@ const SecurityTab = ({ isCreator, users }: { isCreator: boolean; users: UserData
 const AccessLogTab = () => {
   const [accessLogs, setAccessLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [actionFilter, setActionFilter] = useState('all');
+  const [dateFilter, setDateFilter] = useState('all');
 
   useEffect(() => { fetchLogs(); }, []);
 
@@ -983,7 +1023,7 @@ const AccessLogTab = () => {
     try {
       const { data: session } = await supabase.auth.getSession();
       const response = await fetch(
-        `https://oukxkpihsyikamzldiek.supabase.co/functions/v1/admin-actions?action=access_logs&limit=100`,
+        `https://oukxkpihsyikamzldiek.supabase.co/functions/v1/admin-actions?action=access_logs&limit=200`,
         { headers: { 'Authorization': `Bearer ${session.session?.access_token}`, 'Content-Type': 'application/json' } }
       );
       const result = await response.json();
@@ -1004,24 +1044,96 @@ const AccessLogTab = () => {
     }
   };
 
+  const filteredLogs = accessLogs.filter(log => {
+    const matchesSearch = !searchQuery || 
+      (log.username?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (log.action?.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesAction = actionFilter === 'all' || log.action === actionFilter;
+    let matchesDate = true;
+    if (dateFilter !== 'all') {
+      const logDate = new Date(log.created_at);
+      const diffHours = (Date.now() - logDate.getTime()) / (1000 * 60 * 60);
+      if (dateFilter === '1h') matchesDate = diffHours <= 1;
+      else if (dateFilter === '24h') matchesDate = diffHours <= 24;
+      else if (dateFilter === '7d') matchesDate = diffHours <= 168;
+    }
+    return matchesSearch && matchesAction && matchesDate;
+  });
+
+  const handleExport = () => {
+    const blob = new Blob([JSON.stringify(filteredLogs, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `access-logs-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold font-mono text-cyan-400 flex items-center gap-2">
           <Activity className="w-5 h-5" /> Access Log
         </h2>
-        <Button size="sm" variant="outline" onClick={fetchLogs} className="border-slate-700 gap-1">
-          <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} /> Refresh
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="outline" onClick={handleExport} className="border-slate-700 gap-1">
+            <Download className="w-3 h-3" /> Export
+          </Button>
+          <Button size="sm" variant="outline" onClick={fetchLogs} className="border-slate-700 gap-1">
+            <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} /> Refresh
+          </Button>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex gap-3 flex-wrap">
+        <div className="relative flex-1 min-w-[200px] max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by user or action..."
+            className="pl-10 bg-slate-900/50 border-slate-700 font-mono text-sm"
+          />
+        </div>
+        <Select value={actionFilter} onValueChange={setActionFilter}>
+          <SelectTrigger className="w-44 bg-slate-900/50 border-slate-700 text-sm">
+            <SelectValue placeholder="Action type" />
+          </SelectTrigger>
+          <SelectContent className="bg-slate-900 border-slate-700">
+            <SelectItem value="all">All Actions</SelectItem>
+            <SelectItem value="pin_verify_success">PIN OK</SelectItem>
+            <SelectItem value="pin_verify_fail">PIN FAIL</SelectItem>
+            <SelectItem value="pin_set">PIN SET</SelectItem>
+            <SelectItem value="pin_removed">PIN DEL</SelectItem>
+            <SelectItem value="force_pin_reset">FORCE RST</SelectItem>
+            <SelectItem value="delete_all_pins">ALL PINS DEL</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={dateFilter} onValueChange={setDateFilter}>
+          <SelectTrigger className="w-36 bg-slate-900/50 border-slate-700 text-sm">
+            <SelectValue placeholder="Time range" />
+          </SelectTrigger>
+          <SelectContent className="bg-slate-900 border-slate-700">
+            <SelectItem value="all">All Time</SelectItem>
+            <SelectItem value="1h">Last Hour</SelectItem>
+            <SelectItem value="24h">Last 24h</SelectItem>
+            <SelectItem value="7d">Last 7 Days</SelectItem>
+          </SelectContent>
+        </Select>
+        <span className="self-center text-xs font-mono text-slate-500">
+          {filteredLogs.length} entries
+        </span>
       </div>
 
       {loading ? (
         <p className="text-slate-500 font-mono text-sm animate-pulse">Loading access logs...</p>
-      ) : accessLogs.length === 0 ? (
-        <p className="text-slate-500 font-mono text-sm text-center py-8">No access logs yet</p>
+      ) : filteredLogs.length === 0 ? (
+        <p className="text-slate-500 font-mono text-sm text-center py-8">No access logs found</p>
       ) : (
         <div className="space-y-2">
-          {accessLogs.map((log: any) => {
+          {filteredLogs.map((log: any) => {
             const style = getActionStyle(log.action);
             return (
               <div key={log.id} className="flex items-center gap-3 p-3 rounded-lg bg-slate-900/50 border border-slate-800 font-mono text-sm">
@@ -2133,7 +2245,7 @@ const ModerationPanel = () => {
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-slate-500 font-mono">Hadal Blacksite Control System v3.2</p>
+                <p className="text-sm text-slate-500 font-mono">Hadal Blacksite Control System v3.3.1</p>
               </div>
             </div>
             
@@ -2179,6 +2291,11 @@ const ModerationPanel = () => {
                 )
               )}
               
+              {/* Online users count */}
+              <span className="text-xs font-mono text-green-400 flex items-center gap-1.5 px-2">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                {users.filter(u => u.lastActive && (Date.now() - new Date(u.lastActive).getTime()) < 15 * 60 * 1000).length} online
+              </span>
               <Button variant="outline" onClick={isDemoMode ? () => setUsers(DEMO_USERS) : fetchUsers} className="gap-2 border-slate-700">
                 <RefreshCw className="w-4 h-4" /> Refresh
               </Button>
@@ -2379,20 +2496,28 @@ const ModerationPanel = () => {
                           className="flex items-center gap-4 flex-1"
                           onClick={() => { setSelectedUser(user); setShowUserDetails(true); }}
                         >
-                          <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-lg font-bold ${
-                            user.role === 'admin' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                            user.role === 'trial_admin' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' :
-                            user.role === 'moderator' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' :
-                            'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                          }`}>
-                            {user.username[0].toUpperCase()}
+                          {/* Avatar with online indicator */}
+                          <div className="relative">
+                            <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-lg font-bold overflow-hidden ${
+                              user.role === 'admin' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                              user.role === 'trial_admin' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' :
+                              user.role === 'moderator' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' :
+                              'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                            }`}>
+                              {user.username[0].toUpperCase()}
+                            </div>
+                            {/* Online status dot */}
+                            <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-slate-950 ${
+                              user.lastActive && (Date.now() - new Date(user.lastActive).getTime()) < 15 * 60 * 1000
+                                ? 'bg-green-500' : 'bg-slate-600'
+                            }`} />
                           </div>
-                          <div>
+                          <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <span className="font-semibold">{user.display_name || user.username}</span>
                               <span className="text-xs text-slate-500 font-mono">@{user.username}</span>
                             </div>
-                            <div className="flex items-center gap-2 mt-1">
+                            <div className="flex items-center gap-2 mt-1 flex-wrap">
                               <span className={`px-2 py-0.5 rounded text-xs font-mono border ${
                                 user.role === 'admin' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
                                 user.role === 'trial_admin' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' :
@@ -2401,6 +2526,11 @@ const ModerationPanel = () => {
                               }`}>
                                 {user.role === 'trial_admin' ? 'TRIAL ADMIN' : user.role?.toUpperCase() || 'USER'}
                               </span>
+                              {user.clearance && (
+                                <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                                  L{user.clearance}
+                                </span>
+                              )}
                               {user.isBanned && (
                                 <span className="px-2 py-0.5 rounded bg-red-500/20 text-red-400 text-xs font-mono flex items-center gap-1 border border-red-500/30">
                                   <Ban className="w-3 h-3" /> BANNED
@@ -2421,10 +2551,23 @@ const ModerationPanel = () => {
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-3" onClick={() => { setSelectedUser(user); setShowUserDetails(true); }}>
-                        <span className="text-xs text-slate-500 font-mono">
-                          {new Date(user.created_at).toLocaleDateString()}
-                        </span>
+                      <div className="flex items-center gap-3 flex-shrink-0" onClick={() => { setSelectedUser(user); setShowUserDetails(true); }}>
+                        <div className="text-right">
+                          <span className="text-xs text-slate-500 font-mono block">
+                            {new Date(user.created_at).toLocaleDateString()}
+                          </span>
+                          {user.lastActive && (
+                            <span className="text-[10px] text-slate-600 font-mono block">
+                              Last seen {(() => {
+                                const diff = Date.now() - new Date(user.lastActive).getTime();
+                                if (diff < 60000) return 'just now';
+                                if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+                                if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+                                return `${Math.floor(diff / 86400000)}d ago`;
+                              })()}
+                            </span>
+                          )}
+                        </div>
                         <ChevronRight className="w-4 h-4 text-slate-600" />
                       </div>
                     </div>
@@ -2503,7 +2646,10 @@ const ModerationPanel = () => {
                       </div>
                       <span className="text-xs text-slate-500">{new Date(log.created_at).toLocaleString()}</span>
                     </div>
-                    {log.target_user_id && <div className="text-xs text-slate-500 mt-1">Target: {log.target_user_id.slice(0, 8)}...</div>}
+                    <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
+                      {log.target_user_id && <span>Target: {log.target_user_id.slice(0, 8)}...</span>}
+                      {log.created_by && <span>By: {log.admin_username || log.created_by.slice(0, 8) + '...'}</span>}
+                    </div>
                   </div>
                 ))}
                 {filteredLogs.length === 0 && <p className="text-center text-slate-500 font-mono text-sm py-8">No logs found</p>}
