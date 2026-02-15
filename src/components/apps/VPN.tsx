@@ -100,17 +100,17 @@ export const VPN = () => {
   };
 
   return (
-    <div className="flex h-full bg-background">
+    <div className="flex h-full bg-background overflow-hidden">
       {/* Server List */}
-      <div className="w-96 border-r border-border">
-        <div className="p-4 border-b border-border bg-black/20">
+      <div className="w-64 lg:w-80 xl:w-96 shrink-0 border-r border-border flex flex-col">
+        <div className="p-3 border-b border-border bg-black/20 shrink-0">
           <div className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-primary" />
             <h2 className="font-bold">VPN Servers</h2>
           </div>
         </div>
         
-        <div className="p-3 space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]">
+        <div className="p-3 space-y-2 overflow-y-auto flex-1">
           {SERVERS.map(server => (
             <div
               key={server.id}

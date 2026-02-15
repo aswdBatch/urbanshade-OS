@@ -50,6 +50,23 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }
 
   const changelogs: Record<string, VersionData> = {
+    "3.4.0": {
+      icon: <Rocket className="w-5 h-5" />,
+      color: "from-cyan-500 to-teal-600",
+      tagline: "STOREFRONT",
+      overview: "App Store polish with custom OS-styled uninstall dialogs replacing browser defaults, VPN now searchable and responsive, and featured VPN listing in the store.",
+      sections: {
+        "🏪 App Store Improvements": [
+          { text: "Custom uninstall confirmation dialog replaces browser default", isHighlight: true },
+          { text: "VPN now searchable by 'vpn' keyword in store" },
+          { text: "VPN marked as featured app for better visibility" },
+        ],
+        "🔒 VPN Layout Fix": [
+          { text: "Responsive server list sidebar adapts to window size", isHighlight: true },
+          { text: "Proper scrolling in server list without overflow" },
+        ],
+      }
+    },
     "3.3.1": {
       icon: <Shield className="w-5 h-5" />,
       color: "from-cyan-500 to-blue-600",
