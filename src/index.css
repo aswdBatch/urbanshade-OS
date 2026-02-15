@@ -649,3 +649,16 @@
 .animate-window-snap {
   animation: window-snap 0.15s ease-out;
 }
+
+/* OS Toast progress bar animation */
+@keyframes toast-progress {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+/* Drag-drop file highlight */
+.drop-target-active {
+  outline: 2px dashed hsl(var(--primary));
+  outline-offset: -2px;
+  background: hsl(var(--primary) / 0.08) !important;
+}

@@ -54,12 +54,28 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
       icon: <Rocket className="w-5 h-5" />,
       color: "from-cyan-500 to-teal-600",
       tagline: "STOREFRONT",
-      overview: "App Store polish with custom OS-styled uninstall dialogs replacing browser defaults, VPN now searchable and responsive, and featured VPN listing in the store.",
+      overview: "Major OS polish update: custom notification toasts, File Manager drag-and-drop, taskbar window thumbnails, App Store redesign, and VPN fixes.",
       sections: {
         "🏪 App Store Improvements": [
           { text: "Custom uninstall confirmation dialog replaces browser default", isHighlight: true },
           { text: "VPN now searchable by 'vpn' keyword in store" },
           { text: "VPN marked as featured app for better visibility" },
+        ],
+        "🔔 Custom OS Notifications": [
+          { text: "New OS-styled toast notification system", isHighlight: true },
+          { text: "Type-specific icons and accent colors (success, error, warning, info)" },
+          { text: "Auto-dismiss with animated progress bar" },
+          { text: "Action buttons and swipe-to-dismiss support" },
+        ],
+        "📁 File Manager Overhaul": [
+          { text: "Drag-and-drop files between folders", isHighlight: true },
+          { text: "Visual drop target highlighting on folders" },
+          { text: "Drag opacity feedback on source files" },
+        ],
+        "🪟 Window Management Polish": [
+          { text: "Taskbar window thumbnails on hover", isHighlight: true },
+          { text: "Rich preview cards showing app name and status" },
+          { text: "Active/minimized state indicators per window" },
         ],
         "🔒 VPN Layout Fix": [
           { text: "Responsive server list sidebar adapts to window size", isHighlight: true },

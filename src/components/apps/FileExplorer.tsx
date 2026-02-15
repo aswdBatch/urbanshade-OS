@@ -72,6 +72,8 @@ export const FileExplorer = ({ onLog, onVirusDetected, initialPath }: FileExplor
   const [searchQuery, setSearchQuery] = useState("");
   const [showHidden, setShowHidden] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(["root"]));
+  const [dragOverFolderId, setDragOverFolderId] = useState<string | null>(null);
+  const [draggedFileId, setDraggedFileId] = useState<string | null>(null);
   
   // Dialogs
   const [renameDialog, setRenameDialog] = useState<{ open: boolean; file: VirtualFile | null }>({ open: false, file: null });
@@ -478,9 +480,23 @@ export const FileExplorer = ({ onLog, onVirusDetected, initialPath }: FileExplor
                   viewMode === 'grid' ? (
                     <Card
                       key={file.id}
+                      draggable={!file.isSystem}
+                      onDragStart={(e) => { e.dataTransfer.setData('text/plain', file.id); setDraggedFileId(file.id); }}
+                      onDragEnd={() => { setDraggedFileId(null); setDragOverFolderId(null); }}
+                      onDragOver={(e) => { if (file.type === 'folder') { e.preventDefault(); setDragOverFolderId(file.id); } }}
+                      onDragLeave={() => setDragOverFolderId(null)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const srcId = e.dataTransfer.getData('text/plain');
+                        if (srcId && file.type === 'folder' && srcId !== file.id) {
+                          vfs.moveFile(srcId, file.id);
+                          toast.success(`Moved to ${file.name}`);
+                        }
+                        setDragOverFolderId(null);
+                      }}
                       className={`p-3 cursor-pointer transition-all hover:bg-muted/50 ${
                         selectedFiles.has(file.id) ? 'ring-2 ring-primary bg-primary/10' : ''
-                      } ${file.isHidden ? 'opacity-60' : ''}`}
+                      } ${file.isHidden ? 'opacity-60' : ''} ${dragOverFolderId === file.id ? 'drop-target-active' : ''} ${draggedFileId === file.id ? 'opacity-40' : ''}`}
                       onClick={(e) => handleFileClick(file, e)}
                       onDoubleClick={() => handleFileDoubleClick(file)}
                     >
@@ -497,9 +513,23 @@ export const FileExplorer = ({ onLog, onVirusDetected, initialPath }: FileExplor
                   ) : (
                     <div
                       key={file.id}
+                      draggable={!file.isSystem}
+                      onDragStart={(e) => { e.dataTransfer.setData('text/plain', file.id); setDraggedFileId(file.id); }}
+                      onDragEnd={() => { setDraggedFileId(null); setDragOverFolderId(null); }}
+                      onDragOver={(e) => { if (file.type === 'folder') { e.preventDefault(); setDragOverFolderId(file.id); } }}
+                      onDragLeave={() => setDragOverFolderId(null)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const srcId = e.dataTransfer.getData('text/plain');
+                        if (srcId && file.type === 'folder' && srcId !== file.id) {
+                          vfs.moveFile(srcId, file.id);
+                          toast.success(`Moved to ${file.name}`);
+                        }
+                        setDragOverFolderId(null);
+                      }}
                       className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-all hover:bg-muted/50 ${
                         selectedFiles.has(file.id) ? 'bg-primary/10 ring-1 ring-primary' : ''
-                      } ${file.isHidden ? 'opacity-60' : ''}`}
+                      } ${file.isHidden ? 'opacity-60' : ''} ${dragOverFolderId === file.id ? 'drop-target-active' : ''} ${draggedFileId === file.id ? 'opacity-40' : ''}`}
                       onClick={(e) => handleFileClick(file, e)}
                       onDoubleClick={() => handleFileDoubleClick(file)}
                     >
