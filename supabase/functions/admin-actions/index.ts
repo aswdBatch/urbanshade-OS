@@ -49,17 +49,14 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Check if user is admin, creator, or trial_admin
-    const { data: roleData } = await supabaseAdmin
+    // Check if user is admin, creator, or trial_admin - fetch ALL roles to handle multi-role users
+    const { data: rolesData } = await supabaseAdmin
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .in('role', ['admin', 'creator', 'trial_admin'])
-      .order('role', { ascending: true })
-      .limit(1)
-      .maybeSingle();
+      .in('role', ['admin', 'creator', 'trial_admin']);
 
-    if (!roleData) {
+    if (!rolesData || rolesData.length === 0) {
       console.log(`Access denied for user ${user.id} - not an admin or creator`);
       return new Response(JSON.stringify({ error: 'Access denied - admin or creator only' }), {
         status: 403,
@@ -67,9 +64,17 @@ Deno.serve(async (req) => {
       });
     }
 
-    const isCreator = roleData.role === 'creator';
-    const isTrialAdmin = roleData.role === 'trial_admin';
-    const adminRole = roleData.role; // 'admin' | 'creator' | 'trial_admin'
+    const userRoles = rolesData.map(r => r.role);
+    const isCreator = userRoles.includes('creator');
+    const isTrialAdmin = !isCreator && userRoles.includes('trial_admin') && !userRoles.includes('admin');
+    // Priority: creator > admin > trial_admin
+    const adminRole = isCreator ? 'creator' : userRoles.includes('admin') ? 'admin' : 'trial_admin';
+
+    // Update last_seen on access so online indicators work
+    await supabaseAdmin
+      .from('profiles')
+      .update({ last_seen: new Date().toISOString(), is_online: true })
+      .eq('user_id', user.id);
 
     console.log(`Admin ${user.id} (${adminRole}) accessing admin actions`);
 
@@ -106,7 +111,9 @@ Deno.serve(async (req) => {
 
         const usersWithStatus = profiles?.map(p => {
           const userActions = moderationActions?.filter(a => a.target_user_id === p.user_id) || [];
-          const userRole = roles?.find(r => r.user_id === p.user_id);
+          // Prioritize creator > admin > trial_admin > moderator > user
+          const userRolesList = roles?.filter(r => r.user_id === p.user_id).map(r => r.role) || [];
+          const bestRole = userRolesList.includes('creator') ? 'creator' : userRolesList.includes('admin') ? 'admin' : userRolesList.includes('trial_admin') ? 'trial_admin' : (userRolesList[0] || 'user');
           const isVip = vips?.some(v => v.user_id === p.user_id);
           const activeBan = userActions.find(a => 
             (a.action_type === 'temp_ban' || a.action_type === 'perm_ban' || a.action_type === 'ban') && 
@@ -116,7 +123,7 @@ Deno.serve(async (req) => {
 
           return {
             ...p,
-            role: userRole?.role || 'user',
+            role: bestRole,
             isVip,
             isBanned: !!activeBan,
             banInfo: activeBan,
