@@ -125,6 +125,13 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
         ],
       }
     },
+    "3.2": {
+      icon: <Shield className="w-5 h-5" />,
+      color: "from-red-500 to-orange-600",
+      tagline: "WHERE'S URBANSHADE OS V3.2?",
+      overview: "There was a big security vulnaribility, to the point we forgot to add changelog for it. Noticed on Feb. 15, 2026. So long nerds-",
+      sections: {}
+    },
     "3.1": {
       icon: <Terminal className="w-5 h-5" />,
       color: "from-green-500 to-cyan-600",
