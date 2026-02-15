@@ -13,6 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -80,7 +81,7 @@ const AVAILABLE_APPS: StoreApp[] = [
   { id: "clock", name: "World Clock", category: "Utilities", description: "Multi-timezone chronometer", version: "2.5.0", size: "1.5 MB", rating: 4.4, downloads: "9.8K", permissions: ['Notifications'], lastUpdate: '2024-01-12', developer: "UrbanShade Utilities" },
   { id: "calendar", name: "Event Calendar", category: "Productivity", description: "Scheduling and event management", version: "4.1.2", size: "4.7 MB", rating: 4.6, downloads: "18.4K", featured: true, permissions: ['Notifications', 'File Access'], lastUpdate: '2024-01-08', developer: "UrbanShade Core" },
   { id: "notes", name: "Advanced Notes", category: "Productivity", description: "Rich text documentation system", version: "3.3.0", size: "5.2 MB", rating: 4.8, downloads: "22.7K", new: true, permissions: ['File Access', 'Encryption'], lastUpdate: '2024-01-22', developer: "UrbanShade Core" },
-  { id: "vpn", name: "Secure Tunnel", category: "Security", description: "Encrypted network tunneling", version: "2.0.4", size: "6.3 MB", rating: 4.5, downloads: "31.2K", permissions: ['Network', 'System'], lastUpdate: '2024-01-05', developer: "UrbanShade Security" },
+  { id: "vpn", name: "Secure Tunnel", category: "Security", description: "VPN encrypted network tunneling and secure proxy", version: "2.0.4", size: "6.3 MB", rating: 4.5, downloads: "31.2K", featured: true, permissions: ['Network', 'System'], lastUpdate: '2024-01-05', developer: "UrbanShade Security" },
   { id: "firewall", name: "Packet Shield", category: "Security", description: "Network traffic filtering and monitoring", version: "7.1.0", size: "12.5 MB", rating: 4.7, downloads: "28.9K", featured: true, permissions: ['Network', 'System', 'Admin'], lastUpdate: '2024-01-03', developer: "UrbanShade Security" },
   { id: "pdf-reader", name: "Document Viewer", category: "Productivity", description: "PDF reading and annotation", version: "6.1.0", size: "8.7 MB", rating: 4.5, downloads: "20.8K", permissions: ['File Access'], lastUpdate: '2024-01-09', developer: "UrbanShade Core" },
   { id: "spreadsheet", name: "Data Sheets", category: "Productivity", description: "Spreadsheet editor for data analysis", version: "5.3.1", size: "15.2 MB", rating: 4.7, downloads: "16.4K", new: true, permissions: ['File Access'], lastUpdate: '2024-01-21', developer: "UrbanShade Core" },
@@ -257,13 +258,20 @@ export const AppStore = ({ onInstall }: { onInstall?: (appId: string) => void })
     }, 150);
   }, [onInstall, installedApps]);
 
+  const [uninstallTarget, setUninstallTarget] = useState<{ id: string; name: string } | null>(null);
+
   const handleUninstall = (appId: string, appName: string) => {
-    if (!window.confirm(`Uninstall ${appName}?`)) return;
-    const newInstalled = installedApps.filter(id => id !== appId);
+    setUninstallTarget({ id: appId, name: appName });
+  };
+
+  const confirmUninstall = () => {
+    if (!uninstallTarget) return;
+    const newInstalled = installedApps.filter(id => id !== uninstallTarget.id);
     setInstalledApps(newInstalled);
     localStorage.setItem("urbanshade_installed_apps", JSON.stringify(newInstalled));
-    toast.success(`${appName} uninstalled!`);
+    toast.success(`${uninstallTarget.name} uninstalled!`);
     window.dispatchEvent(new Event('storage'));
+    setUninstallTarget(null);
   };
 
   const handleOpenApp = (appId: string) => {
@@ -300,8 +308,8 @@ export const AppStore = ({ onInstall }: { onInstall?: (appId: string) => void })
     const dlState = getDownloadState(app.id);
     
     return (
+      <>
       <div className="flex flex-col h-full bg-background">
-        {/* Header with gradient */}
         <div className={cn(
           "shrink-0 border-b border-border",
           "bg-gradient-to-br",
@@ -462,6 +470,28 @@ export const AppStore = ({ onInstall }: { onInstall?: (appId: string) => void })
           </div>
         </ScrollArea>
       </div>
+      {/* Custom Uninstall Confirmation Dialog */}
+      <Dialog open={!!uninstallTarget} onOpenChange={(open) => !open && setUninstallTarget(null)}>
+        <DialogContent className="sm:max-w-md border-destructive/30 bg-background">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Trash2 className="w-5 h-5 text-destructive" />
+              Uninstall {uninstallTarget?.name}?
+            </DialogTitle>
+            <DialogDescription>
+              This will remove <span className="font-medium text-foreground">{uninstallTarget?.name}</span> from your system.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setUninstallTarget(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmUninstall} className="gap-1.5">
+              <Trash2 className="w-4 h-4" />
+              Uninstall
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      </>
     );
   }
 
@@ -469,6 +499,7 @@ export const AppStore = ({ onInstall }: { onInstall?: (appId: string) => void })
   const heroApp = AVAILABLE_APPS.find(a => a.id === currentHero.id);
 
   return (
+    <>
     <div className="flex flex-col h-full bg-background">
       {/* Header */}
       <div className="border-b border-border bg-background/80 backdrop-blur-sm p-4 shrink-0">
@@ -904,6 +935,32 @@ export const AppStore = ({ onInstall }: { onInstall?: (appId: string) => void })
         </div>
       )}
     </div>
+
+      {/* Custom Uninstall Confirmation Dialog */}
+      <Dialog open={!!uninstallTarget} onOpenChange={(open) => !open && setUninstallTarget(null)}>
+        <DialogContent className="sm:max-w-md border-destructive/30 bg-background">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Trash2 className="w-5 h-5 text-destructive" />
+              Uninstall {uninstallTarget?.name}?
+            </DialogTitle>
+            <DialogDescription>
+              This will remove <span className="font-medium text-foreground">{uninstallTarget?.name}</span> from your system. 
+              You can reinstall it anytime from the App Store.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setUninstallTarget(null)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmUninstall} className="gap-1.5">
+              <Trash2 className="w-4 h-4" />
+              Uninstall
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

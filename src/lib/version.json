@@ -1,11 +1,11 @@
 {
   "major": 3,
-  "minor": 3,
-  "patch": 1,
-  "codename": "Panel Polish",
-  "build": 8308,
-  "fullVersion": "3.3.1",
-  "displayVersion": "V3.3.1",
-  "shortVersion": "3.3.1",
+  "minor": 4,
+  "patch": 0,
+  "codename": "Storefront",
+  "build": 8400,
+  "fullVersion": "3.4.0",
+  "displayVersion": "V3.4.0",
+  "shortVersion": "3.4.0",
   "releaseDate": "2026-02-15"
 }
