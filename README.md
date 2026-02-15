@@ -1,7 +1,8 @@
-Outage fixed
-We gud people
+### Hey, long time no see!
+Urbanshade OS is nearing *700 COMMITS!*
+This is an insane accomplishment. Thank you everyone who has helped, and are helping!
 
-Huge shoutout to Lovable support
+Me and my friends are still having fun, and we hope we'll push to even better heights!
 
 ---
 ## Quick viewable status:
