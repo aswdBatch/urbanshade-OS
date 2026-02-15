@@ -1,58 +1,72 @@
+## Changelog Remake, Redesign, and Fixes -- V3.4.1
 
+### Problem Summary
 
-## Moderation Panel Polish -- V3.3.1
+1. **Changelog doesn't show up**: The auto-open logic checks if you've already seen the current version. Since V3.4.0 was set as seen during development, it won't show again automatically.
+2. **Getting disorganized**: 8 version entries in a flat sidebar is getting unwieldy. Older versions (2.x) clutter the view.
+3. **No way to reopen**: Once closed, there's no button anywhere to view it again.
 
-A set of quality-of-life improvements and missing features for the moderation panel.
+---
 
-### 1. Fix Version Display
+### Fix 1: Auto-Open Bug
 
-The header on line 2136 still shows "v3.2" instead of "v3.3". Simple text fix.
+The `ChangelogDialog` compares `localStorage("urbanshade_last_seen_version")` against the current version. If they match, it stays closed. The fix:
 
-### 2. User List Enhancements
+- Reset the stored version on each new build number change (not just version string), so patch updates also trigger it
+- Add a small delay before checking to avoid race conditions with other boot screens
 
-Currently the user list only shows username, role badge, and registration date. Improvements:
+### Fix 2: Reorganize Changelog with Version Groups
 
-- **Show avatar/initials** with the user's actual `avatar_url` from profiles (if available), falling back to the initial letter
-- **Show "last seen"** timestamp (already available as `lastActive` in the `UserData` interface but not displayed)
-- **Show online status** indicator (green dot for online users)
-- **Show clearance level** badge inline
+Instead of a flat list of 8+ versions in the sidebar, group them:
 
-### 3. Access Log Filtering
+```text
+Current
+  v3.4.0 Storefront
 
-The Access Log tab currently has no search or filtering -- just a raw list. Add:
+V3.x Series
+  v3.3.1 Panel Polish
+  v3.1   DEF-DEV & Polish
+  v3.0   The Year Update
 
-- **Search box** to filter by username or action
-- **Action type filter** dropdown (PIN OK, PIN FAIL, PIN SET, etc.)
-- **Date range filter** (Last hour, 24h, 7d, All time)
-- **Export button** to download logs as JSON
+Legacy (V2.x)
+  v2.9  Visual Overhaul
+  v2.8  The Mass Update
+  v2.7  Cloud Sync
+  v2.6  Security Update
+  v2.0  The Vite Rewrite
+```
 
-### 4. Mod Logs: Show Admin Who Acted
+- The "Current" version is visually prominent at the top with a gradient highlight
+- Legacy versions are in a collapsible section, collapsed by default
+- Each group has a subtle header label
 
-Currently mod log entries show the action type, reason, and target user ID but not *who* performed the action. The `moderation_actions` table has a `created_by` column. Fetch and display the admin's username next to each log entry.
+### Fix 3: Add "View Changelog" to Settings > System
 
-### 5. Direct Message from User Panel
+Add a "View Changelog" button in the System section of Settings (next to the existing version/build info card). When clicked, it opens the ChangelogDialog in controlled mode.
 
-Add a "Send Message" button in the `UserDetailsPanel` that lets an admin send a direct NAVI message to that specific user (using the existing `navi_message` action with a single target).
+This requires:
 
-### 6. Stats Tab: Trial Admin Count
-
-The Stats tab only counts `role === 'admin'` for the "Admins" stat card. It should also count `trial_admin` roles, or show them separately.
-
-### 7. Quick User Count in Header
-
-Show a small "X users online" indicator in the header bar next to the refresh button, using data already fetched.
+- Adding a `ChangelogDialog` import and state to `Settings.tsx`
+- Adding a button in `renderSystem()` under the OS Information card
+- The button reads "View Changelog" with an arrow icon
 
 ---
 
 ### Technical Details
 
 **Files modified:**
-- `src/pages/ModerationPanel.tsx` -- all UI changes (version fix, user list improvements, access log filters, DM button, online count in header)
-- `src/components/moderation/StatsTab.tsx` -- count trial admins separately
 
-**No backend changes needed** -- all data fields already exist in the responses.
 
-**No new dependencies** -- uses existing components (Input, Select, Button).
+| File                                 | Change                                                                                                                  |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `src/components/ChangelogDialog.tsx` | Fix auto-open logic (compare build number too); reorganize sidebar into grouped sections with collapsible "Legacy" area |
+| `src/components/apps/Settings.tsx`   | Import ChangelogDialog, add state + "View Changelog" button in the System section                                       |
+| `src/lib/version.json`               | DO NOT BUMP! Change is minor.                                                                                           |
+| `index.html`                         | Update title to V3.4.1                                                                                                  |
+
+
+**No new dependencies needed.**
 
 ### Changelog Entry
-V3.3.1 -- Panel polish: user list shows avatars/online status/clearance, access log filtering, mod logs show acting admin, direct message from user panel, stats count trial admins.
+
+V3.4 -- Changelog remake: fixed auto-open detection, grouped versions by era with collapsible legacy section, added "View Changelog" button in Settings > System.
