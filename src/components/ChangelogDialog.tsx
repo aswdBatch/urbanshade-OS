@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sparkles, Cloud, Rocket, Shield, Monitor, Star, ArrowRight, Info, Paintbrush, Heart, Gift, Terminal } from "lucide-react";
-import { VERSION, getShortVersion } from "@/lib/versionInfo";
+import { Sparkles, Cloud, Rocket, Shield, Monitor, Star, ArrowRight, Info, Paintbrush, Heart, Gift, Terminal, ChevronDown, ChevronRight } from "lucide-react";
+import { VERSION, getShortVersion, getBuildNumber } from "@/lib/versionInfo";
 
 interface ChangelogDialogProps {
   open?: boolean;
@@ -13,7 +13,9 @@ interface ChangelogDialogProps {
 export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: ChangelogDialogProps = {}) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const [selectedVersion, setSelectedVersion] = useState(VERSION.fullVersion);
+  const [legacyExpanded, setLegacyExpanded] = useState(false);
   const currentVersion = getShortVersion();
+  const currentBuild = getBuildNumber();
   
   // Support both controlled and uncontrolled modes
   const isControlled = controlledOpen !== undefined;
@@ -24,14 +26,25 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
     // Only auto-open on first visit if not controlled
     if (isControlled) return;
     
+    // Compare both version string AND build number
     const lastSeenVersion = localStorage.getItem("urbanshade_last_seen_version");
-    if (lastSeenVersion !== currentVersion) {
-      setInternalOpen(true);
+    const lastSeenBuild = localStorage.getItem("urbanshade_last_seen_build");
+    
+    const isNewVersion = lastSeenVersion !== currentVersion;
+    const isNewBuild = lastSeenBuild !== String(currentBuild);
+    
+    if (isNewVersion || isNewBuild) {
+      // Small delay to avoid race conditions with boot screens
+      const timer = setTimeout(() => {
+        setInternalOpen(true);
+      }, 800);
+      return () => clearTimeout(timer);
     }
-  }, [isControlled, currentVersion]);
+  }, [isControlled, currentVersion, currentBuild]);
 
   const handleClose = () => {
     localStorage.setItem("urbanshade_last_seen_version", currentVersion);
+    localStorage.setItem("urbanshade_last_seen_build", String(currentBuild));
     setOpen(false);
   };
 
@@ -54,7 +67,7 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
       icon: <Rocket className="w-5 h-5" />,
       color: "from-cyan-500 to-teal-600",
       tagline: "STOREFRONT",
-      overview: "Major OS polish update: custom notification toasts, File Manager drag-and-drop, taskbar window thumbnails, App Store redesign, and VPN fixes.",
+      overview: "Major OS polish update: custom notification toasts, File Manager drag-and-drop, taskbar window thumbnails, App Store redesign, VPN fixes, and changelog improvements.",
       sections: {
         "🏪 App Store Improvements": [
           { text: "Custom uninstall confirmation dialog replaces browser default", isHighlight: true },
@@ -80,6 +93,12 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
         "🔒 VPN Layout Fix": [
           { text: "Responsive server list sidebar adapts to window size", isHighlight: true },
           { text: "Proper scrolling in server list without overflow" },
+        ],
+        "📋 Changelog Improvements": [
+          { text: "Versions grouped by era: Current, V3.x Series, Legacy", isHighlight: true },
+          { text: "Legacy versions collapsible to reduce clutter" },
+          { text: "Fixed auto-open detection using build numbers" },
+          { text: "View Changelog button added to Settings > System" },
         ],
       }
     },
@@ -300,9 +319,58 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
     }
   };
 
+  // Group versions by era
+  const currentVersionKey = VERSION.fullVersion;
+  const v3Versions = Object.keys(changelogs).filter(v => v.startsWith('3.') && v !== currentVersionKey);
+  const legacyVersions = Object.keys(changelogs).filter(v => v.startsWith('2.'));
+
   const versionData = changelogs[selectedVersion];
   const isLatestVersion = selectedVersion === currentVersion;
-  const versions = Object.keys(changelogs);
+
+  const renderVersionButton = (version: string, isCurrentGroup = false) => {
+    const data = changelogs[version];
+    const isSelected = selectedVersion === version;
+    const isLatest = version === currentVersion;
+
+    return (
+      <button
+        key={version}
+        onClick={() => setSelectedVersion(version)}
+        className={`w-full text-left p-2.5 rounded-lg transition-all duration-200 group ${
+          isSelected
+            ? isCurrentGroup
+              ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20"
+              : "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+            : "hover:bg-muted text-foreground"
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          <div className={`w-7 h-7 rounded-md flex items-center justify-center transition-colors ${
+            isSelected ? "bg-primary-foreground/20" : "bg-muted"
+          }`}>
+            {data.icon}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="font-bold text-xs">v{version}</span>
+              {isLatest && (
+                <span className={`text-[9px] px-1 py-0.5 rounded font-bold ${
+                  isSelected ? "bg-primary-foreground/20" : "bg-primary/20 text-primary"
+                }`}>
+                  NEW
+                </span>
+              )}
+            </div>
+            <p className={`text-[10px] truncate ${
+              isSelected ? "text-primary-foreground/70" : "text-muted-foreground"
+            }`}>
+              {data.tagline}
+            </p>
+          </div>
+        </div>
+      </button>
+    );
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -321,51 +389,51 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
               <p className="text-[10px] text-muted-foreground mt-1">Release Notes</p>
             </div>
 
-            {/* Version List */}
+            {/* Version List - Grouped */}
             <ScrollArea className="flex-1">
               <div className="p-2 space-y-1">
-                {versions.map((version) => {
-                  const data = changelogs[version];
-                  const isSelected = selectedVersion === version;
-                  const isLatest = version === currentVersion;
-                  
-                  return (
+                {/* Current Version */}
+                <div className="mb-2">
+                  <p className="text-[9px] uppercase tracking-widest text-primary font-bold px-2 py-1.5">
+                    Current
+                  </p>
+                  {renderVersionButton(currentVersionKey, true)}
+                </div>
+
+                {/* V3.x Series */}
+                {v3Versions.length > 0 && (
+                  <div className="mb-2">
+                    <p className="text-[9px] uppercase tracking-widest text-muted-foreground font-semibold px-2 py-1.5 border-t border-border/30 mt-1 pt-2">
+                      V3.x Series
+                    </p>
+                    {v3Versions.map(v => renderVersionButton(v))}
+                  </div>
+                )}
+
+                {/* Legacy (V2.x) - Collapsible */}
+                {legacyVersions.length > 0 && (
+                  <div>
                     <button
-                      key={version}
-                      onClick={() => setSelectedVersion(version)}
-                      className={`w-full text-left p-2.5 rounded-lg transition-all duration-200 group ${
-                        isSelected
-                          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                          : "hover:bg-muted text-foreground"
-                      }`}
+                      onClick={() => setLegacyExpanded(!legacyExpanded)}
+                      className="w-full flex items-center gap-1 text-[9px] uppercase tracking-widest text-muted-foreground font-semibold px-2 py-1.5 border-t border-border/30 mt-1 pt-2 hover:text-foreground transition-colors"
                     >
-                      <div className="flex items-center gap-2">
-                        <div className={`w-7 h-7 rounded-md flex items-center justify-center transition-colors ${
-                          isSelected ? "bg-primary-foreground/20" : "bg-muted"
-                        }`}>
-                          {data.icon}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-xs">v{version}</span>
-                            {isLatest && (
-                              <span className={`text-[9px] px-1 py-0.5 rounded font-bold ${
-                                isSelected ? "bg-primary-foreground/20" : "bg-primary/20 text-primary"
-                              }`}>
-                                NEW
-                              </span>
-                            )}
-                          </div>
-                          <p className={`text-[10px] truncate ${
-                            isSelected ? "text-primary-foreground/70" : "text-muted-foreground"
-                          }`}>
-                            {data.tagline}
-                          </p>
-                        </div>
-                      </div>
+                      {legacyExpanded ? (
+                        <ChevronDown className="w-3 h-3" />
+                      ) : (
+                        <ChevronRight className="w-3 h-3" />
+                      )}
+                      Legacy (V2.x)
+                      <span className="ml-auto text-[8px] bg-muted px-1.5 py-0.5 rounded">
+                        {legacyVersions.length}
+                      </span>
                     </button>
-                  );
-                })}
+                    {legacyExpanded && (
+                      <div className="space-y-1 mt-1">
+                        {legacyVersions.map(v => renderVersionButton(v))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </ScrollArea>
           </div>

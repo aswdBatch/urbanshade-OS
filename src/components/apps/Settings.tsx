@@ -4,8 +4,9 @@ import {
   RotateCcw, Code, HardDrive, Gauge,
   ChevronRight, Search, Unlock, Terminal, Trash2, AlertTriangle,
   Sun, Moon, Sparkles, Lock, Check, Crown, Gift, Star, Paintbrush,
-  Power, Image, Music, Bug, RefreshCw
+  Power, Image, Music, Bug, RefreshCw, FileText
 } from "lucide-react";
+import { ChangelogDialog } from "@/components/ChangelogDialog";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
@@ -277,6 +278,7 @@ const Settings = ({ onUpdate }: SettingsProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showOemDialog, setShowOemDialog] = useState(false);
+  const [showChangelog, setShowChangelog] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showLightModeWarning, setShowLightModeWarning] = useState(false);
   const [oemUnlocked, setOemUnlocked] = useState(() => loadState('settings_oem_unlocked', false));
@@ -820,6 +822,20 @@ const Settings = ({ onUpdate }: SettingsProps) => {
             </div>
           </div>
         </div>
+
+        {/* View Changelog */}
+        <Button
+          variant="outline"
+          className="w-full justify-between"
+          onClick={() => setShowChangelog(true)}
+        >
+          <span className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-primary" />
+            View Changelog
+          </span>
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+        </Button>
+        <ChangelogDialog open={showChangelog} onOpenChange={setShowChangelog} />
 
         {/* Build Information */}
         <div className="space-y-3">
