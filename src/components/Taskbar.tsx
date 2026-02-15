@@ -212,7 +212,7 @@ export const Taskbar = ({
                   const hasOpen = wins.some(w => !w.minimized);
                   
                   return (
-                    <TooltipProvider key={appId}>
+                    <TooltipProvider key={appId} delayDuration={300}>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <button
@@ -235,11 +235,29 @@ export const Taskbar = ({
                             )}
                           </button>
                         </TooltipTrigger>
-                        <TooltipContent side="bottom">
-                          <p className="text-xs font-medium">{firstWin.app.name}</p>
-                          {wins.length > 1 && (
-                            <p className="text-xs text-muted-foreground">{wins.length} windows</p>
-                          )}
+                        <TooltipContent side="bottom" className="p-0 bg-transparent border-0 shadow-none">
+                          <div className="rounded-lg border border-border bg-card/95 backdrop-blur-xl shadow-2xl overflow-hidden min-w-[200px]">
+                            {wins.map(win => (
+                              <button
+                                key={win.id}
+                                onClick={() => onRestoreWindow?.(win.id)}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-primary/10 transition-colors text-left border-b border-border/30 last:border-b-0"
+                              >
+                                <div className="w-5 h-5 flex items-center justify-center [&>svg]:w-4 [&>svg]:h-4 text-primary flex-shrink-0">
+                                  {win.app.icon}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-xs font-medium text-foreground truncate">{win.app.name}</p>
+                                  <p className="text-[10px] text-muted-foreground">
+                                    {win.minimized ? 'Minimized' : 'Active'}
+                                  </p>
+                                </div>
+                                {!win.minimized && (
+                                  <div className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
+                                )}
+                              </button>
+                            ))}
+                          </div>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>

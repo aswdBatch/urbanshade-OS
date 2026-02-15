@@ -21,6 +21,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { trackAppOpen, trackWindowCount, checkSessionAchievements } from "@/hooks/useAchievementTriggers";
 import { FileText, Database, Activity, Radio, FileBox, Terminal, Users, Wifi, Cpu, Mail, Globe, Music, Camera, Shield, MapPin, BookOpen, Zap, Wind, Calculator as CalcIcon, Lock, FileWarning, Grid3x3, ShoppingBag, StickyNote, Palette, Volume2, CloudRain, Clock as ClockIcon, Calendar, Newspaper, Key, HardDrive, FileArchive, FileText as PdfIcon, Sheet, Presentation, Video, Image, Mic, Gamepad2, MessageSquare, VideoIcon, MailOpen, FolderUp, TerminalSquare, Network, HardDrive as DiskIcon, Settings as SettingsIcon, Activity as PerformanceIcon, ScanLine, Languages, BookOpenCheck, Globe2, MapPinned, Telescope, Beaker, Calculator as PhysicsIcon, Fingerprint, Lock as EncryptionIcon, KeyRound, Puzzle, Skull, Monitor, Package, Star, Download, Spade, Award, Coins, Sparkles, Dices, Timer, Cookie, Bell, History } from "lucide-react";
 import { toast } from "sonner";
+import { osToast } from "@/components/shared/OSToast";
 import { useSearchParams } from "react-router-dom";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -856,7 +857,7 @@ export const Desktop = ({
       }
     });
     if (minimizedCount > 0) {
-      toast.info(`Minimized ${minimizedCount} window${minimizedCount > 1 ? 's' : ''}`);
+      osToast.info('Aero Shake', `Minimized ${minimizedCount} window${minimizedCount > 1 ? 's' : ''}`);
     }
   }, [windows, minimizeWindow]);
 
