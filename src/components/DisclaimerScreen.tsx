@@ -6,31 +6,31 @@ import { ChangelogDialog } from "./ChangelogDialog";
 
 // Team data
 const CONTRIBUTORS = [
-  {
-    name: "Aswd_LV",
-    role: "Founder & Lead Dev",
-    color: "from-yellow-500 to-amber-600",
-    icon: <Crown className="w-4 h-4" />,
-  },
-  {
-    name: "plplll",
-    role: "Developer & Tester",
-    color: "from-slate-400 to-zinc-500",
-    icon: <Code className="w-4 h-4" />,
-  },
-  {
-    name: "robo-karlix",
-    role: "Lead Tester",
-    color: "from-purple-500 to-violet-600",
-    icon: <TestTube className="w-4 h-4" />,
-  },
-  {
-    name: "Kombainis_yehaw",
-    role: "QA Tester",
-    color: "from-green-500 to-emerald-600",
-    icon: <Lightbulb className="w-4 h-4" />,
-  },
-];
+{
+  name: "Aswd_LV",
+  role: "Founder & Lead Dev",
+  color: "from-yellow-500 to-amber-600",
+  icon: <Crown className="w-4 h-4" />
+},
+{
+  name: "plplll",
+  role: "Developer & Tester",
+  color: "from-slate-400 to-zinc-500",
+  icon: <Code className="w-4 h-4" />
+},
+{
+  name: "robo-karlix",
+  role: "Lead Tester",
+  color: "from-purple-500 to-violet-600",
+  icon: <TestTube className="w-4 h-4" />
+},
+{
+  name: "Kombainis_yehaw",
+  role: "QA Tester",
+  color: "from-green-500 to-emerald-600",
+  icon: <Lightbulb className="w-4 h-4" />
+}];
+
 
 interface DisclaimerScreenProps {
   onAccept: (skipInstall?: boolean) => void;
@@ -52,7 +52,7 @@ export const DisclaimerScreen = ({ onAccept }: DisclaimerScreenProps) => {
       {/* Animated background grid */}
       <div className="fixed inset-0 opacity-[0.03]" style={{
         backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-        backgroundSize: '50px 50px',
+        backgroundSize: '50px 50px'
       }} />
       
       {/* Glow effects */}
@@ -105,7 +105,7 @@ export const DisclaimerScreen = ({ onAccept }: DisclaimerScreenProps) => {
           </div>
 
           {/* Warning Banner */}
-          <div className="p-4 bg-gradient-to-r from-amber-950/50 to-amber-900/30 border border-amber-500/30 rounded-xl">
+          <div className="p-4 bg-gradient-to-r from-amber-950/50 to-amber-900/30 border rounded-xl border-amber-600">
             <div className="flex items-center gap-3">
               <AlertTriangle className="w-6 h-6 text-amber-400 flex-shrink-0" />
               <div>
@@ -143,21 +143,21 @@ export const DisclaimerScreen = ({ onAccept }: DisclaimerScreenProps) => {
           {/* Expandable Details */}
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="w-full flex items-center justify-center gap-2 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
+            className="w-full flex items-center justify-center gap-2 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+
             <span>More details</span>
             <ChevronDown className={`w-4 h-4 transition-transform ${showDetails ? 'rotate-180' : ''}`} />
           </button>
 
-          {showDetails && (
-            <div className="space-y-4 animate-fade-in">
+          {showDetails &&
+          <div className="space-y-4 animate-fade-in">
               {/* Quick Actions */}
               <div className="grid sm:grid-cols-2 gap-3">
                 {/* View Changelog */}
                 <button
-                  onClick={() => setShowChangelog(true)}
-                  className="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 text-left hover:bg-slate-700/50 transition-colors group"
-                >
+                onClick={() => setShowChangelog(true)}
+                className="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 text-left hover:bg-slate-700/50 transition-colors group">
+
                   <div className="flex items-center gap-3">
                     <ScrollText className="w-5 h-5 text-cyan-400" />
                     <div>
@@ -170,11 +170,11 @@ export const DisclaimerScreen = ({ onAccept }: DisclaimerScreenProps) => {
                 
                 {/* Documentation */}
                 <a
-                  href="/docs"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 text-left hover:bg-slate-700/50 transition-colors group"
-                >
+                href="/docs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 text-left hover:bg-slate-700/50 transition-colors group">
+
                   <div className="flex items-center gap-3">
                     <FileText className="w-5 h-5 text-purple-400" />
                     <div>
@@ -193,23 +193,23 @@ export const DisclaimerScreen = ({ onAccept }: DisclaimerScreenProps) => {
                   <span className="font-semibold text-sm">Made by</span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {CONTRIBUTORS.map((contributor) => (
-                    <div key={contributor.name} className="text-center">
+                  {CONTRIBUTORS.map((contributor) =>
+                <div key={contributor.name} className="text-center">
                       <div className={`w-12 h-12 mx-auto rounded-xl bg-gradient-to-br ${contributor.color} flex items-center justify-center mb-2`}>
                         {contributor.icon}
                       </div>
                       <p className="text-xs font-medium truncate">{contributor.name}</p>
                       <p className="text-[10px] text-muted-foreground truncate">{contributor.role}</p>
                     </div>
-                  ))}
+                )}
                 </div>
                 <div className="mt-4 pt-3 border-t border-slate-700/50 text-center">
                   <a
-                    href="/team"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-primary hover:underline"
-                  >
+                  href="/team"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-primary hover:underline">
+
                     Meet the full team →
                   </a>
                 </div>
@@ -218,33 +218,33 @@ export const DisclaimerScreen = ({ onAccept }: DisclaimerScreenProps) => {
               {/* Links */}
               <div className="flex flex-wrap justify-center gap-3">
                 <a
-                  href="https://github.com/aswdBatch/urbanshade-OS"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-sm hover:bg-slate-700/50 transition-colors"
-                >
+                href="https://github.com/aswdBatch/urbanshade-OS"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-sm hover:bg-slate-700/50 transition-colors">
+
                   <Github className="w-4 h-4" />
                   GitHub
                 </a>
                 <a
-                  href="/terms"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-sm hover:bg-slate-700/50 transition-colors"
-                >
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-sm hover:bg-slate-700/50 transition-colors">
+
                   Terms
                 </a>
                 <a
-                  href="/privacy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-sm hover:bg-slate-700/50 transition-colors"
-                >
+                href="/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-sm hover:bg-slate-700/50 transition-colors">
+
                   Privacy
                 </a>
               </div>
             </div>
-          )}
+          }
 
           {/* Changelog Dialog */}
           <ChangelogDialog open={showChangelog} onOpenChange={setShowChangelog} />
@@ -256,8 +256,8 @@ export const DisclaimerScreen = ({ onAccept }: DisclaimerScreenProps) => {
                 type="checkbox"
                 checked={understood}
                 onChange={(e) => setUnderstood(e.target.checked)}
-                className="w-5 h-5 mt-0.5 accent-cyan-500 cursor-pointer"
-              />
+                className="w-5 h-5 mt-0.5 accent-cyan-500 cursor-pointer" />
+
               <div>
                 <p className="font-medium text-sm">I understand this is a simulation</p>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -271,8 +271,8 @@ export const DisclaimerScreen = ({ onAccept }: DisclaimerScreenProps) => {
                 type="checkbox"
                 checked={skipInstall}
                 onChange={(e) => setSkipInstall(e.target.checked)}
-                className="w-4 h-4 accent-amber-500 cursor-pointer"
-              />
+                className="w-4 h-4 accent-amber-500 cursor-pointer" />
+
               <FastForward className={`w-5 h-5 ${skipInstall ? 'text-amber-400' : 'text-muted-foreground'}`} />
               <div>
                 <span className={`text-sm ${skipInstall ? 'text-amber-400' : ''}`}>Quick start</span>
@@ -283,24 +283,24 @@ export const DisclaimerScreen = ({ onAccept }: DisclaimerScreenProps) => {
             <button
               onClick={() => onAccept(skipInstall)}
               disabled={!understood}
-              className="w-full py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white shadow-xl shadow-cyan-500/20 hover:shadow-cyan-500/30 hover:scale-[1.02] disabled:hover:scale-100 disabled:shadow-none"
-            >
-              {understood ? (
-                <>
+              className="w-full py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white shadow-xl shadow-cyan-500/20 hover:shadow-cyan-500/30 hover:scale-[1.02] disabled:hover:scale-100 disabled:shadow-none">
+
+              {understood ?
+              <>
                   <CheckCircle className="w-5 h-5" />
                   {skipInstall ? "Quick Start" : "Enter UrbanShade OS"}
-                </>
-              ) : (
-                <>
+                </> :
+
+              <>
                   <Lock className="w-5 h-5 opacity-50" />
                   Accept to continue
                 </>
-              )}
+              }
             </button>
           </div>
 
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 };
