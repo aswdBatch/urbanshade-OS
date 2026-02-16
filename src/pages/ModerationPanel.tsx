@@ -316,7 +316,7 @@ const UserDetailsPanel = ({
   };
   
   return (
-    <div className="fixed inset-y-0 right-0 w-96 bg-slate-950 border-l-2 border-cyan-500/30 shadow-2xl shadow-cyan-500/10 z-50 flex flex-col">
+    <div className="fixed inset-y-0 right-0 w-96 bg-slate-950 border-l-2 border-cyan-500/30 shadow-2xl shadow-cyan-500/10 z-[99999] flex flex-col">
       {isDemo && (
         <div className="px-4 py-2 bg-amber-500/20 border-b border-amber-500/30">
           <div className="flex items-center gap-2 text-amber-400 text-xs font-mono">
