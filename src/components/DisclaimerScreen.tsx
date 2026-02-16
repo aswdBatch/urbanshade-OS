@@ -69,7 +69,7 @@ export const DisclaimerScreen = ({ onAccept }: DisclaimerScreenProps) => {
             </div>
             
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 bg-clip-text text-transparent">
                 UrbanShade OS
               </span>
             </h1>
