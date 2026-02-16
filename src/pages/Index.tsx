@@ -1,3 +1,4 @@
+// import fkin everything
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { Desktop } from "@/components/Desktop";
@@ -40,20 +41,19 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { requiresBootPassword, requiresAdminPassword, verifyAdminPassword } from "@/hooks/useBiosSettings";
 import SupabaseConnectivityChecker from "@/components/SupabaseConnectivityChecker";
 
-
 const Index = () => {
-  // Mobile detection - show block screen on mobile
+  // detect mobile and nuke it
   const isMobile = useIsMobile();
-  
-  // NAVI AI Security System
+
+  // security
   const naviSecurity = useNaviSecurity();
-  // Ban checking system
+  // check for ban
   const banCheck = useBanCheck();
   const [adminSetupComplete, setAdminSetupComplete] = useState(false);
   const [showingBiosTransition, setShowingBiosTransition] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [postComplete, setPostComplete] = useState(() => {
-    // Skip POST if fast boot OR if this is a warm reboot
+    // Skip POST if fast boot or if this is a warm reboot
     const warmReboot = sessionStorage.getItem("urbanshade_warm_reboot");
     if (warmReboot === "true") {
       sessionStorage.removeItem("urbanshade_warm_reboot");
@@ -68,7 +68,7 @@ const Index = () => {
       localStorage.removeItem("urbanshade_reboot_to_bios");
       return false;
     }
-    // Don't boot to BIOS by default - skip unless user explicitly enters it
+    // Don't boot to BIOS by default
     return true;
   });
   const [booted, setBooted] = useState(false);
@@ -105,20 +105,25 @@ const Index = () => {
   });
   const [devModeOpen, setDevModeOpen] = useState(false);
   const [showChangelog, setShowChangelog] = useState(false);
-  // FakeMod state
+  // fakemod beta ig??
   const [fakeBanData, setFakeBanData] = useState<{ reason: string; duration?: string; isFake: boolean } | null>(null);
-  const [fakeTempBanData, setFakeTempBanData] = useState<{ reason: string; duration: string; expiresAt?: string; isFake: boolean } | null>(null);
+  const [fakeTempBanData, setFakeTempBanData] = useState<{
+    reason: string;
+    duration: string;
+    expiresAt?: string;
+    isFake: boolean;
+  } | null>(null);
   const [fakeWarnData, setFakeWarnData] = useState<{ reason: string; isFake: boolean } | null>(null);
   const [isLocked, setIsLocked] = useState(false);
 
-  // Idle lock hook
+  // Idle lock
   useIdleLock({
     onLock: () => setIsLocked(true),
     idleTimeMinutes: 5,
-    enabled: loggedIn && !crashed && !shuttingDown && !rebooting && !isLocked
+    enabled: loggedIn && !crashed && !shuttingDown && !rebooting && !isLocked,
   });
 
-  // Check if admin setup is complete and setup key listeners
+  // Check if admin setup is complete
   useEffect(() => {
     try {
       const adminData = localStorage.getItem("urbanshade_admin");
@@ -141,9 +146,9 @@ const Index = () => {
       setAdminSetupComplete(false);
     }
 
-    // Keyboard shortcuts with chromebook-friendly typed keys
+    // Keyboard shortcuts
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Accumulate typed characters for chromebook-friendly shortcuts
+      // Accumulate typed characters for 10% friendly shortcuts bcuz chromebooks
       if (e.key.length === 1) {
         const newBuffer = (keyBuffer + e.key.toLowerCase()).slice(-10);
         setKeyBuffer(newBuffer);
@@ -167,7 +172,7 @@ const Index = () => {
         }
       }
 
-      // F2 for recovery mode during boot
+      // F2 for recovery mode
       if (e.key === "F2" && !booted && !inRecoveryMode) {
         e.preventDefault();
         setInRecoveryMode(true);
@@ -213,7 +218,7 @@ const Index = () => {
       console.log("%c[SYSTEM] Opening Developer Console...", "color: #ff00ff; font-weight: bold");
     };
 
-    // Expose NAVI security for testing
+    // Expose NAVI (lol)
     (window as any).naviSecurity = {
       reportViolation: naviSecurity.reportViolation,
       triggerLockout: naviSecurity.triggerLockout,
@@ -238,7 +243,7 @@ const Index = () => {
     };
   }, [loggedIn, lockdownMode, crashed, shuttingDown, rebooting, booted, biosComplete, inRecoveryMode, keyBuffer]);
 
-  // Command Queue Polling - Check for commands from DEF-DEV 4 times per second
+  // Command Queue Polling the thing that makes Def-Dev work (DO NOT EDIT ISTG)
   useEffect(() => {
     const handleCommand = (cmd: QueuedCommand) => {
       actionDispatcher.system(`Executing queued command: ${cmd.type}`, { source: cmd.source });
@@ -335,12 +340,12 @@ const Index = () => {
           setIsUpdating(true);
           break;
 
-        // FakeMod commands - show REAL moderation screens with isFake flag
+        // fakemod ig i dont like dis
         case "FAKE_BAN":
-          setFakeBanData({ 
-            reason: cmd.payload.reason || "Testing ban screen", 
+          setFakeBanData({
+            reason: cmd.payload.reason || "Testing ban screen",
             duration: cmd.payload.duration,
-            isFake: true 
+            isFake: true,
           });
           break;
 
@@ -349,7 +354,7 @@ const Index = () => {
             reason: cmd.payload.reason || "Testing temp ban",
             duration: cmd.payload.duration || "7 days",
             expiresAt: cmd.payload.expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-            isFake: true
+            isFake: true,
           });
           break;
 
@@ -357,21 +362,21 @@ const Index = () => {
           setFakeWarnData({ reason: cmd.payload.reason || "Testing warning", isFake: true });
           toast.warning(`⚠️ WARNING: ${cmd.payload.reason || "Testing warning"}`, {
             description: "[FAKE - DEF-DEV Testing Mode]",
-            duration: 8000
+            duration: 8000,
           });
           break;
 
         case "FAKE_MUTE":
           toast.error(`🔇 MUTED: ${cmd.payload.reason || "Testing mute"}`, {
             description: `Duration: ${cmd.payload.duration || "30 minutes"} [FAKE - DEF-DEV Testing Mode]`,
-            duration: 8000
+            duration: 8000,
           });
           break;
 
         case "FAKE_KICK":
           toast.error(`👢 KICKED: ${cmd.payload.reason || "Testing kick"}`, {
             description: "[FAKE - DEF-DEV Testing Mode]",
-            duration: 5000
+            duration: 5000,
           });
           // Simulate kick by showing logout briefly
           setTimeout(() => {
@@ -402,7 +407,7 @@ const Index = () => {
           break;
 
         case "HANDSHAKE_REQUEST":
-          // DEF-DEV is asking if we're alive - respond with current state
+          // DEF-DEV is asking if we're dead but not - respond with current "yes we are dead but no"
           const currentUser = localStorage.getItem("urbanshade_current_user");
           let username = "Unknown";
           try {
@@ -410,12 +415,12 @@ const Index = () => {
               username = JSON.parse(currentUser).name || "Unknown";
             }
           } catch {}
-          
+
           const handshakeResponse = {
             status: "online" as const,
             user: username,
             systemState: crashed ? "crashed" : lockdownMode ? "lockdown" : loggedIn ? "desktop" : "boot",
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
           localStorage.setItem("urbanshade_handshake_response", JSON.stringify(handshakeResponse));
           actionDispatcher.system("Handshake response sent to DEF-DEV");
@@ -423,13 +428,13 @@ const Index = () => {
       }
     };
 
-    // Subscribe to command queue
+    // Subscribe to command queue (MAKE SURE TO LIKE)
     const unsubscribe = commandQueue.onAny(handleCommand);
 
-    // Start polling (4 times per second = 250ms)
+    // Start polling (4 times per second)
     commandQueue.startPolling(250);
 
-    // Also check for legacy pending crashes/bugchecks (backwards compatibility)
+    // Also check for legacy pending crashes/bugchecks
     const pendingCrash = localStorage.getItem("urbanshade_pending_crash");
     if (pendingCrash) {
       localStorage.removeItem("urbanshade_pending_crash");
@@ -463,7 +468,7 @@ const Index = () => {
     };
   }, [crashed, lockdownMode, loggedIn]);
 
-  // System Bus listeners for cross-component communication
+  // System Bus listeners (whatever that is lol)
   useEffect(() => {
     const unsubCrash = systemBus.on("TRIGGER_CRASH", (event) => {
       const { crashType, process } = event.payload || {};
@@ -518,7 +523,7 @@ const Index = () => {
     };
   }, []);
 
-  // Check for first time tour
+  // Check for first time tour (now just a popup "hey docs exists")
   useEffect(() => {
     if (loggedIn && !crashed && !lockdownMode) {
       const tourCompleted = localStorage.getItem("urbanshade_tour_completed");
@@ -926,8 +931,8 @@ const Index = () => {
   // FakeMod: Show full BannedScreen when triggered from DEF-DEV
   if (fakeBanData) {
     return (
-      <BannedScreen 
-        reason={fakeBanData.reason} 
+      <BannedScreen
+        reason={fakeBanData.reason}
         expiresAt={null}
         isFakeBan={true}
         onFakeBanDismiss={() => setFakeBanData(null)}
