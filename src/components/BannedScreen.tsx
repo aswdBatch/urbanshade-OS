@@ -75,8 +75,8 @@ export const BannedScreen = ({ reason, expiresAt, isFakeBan, onFakeBanDismiss }:
 
   // Clean, text-only ban screen
   return (
-    <div className="fixed inset-0 bg-red-700 z-[9999] flex items-start justify-start overflow-auto">
-      <div className="p-12 md:p-20 max-w-2xl">
+    <div className="fixed inset-0 bg-red-600 z-[9999] flex items-start justify-start overflow-auto">
+      <div className="p-8 md:p-16 max-w-2xl border-l-2 border-white/10 ml-4 md:ml-8 mt-8 md:mt-12">
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-10 tracking-tight">
           YOUR ACCOUNT HAS BEEN BANNED
         </h1>
