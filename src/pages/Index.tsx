@@ -740,20 +740,8 @@ const Index = () => {
     return <InstallationScreen onComplete={handleInstallationComplete} />;
   }
 
-  // NAVI AI lockout takes highest priority
-  if (naviSecurity.isLockedOut && naviSecurity.lockoutTime) {
-    return (
-      <NaviLockoutScreen
-        reason={naviSecurity.lockoutReason}
-        lockoutTime={naviSecurity.lockoutTime}
-        onUnlock={naviSecurity.clearLockout}
-      />
-    );
-  }
-
-  // Ban check - permanent bans block ALL access, temp bans show popup + banner
+  // Ban check - permanent bans block ALL access (highest priority, no bypass)
   if (banCheck.isBanned && !banCheck.isLoading && !banCheck.isTempBan && !banCheck.isFakeBan) {
-    // Permanent ban - full block
     return <BannedScreen reason={banCheck.reason} expiresAt={banCheck.expiresAt} isFakeBan={false} />;
   }
 
@@ -765,6 +753,17 @@ const Index = () => {
         expiresAt={banCheck.expiresAt}
         isFakeBan={true}
         onFakeBanDismiss={banCheck.refreshBanStatus}
+      />
+    );
+  }
+
+  // NAVI AI lockout (after ban checks)
+  if (naviSecurity.isLockedOut && naviSecurity.lockoutTime) {
+    return (
+      <NaviLockoutScreen
+        reason={naviSecurity.lockoutReason}
+        lockoutTime={naviSecurity.lockoutTime}
+        onUnlock={naviSecurity.clearLockout}
       />
     );
   }
