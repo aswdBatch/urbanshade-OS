@@ -108,10 +108,10 @@ export const BannedScreen = ({ reason, expiresAt, isFakeBan, onFakeBanDismiss }:
               If you believe this is a mistake, contact:
             </p>
             <a 
-              href="mailto:support@urbanshade.app" 
+              href="mailto:emailbot00noreply@gmail.com" 
               className="text-white underline hover:text-white/80"
             >
-              support@urbanshade.app
+              emailbot00noreply@gmail.com
             </a>
           </div>
         </div>
