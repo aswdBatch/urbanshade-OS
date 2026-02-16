@@ -69,6 +69,9 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
       tagline: "STOREFRONT",
       overview: "Major OS polish update: custom notification toasts, File Manager drag-and-drop, taskbar window thumbnails, App Store redesign, VPN fixes, and changelog improvements.",
       sections: {
+        "🔨 Security & UI": [
+          { text: "Redesigned ban screen" },
+        ],
         "🏪 App Store Improvements": [
           { text: "Custom uninstall confirmation dialog replaces browser default", isHighlight: true },
           { text: "VPN now searchable by 'vpn' keyword in store" },
