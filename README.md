@@ -1,5 +1,5 @@
 ### Hey, long time no see!
-Urbanshade OS is nearing *700 COMMITS!*
+Urbanshade OS has reached 700 COMMITS!
 This is an insane accomplishment. Thank you everyone who has helped, and are helping!
 
 Me and my friends are still having fun, and we hope we'll push to even better heights!
