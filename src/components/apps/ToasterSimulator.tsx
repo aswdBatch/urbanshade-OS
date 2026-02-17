@@ -229,12 +229,27 @@ export const ToasterSimulator = () => {
             }}
             title="Push down to start toasting"
           />
+
+          {/* 6 Legs */}
+          <div className="absolute -bottom-5 left-2 right-2 flex justify-between px-2">
+            {[0, 1, 2, 3, 4, 5].map(i => (
+              <div
+                key={i}
+                className="w-1.5 h-5 rounded-b-full"
+                style={{
+                  background: "linear-gradient(180deg, hsl(var(--muted-foreground)) 0%, hsl(var(--muted)) 100%)",
+                  animation: toasting ? `legWiggle 0.4s ease-in-out infinite` : undefined,
+                  animationDelay: `${i * 0.07}s`,
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Progress */}
       {toasting && (
-        <div className="w-48">
+        <div className="w-48 mt-4">
           <div className="h-2 rounded-full overflow-hidden" style={{ background: "hsl(var(--muted))" }}>
             <div
               className="h-full rounded-full transition-all"
@@ -267,11 +282,21 @@ export const ToasterSimulator = () => {
         )}
       </div>
 
-      {/* Smoke animation keyframes */}
+      {/* Credit */}
+      <div className="text-[10px] text-muted-foreground/50 font-mono mt-2">
+        Made by a friend :D
+      </div>
+
+      {/* Animations */}
       <style>{`
         @keyframes smoke {
           0% { opacity: 0.6; transform: translateY(0) scale(1); }
           100% { opacity: 0; transform: translateY(-30px) scale(2); }
+        }
+        @keyframes legWiggle {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(-4deg); }
+          75% { transform: rotate(4deg); }
         }
       `}</style>
     </div>
