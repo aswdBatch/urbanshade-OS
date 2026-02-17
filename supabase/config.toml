@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.navi-ai]
 verify_jwt = false
+
+[functions.send-appeal]
+verify_jwt = false
