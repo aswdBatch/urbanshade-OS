@@ -96,7 +96,7 @@ const AVAILABLE_APPS: StoreApp[] = [
   { id: "shop", name: "Kroner Exchange", category: "Lifestyle", description: "Spend Kroner on themes, titles, badges, and profile effects.", version: "1.0.0", size: "2.1 MB", rating: 4.9, downloads: "89.3K", featured: true, new: true, permissions: ['Network'], lastUpdate: '2026-01-13', developer: "UrbanShade Economy" },
   { id: "certificate-viewer", name: "Certificate Archive", category: "Lifestyle", description: "View earned certificates from Battle Pass and achievements.", version: "1.0.0", size: "1.8 MB", rating: 4.8, downloads: "45.2K", new: true, permissions: [], lastUpdate: '2026-01-13', developer: "UrbanShade Rewards" },
   { id: "inventory", name: "Personal Inventory", category: "Lifestyle", description: "Manage collected items, titles, badges, and equipped gear.", version: "1.0.0", size: "1.5 MB", rating: 4.9, downloads: "78.6K", featured: true, new: true, permissions: ['Network'], lastUpdate: '2026-01-14', developer: "UrbanShade Profile" },
-  { id: "toaster-simulator", name: "Toaster Simulator", category: "Entertainment", description: "Insert bread, adjust darkness, and make the perfect toast. Don't burn it!", version: "1.0.0", size: "0.4 MB", rating: 4.8, downloads: "14.7K", new: true, permissions: [], lastUpdate: '2026-02-17', developer: "UrbanShade Fun" },
+  { id: "toaster-simulator", name: "Toaster Simulator", category: "Entertainment", description: "A toaster with 6 legs. Insert bread, adjust darkness, and make the perfect toast. Don't burn it! Made by a friend :D", version: "1.0.0", size: "0.4 MB", rating: 4.8, downloads: "14.7K", new: true, permissions: [], lastUpdate: '2026-02-17', developer: "A Friend" },
 ].map(app => ({ ...app, reviews: generateReviews(app.name) }));
 
 // Hero banner data
