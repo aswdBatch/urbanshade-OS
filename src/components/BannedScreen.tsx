@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { PartyPopper, LogOut, Mail } from "lucide-react";
+import { PartyPopper, LogOut, Mail, Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -13,6 +13,8 @@ interface BannedScreenProps {
 export const BannedScreen = ({ reason, expiresAt, isFakeBan, onFakeBanDismiss }: BannedScreenProps) => {
   const [showJoke, setShowJoke] = useState(false);
   const [countdown, setCountdown] = useState(5);
+  const [appealState, setAppealState] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle');
+  const [appealUsername, setAppealUsername] = useState('');
 
   // For fake bans, show the "just kidding" after 5 seconds
   useEffect(() => {
@@ -117,33 +119,60 @@ export const BannedScreen = ({ reason, expiresAt, isFakeBan, onFakeBanDismiss }:
           </div>
 
           <div className="flex flex-col gap-3 pt-4">
-            <Button
-              variant="outline"
-              className="w-fit border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white"
-              onClick={() => {
-                const status = expiresAt ? "Temporarily Suspended" : "Permanently Banned";
-                const emailBody = `#------------------------------------------------#
-| Unban request from user:
-| (username)
-#------------------------------------------------#
-| Unban reason:
-| Write reason here.
-#------------------------------------------------#
-|
-|By writing this email i agree to not break the rules again,
-|and i lose y right to appeal again.
-|
-#------------------------------------------------#
+            {appealState === 'idle' || appealState === 'error' ? (
+              <>
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm text-white/70">Your username (for the appeal):</label>
+                  <input
+                    type="text"
+                    value={appealUsername}
+                    onChange={(e) => setAppealUsername(e.target.value)}
+                    placeholder="Enter your username"
+                    className="w-64 px-3 py-2 bg-transparent border border-white/40 text-white placeholder:text-white/40 rounded text-sm focus:outline-none focus:border-white/70"
+                  />
+                </div>
+                {appealState === 'error' && (
+                  <p className="text-sm text-white/80">Failed to send. Try again or email directly.</p>
+                )}
+                <Button
+                  variant="outline"
+                  className="w-fit border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white"
+                  disabled={!appealUsername.trim()}
+                  onClick={async () => {
+                    setAppealState('loading');
+                    try {
+                      const status = expiresAt ? "Temporarily Suspended" : "Permanently Banned";
+                      const { data, error } = await supabase.functions.invoke('send-appeal', {
+                        body: { reason: reason || "No reason provided", status, username: appealUsername.trim() },
+                      });
+                      if (error) throw error;
+                      if (data?.success) {
+                        setAppealState('sent');
+                      } else {
+                        throw new Error(data?.error || 'Unknown error');
+                      }
+                    } catch (err) {
+                      console.error('Appeal failed:', err);
+                      setAppealState('error');
+                    }
+                  }}
+                >
+                  <Mail className="w-4 h-4 mr-2" />
+                  Request Appeal
+                </Button>
+              </>
+            ) : appealState === 'loading' ? (
+              <div className="flex items-center gap-2 text-white/80">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="text-sm">Sending appeal...</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-white">
+                <CheckCircle className="w-5 h-5" />
+                <span className="text-sm font-semibold">Appeal sent successfully.</span>
+              </div>
+            )}
 
-Ban details:
-- Reason: ${reason || "No reason provided"}
-- Status: ${status}`;
-                window.location.href = `mailto:emailbot00noreply@gmail.com?subject=${encodeURIComponent("Ban Appeal Request")}&body=${encodeURIComponent(emailBody)}`;
-              }}
-            >
-              <Mail className="w-4 h-4 mr-2" />
-              Request Appeal
-            </Button>
             <Button
               variant="outline"
               className="w-fit border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white"
