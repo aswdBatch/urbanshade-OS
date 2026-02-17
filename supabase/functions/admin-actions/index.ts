@@ -8,10 +8,21 @@ const corsHeaders = {
 // Fixed NAVI system user ID for system messages
 const NAVI_USER_ID = '00000000-0000-0000-0000-000000000000';
 
-// Simple SHA-256 hash for PIN
-async function hashPin(pin: string): Promise<string> {
+// Constant-time comparison to prevent timing attacks
+function constantTimeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
+// SHA-256 hash for PIN with per-user salt
+async function hashPin(pin: string, userId?: string): Promise<string> {
   const encoder = new TextEncoder();
-  const data = encoder.encode(pin + '_urbanshade_pin_salt');
+  const salt = userId ? `${userId}_urbanshade_pin_salt` : '_urbanshade_pin_salt';
+  const data = encoder.encode(pin + salt);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
@@ -383,7 +394,7 @@ Deno.serve(async (req) => {
           });
         }
 
-        const pinHash = await hashPin(pin);
+        const pinHash = await hashPin(pin, user.id);
         const { error } = await supabaseAdmin
           .from('admin_pins')
           .upsert({
@@ -436,8 +447,8 @@ Deno.serve(async (req) => {
           });
         }
 
-        const pinHash = await hashPin(pin);
-        if (pinHash === pinData.pin_hash) {
+        const pinHash = await hashPin(pin, user.id);
+        if (constantTimeEqual(pinHash, pinData.pin_hash)) {
           // Success - reset failed attempts
           await supabaseAdmin
             .from('admin_pins')

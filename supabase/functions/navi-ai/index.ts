@@ -125,23 +125,27 @@ serve(async (req) => {
       );
     }
 
-    // Check if user is admin or creator
+    // Check if user has an admin-level role
     const { data: roleData } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", user.id)
-      .maybeSingle();
+      .in("role", ["admin", "creator", "trial_admin"]);
 
-    const role = roleData?.role || "user";
-    if (role !== "admin" && role !== "creator") {
+    if (!roleData || roleData.length === 0) {
       return new Response(
         JSON.stringify({ 
           error: "AUTH_DENIED",
-          response: `var <AUTH> > Role = "${role}". Admin required. Response not sent.\n\nOnly admins and creators can use NAVI AI.` 
+          response: `var <AUTH> > Role = "user". Admin required. Response not sent.\n\nOnly admins and creators can use NAVI AI.` 
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    // Use highest priority role for logging
+    const role = roleData.find(r => r.role === "creator")?.role 
+      || roleData.find(r => r.role === "admin")?.role 
+      || roleData[0]?.role || "admin";
 
     // Build context message with real data
     let contextMessage = "";
