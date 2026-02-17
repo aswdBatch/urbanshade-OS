@@ -61,6 +61,7 @@ import { FortuneApp } from "./apps/FortuneApp";
 import { Inventory } from "./apps/Inventory";
 import { SystemMessages } from "./apps/SystemMessages";
 import { NotificationHistory } from "./NotificationHistory";
+import { ToasterSimulator } from "./apps/ToasterSimulator";
 interface WindowData {
   id: string;
   app: App;
@@ -277,6 +278,8 @@ export const WindowManager = ({ windows, onClose, onFocus, onMinimize, allWindow
         return <CertificateViewer />;
       case "inventory":
         return <Inventory />;
+      case "toaster-simulator":
+        return <ToasterSimulator />;
       default:
         return (
           <div className="p-4 text-muted-foreground">
