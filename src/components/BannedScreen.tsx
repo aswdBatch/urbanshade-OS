@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { PartyPopper } from "lucide-react";
+import { PartyPopper, LogOut, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BannedScreenProps {
   reason: string | null;
@@ -113,6 +114,47 @@ export const BannedScreen = ({ reason, expiresAt, isFakeBan, onFakeBanDismiss }:
             >
               emailbot00noreply@gmail.com
             </a>
+          </div>
+
+          <div className="flex flex-col gap-3 pt-4">
+            <Button
+              variant="outline"
+              className="w-fit border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white"
+              onClick={() => {
+                const status = expiresAt ? "Temporarily Suspended" : "Permanently Banned";
+                const emailBody = `#------------------------------------------------#
+| Unban request from user:
+| (username)
+#------------------------------------------------#
+| Unban reason:
+| Write reason here.
+#------------------------------------------------#
+|
+|By writing this email i agree to not break the rules again,
+|and i lose y right to appeal again.
+|
+#------------------------------------------------#
+
+Ban details:
+- Reason: ${reason || "No reason provided"}
+- Status: ${status}`;
+                window.location.href = `mailto:emailbot00noreply@gmail.com?subject=${encodeURIComponent("Ban Appeal Request")}&body=${encodeURIComponent(emailBody)}`;
+              }}
+            >
+              <Mail className="w-4 h-4 mr-2" />
+              Request Appeal
+            </Button>
+            <Button
+              variant="outline"
+              className="w-fit border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                window.location.reload();
+              }}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
           </div>
         </div>
       </div>
