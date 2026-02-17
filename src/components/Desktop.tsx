@@ -638,6 +638,14 @@ export const Desktop = ({
       searchAliases: ["fortune", "luck", "prediction", "cookie"]
     },
     {
+      id: "toaster-simulator",
+      name: "Toaster Simulator",
+      icon: <Zap className="w-11 h-11" />,
+      run: () => openAppById("toaster-simulator"),
+      downloadable: true,
+      searchAliases: ["toaster", "toast", "bread", "kitchen"]
+    },
+    {
       id: "chat",
       name: "Instant Chat",
       icon: <MessageSquare className="w-11 h-11" />,
