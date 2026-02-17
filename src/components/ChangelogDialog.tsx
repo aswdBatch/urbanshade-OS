@@ -63,6 +63,26 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }
 
   const changelogs: Record<string, VersionData> = {
+    "3.4.1": {
+      icon: <Rocket className="w-5 h-5" />,
+      color: "from-orange-500 to-red-600",
+      tagline: "PATCH",
+      overview: "Quick patch: Resend email integration now operational, brand new Toaster Simulator with 6 legs and explosive toast, plus a bug fix.",
+      sections: {
+        "📧 Resend Integration": [
+          { text: "Ban appeal emails now send via Resend API", isHighlight: true },
+        ],
+        "🍞 Toaster Simulator": [
+          { text: "New app: Toaster with 6 wiggly legs", isHighlight: true },
+          { text: "Overcook your toast and the toaster EXPLODES with 80 particles" },
+          { text: "Danger zone SFX when toasting at high darkness" },
+          { text: "Made by a friend :D" },
+        ],
+        "🐛 Bug Fixes": [
+          { text: "Singular bug fix" },
+        ],
+      }
+    },
     "3.4.0": {
       icon: <Rocket className="w-5 h-5" />,
       color: "from-cyan-500 to-teal-600",

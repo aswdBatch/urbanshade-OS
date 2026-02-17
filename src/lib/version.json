@@ -1,11 +1,11 @@
 {
   "major": 3,
   "minor": 4,
-  "patch": 0,
+  "patch": 1,
   "codename": "Storefront",
-  "build": 8400,
-  "fullVersion": "3.4.0",
-  "displayVersion": "V3.4.0",
-  "shortVersion": "3.4.0",
-  "releaseDate": "2026-02-15"
+  "build": 8401,
+  "fullVersion": "3.4.1",
+  "displayVersion": "V3.4.1",
+  "shortVersion": "3.4.1",
+  "releaseDate": "2026-02-17"
 }
