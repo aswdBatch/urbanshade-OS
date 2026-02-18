@@ -1,55 +1,34 @@
 
-# App Store Redesign + Responsive Fix
+# Fix: Quick Start Not Skipping OOBE
 
 ## Problem
-The App Store breaks on narrower desktop windows. The layout has several hard-coded widths and inflexible grid structures that overflow or clip content when the window is resized smaller.
+When users check "Quick start" on the disclaimer screen, it skips the installer wizard but still forces them through the full OOBE (Out of Box Experience) setup. The quick start should skip both.
 
-## Key Issues Found
-1. **Sort dropdown** has a fixed `w-[140px]` width that doesn't shrink
-2. **App card action buttons** (Install/Open/Uninstall) get pushed off-screen on narrow cards because they use `shrink-0` but there's not enough room
-3. **Stats grid** in the app detail view uses `grid-cols-4` which squishes on narrow windows
-4. **Category pills** row works with overflow-x-auto, but combined with the search row it wastes vertical space
-5. **Trending section** horizontal scroll cards have rigid minimum widths
-6. **Header** takes too much vertical space with the large icon, title, tabs all stacked
+## What Happens Now
+1. User checks "Quick start" on the disclaimer
+2. Disclaimer creates a default admin account and marks installation as done
+3. User goes through boot, then auto-login (no `urbanshade_first_boot` flag set, so they see login screen)
+4. After login, OOBE shows because `urbanshade_oobe_complete` is never set
 
-## Plan
+## The Fix
+In `src/pages/Index.tsx`, inside the `skipInstall` block (around line 715-733), add:
+- Set `urbanshade_oobe_complete` to `"true"` in localStorage
+- Set `oobeComplete` state to `true`
+- Set `urbanshade_first_boot` to `"true"` so the login screen is also skipped on first boot
+- Create a default user account so the system has someone to log in as
+- Set `urbanshade_tour_completed` to `"true"` to also skip the welcome modal
 
-### 1. Compact Header Redesign
-- Merge the App Store title/icon into a slimmer single-line header
-- Move the installed count badge inline with the title
-- Make tabs smaller and tighter
+This way, "Quick Start" truly means quick -- disclaimer, boot, straight to desktop.
 
-### 2. Fix Search + Sort Row
-- Change the sort dropdown from `w-[140px]` to a responsive width (icon-only on narrow, full on wider)
-- Ensure the search input takes remaining space with `min-w-0`
+## Technical Details
 
-### 3. Fix App Cards for Narrow Widths
-- Move Install/Open buttons below the app info when space is tight (stack vertically under a certain width)
-- Use `flex-wrap` so the action buttons wrap below instead of overflowing
-- Ensure description text truncates properly
+**File: `src/pages/Index.tsx`** (lines ~715-733)
 
-### 4. Fix Stats Grid in Detail View
-- Change from `grid-cols-4` to `grid-cols-2 sm:grid-cols-4` so it wraps on narrow windows
+Add to the `if (skipInstall)` block:
+- `localStorage.setItem("urbanshade_oobe_complete", "true")` + `setOobeComplete(true)`
+- `localStorage.setItem("urbanshade_first_boot", "true")` (auto-login after boot)
+- `localStorage.setItem("urbanshade_tour_completed", "true")` (skip welcome modal)
+- Create a default user account in `urbanshade_accounts` with username "Admin"
+- `localStorage.setItem("urbanshade_install_type", "standard")` (default install type)
 
-### 5. Fix Trending Cards
-- Reduce minimum card width for narrow windows
-- Ensure the scroll container works without overflow issues
-
-### 6. Fix New Releases Grid
-- Already uses `grid-cols-1 sm:grid-cols-2` which is fine -- just verify it works
-
----
-
-### Technical Details
-
-**File: `src/components/apps/AppStore.tsx`**
-
-Changes by section:
-
-- **Line ~638**: Sort `SelectTrigger` -- change `w-[140px]` to `w-[44px] sm:w-[140px]` and hide the `SelectValue` text on small widths, showing only the icon
-- **Line ~380**: Stats grid -- change `grid-cols-4` to `grid-cols-2 sm:grid-cols-4`
-- **Lines ~692-711**: Trending cards -- reduce `min-w-[120px]` / padding for narrower widths
-- **Lines ~1011-1069**: `AppCard` component -- restructure to use `flex-wrap` on the outer container so action buttons wrap below on narrow cards, or switch to a stacked layout
-- **Line ~506-548**: Header -- tighten padding and make the layout more compact
-
-This is a single-file change to `AppStore.tsx`. No new files or dependencies needed. Version bump not required (UI polish, not a feature).
+Single file change, no new dependencies.
