@@ -377,7 +377,7 @@ export const AppStore = ({ onInstall }: { onInstall?: (appId: string) => void })
             )}
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <div className="p-3 rounded-xl bg-muted/30 border border-border text-center">
                 <div className="font-bold text-sm">{app.downloads}</div>
                 <div className="text-[10px] text-muted-foreground uppercase tracking-wide">Downloads</div>
@@ -503,22 +503,19 @@ export const AppStore = ({ onInstall }: { onInstall?: (appId: string) => void })
     <>
     <div className="flex flex-col h-full bg-background">
       {/* Header */}
-      <div className="border-b border-border bg-background/80 backdrop-blur-sm p-4 shrink-0">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="p-2.5 rounded-xl bg-gradient-to-br from-cyan-500/20 to-cyan-600/5 border border-cyan-500/20">
-            <Package className="w-6 h-6 text-cyan-400" />
+      <div className="border-b border-border bg-background/80 backdrop-blur-sm p-3 shrink-0">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="p-1.5 rounded-lg bg-gradient-to-br from-cyan-500/20 to-cyan-600/5 border border-cyan-500/20">
+            <Package className="w-4 h-4 text-cyan-400" />
           </div>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold">App Store</h1>
-            <p className="text-xs text-muted-foreground">UrbanShade Software Repository</p>
-          </div>
-          <div className="flex items-center gap-2">
+          <h1 className="text-base font-bold flex-1 truncate">App Store</h1>
+          <div className="flex items-center gap-1.5 shrink-0">
             {appsWithUpdates.length > 0 && (
-              <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30">
+              <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px] px-1.5">
                 {appsWithUpdates.length} Updates
               </Badge>
             )}
-            <Badge variant="outline" className="gap-1.5 px-3 py-1.5">
+            <Badge variant="outline" className="gap-1 px-2 py-1 text-[10px]">
               <Check className="w-3 h-3" />
               {installedApps.length}
             </Badge>
@@ -635,9 +632,9 @@ export const AppStore = ({ onInstall }: { onInstall?: (appId: string) => void })
                 />
               </div>
               <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
-                <SelectTrigger className="w-[140px]">
-                  <ArrowUpDown className="w-3.5 h-3.5 mr-2" />
-                  <SelectValue />
+                <SelectTrigger className="w-[44px] sm:w-[140px]">
+                  <ArrowUpDown className="w-3.5 h-3.5 shrink-0" />
+                  <span className="hidden sm:inline ml-2"><SelectValue /></span>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="popular">Most Popular</SelectItem>
@@ -1010,7 +1007,7 @@ const AppCard = ({
 
   return (
     <div className={cn(
-      "group flex items-start gap-3 p-3 rounded-xl border border-border transition-all",
+      "group flex flex-wrap items-start gap-3 p-3 rounded-xl border border-border transition-all",
       "bg-gradient-to-br hover:border-primary/30",
       config?.gradient || "from-card to-card"
     )}>
@@ -1024,9 +1021,9 @@ const AppCard = ({
       <div className="flex-1 min-w-0">
         <button onClick={onView} className="text-left w-full">
           <div className="flex items-center gap-2 mb-0.5">
-            <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">{app.name}</h3>
-            {app.new && <Badge className="bg-green-500/20 text-green-400 text-[10px] px-1.5 border-0">NEW</Badge>}
-            {app.featured && !app.new && <Crown className="w-3.5 h-3.5 text-amber-400" />}
+            <h3 className="font-semibold text-sm group-hover:text-primary transition-colors truncate">{app.name}</h3>
+            {app.new && <Badge className="bg-green-500/20 text-green-400 text-[10px] px-1.5 border-0 shrink-0">NEW</Badge>}
+            {app.featured && !app.new && <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
           </div>
           <p className="text-xs text-muted-foreground line-clamp-1 mb-1.5">{app.description}</p>
         </button>
@@ -1039,7 +1036,7 @@ const AppCard = ({
         </div>
       </div>
 
-      <div className="flex gap-2 shrink-0">
+      <div className="flex gap-2 shrink-0 ml-auto">
         {isDownloading ? (
           <Button variant="outline" size="sm" disabled className="gap-1 text-xs min-w-[70px]">
             <Loader2 className="w-3 h-3 animate-spin" />
