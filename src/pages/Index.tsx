@@ -729,6 +729,12 @@ const Index = () => {
               createdAt: new Date().toISOString(),
             };
             localStorage.setItem("urbanshade_admin", JSON.stringify(defaultAdmin));
+            localStorage.setItem("urbanshade_accounts", JSON.stringify([defaultAdmin]));
+            localStorage.setItem("urbanshade_oobe_complete", "true");
+            localStorage.setItem("urbanshade_first_boot", "true");
+            localStorage.setItem("urbanshade_tour_completed", "true");
+            localStorage.setItem("urbanshade_install_type", "standard");
+            setOobeComplete(true);
             setAdminSetupComplete(true);
           }
         }}
