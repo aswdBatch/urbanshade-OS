@@ -1,8 +1,8 @@
-### Hey, long time no see!
-Urbanshade OS has reached 700 COMMITS!
-This is an insane accomplishment. Thank you everyone who has helped, and are helping!
+## I GOT MY OWN DOMAIN
 
-Me and my friends are still having fun, and we hope we'll push to even better heights!
+THATS RIGHT PEOPLE I GOT MY OWN DOMAIN :DDDDDDDDDDDDD
+
+About the old domain: Dont worry, it still stays and if you visit it, it will redirect.
 
 ---
 ## Quick viewable status:
@@ -10,7 +10,7 @@ Me and my friends are still having fun, and we hope we'll push to even better he
 
 Online/offline:
 ### CURRENTLY ONILNE!
-primary: `urbanshade.lovable.dev`
+primary: `urbanshade.aswd.dev`
 
 secondary: `urbanshade-os.vercel.app/` (Note: urbanshade.vercel.app will take you to a Pressure inspired gambling website.)
 
