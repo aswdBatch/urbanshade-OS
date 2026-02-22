@@ -1,8 +1,7 @@
-## I GOT MY OWN DOMAIN
+So Cloudflare has fked up some stuff
+And now Lovable cant make the project public
 
-THATS RIGHT PEOPLE I GOT MY OWN DOMAIN :DDDDDDDDDDDDD
-
-About the old domain: Dont worry, it still stays and if you visit it, it will redirect.
+Standby please
 
 ---
 ## Quick viewable status:
