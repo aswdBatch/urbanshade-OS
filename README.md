@@ -8,8 +8,8 @@ Standby please
 
 
 Online/offline:
-### CURRENTLY ONILNE!
-primary: `urbanshade.aswd.dev`
+### CURRENTLY IMPIRED
+primary: `urbanshade.aswd.dev` (!OFFLINE! Backup domain still works: `urbanshade.lovable.app`)
 
 secondary: `urbanshade-os.vercel.app/` (Note: urbanshade.vercel.app will take you to a Pressure inspired gambling website.)
 
