@@ -1,15 +1,12 @@
-So Cloudflare has fked up some stuff
-And now Lovable cant make the project public
-
-Standby please
+People, we got the green light - we're all good :D
 
 ---
 ## Quick viewable status:
 
 
 Online/offline:
-### CURRENTLY IMPAIRED
-primary: `urbanshade.aswd.dev` (!OFFLINE! Backup domain still works: `urbanshade.lovable.app`)
+### CURRENTLY ONLINE!
+primary: `urbanshade.aswd.dev`
 
 secondary: `urbanshade-os.vercel.app/` (Note: urbanshade.vercel.app will take you to a Pressure inspired gambling website.)
 
