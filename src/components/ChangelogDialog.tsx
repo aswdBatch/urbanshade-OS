@@ -63,6 +63,35 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }
 
   const changelogs: Record<string, VersionData> = {
+    "3.5.0": {
+      icon: <Sparkles className="w-5 h-5" />,
+      color: "from-purple-500 to-indigo-600",
+      tagline: "POLISHED",
+      overview: "The polish update: site lock now works for real, legacy DEF-DEV monolith removed, enhanced developer console, version consistency pass, and documentation improvements.",
+      sections: {
+        "🔒 Site Lock (Working!)": [
+          { text: "Admin site lock now persists to Supabase and blocks non-admin users", isHighlight: true },
+          { text: "Locked screen shown to all visitors when site is locked" },
+          { text: "Admins bypass the lock automatically" },
+          { text: "Lock status synced in real-time (30s polling)" },
+        ],
+        "🧹 DEF-DEV Cleanup": [
+          { text: "Removed legacy 1500-line DevMode.tsx monolith", isHighlight: true },
+          { text: "/def-dev now exclusively uses the modular DefDevMain architecture" },
+          { text: "All 17 tabs preserved in sidebar-based layout" },
+        ],
+        "🔧 Developer Console Enhancements": [
+          { text: "Floating DEF-DEV overlay available from main OS" },
+          { text: "Console, performance, and network tabs in mini mode" },
+          { text: "Keyboard shortcuts for quick tab switching" },
+        ],
+        "📋 System Polish": [
+          { text: "Version bumped to 3.5.0 across all references", isHighlight: true },
+          { text: "HTML title, version index, and changelog updated" },
+          { text: "Moderation panel lockdown persists to database" },
+        ],
+      }
+    },
     "3.4.1": {
       icon: <Rocket className="w-5 h-5" />,
       color: "from-orange-500 to-red-600",

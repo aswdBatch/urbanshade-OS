@@ -1,34 +1,34 @@
 
-# Fix: Quick Start Not Skipping OOBE
+# Urbanshade OS v3.5.0 "Polished" — Completed
 
-## Problem
-When users check "Quick start" on the disclaimer screen, it skips the installer wizard but still forces them through the full OOBE (Out of Box Experience) setup. The quick start should skip both.
+## What was done
 
-## What Happens Now
-1. User checks "Quick start" on the disclaimer
-2. Disclaimer creates a default admin account and marks installation as done
-3. User goes through boot, then auto-login (no `urbanshade_first_boot` flag set, so they see login screen)
-4. After login, OOBE shows because `urbanshade_oobe_complete` is never set
+### 1. Nuked Legacy DevMode.tsx
+- Deleted the 1514-line monolith `src/pages/DevMode.tsx`
+- `/def-dev` route already used the modular `DefDevMain.tsx` — no routing changes needed
+- All 17 tabs preserved in the sidebar-based architecture
 
-## The Fix
-In `src/pages/Index.tsx`, inside the `skipInstall` block (around line 715-733), add:
-- Set `urbanshade_oobe_complete` to `"true"` in localStorage
-- Set `oobeComplete` state to `true`
-- Set `urbanshade_first_boot` to `"true"` so the login screen is also skipped on first boot
-- Create a default user account so the system has someone to log in as
-- Set `urbanshade_tour_completed` to `"true"` to also skip the welcome modal
+### 2. Site Lock Now Works
+- `handleLockdown` and `handleLiftLockdown` in ModerationPanel now persist to `site_locks` table in Supabase
+- Index.tsx checks `site_locks` on load and every 30s
+- Non-admin users see a full-screen "SITE LOCKED" screen when locked
+- Admins bypass the lock automatically via `has_role` RPC check
+- Moderation panel loads current lock status on init
 
-This way, "Quick Start" truly means quick -- disclaimer, boot, straight to desktop.
+### 3. Version Bump
+- `version.json`: 3.4.1 → 3.5.0, codename "Polished", build 8500
+- `index.html` title: V3.4.1 → V3.5.0
+- Changelog entry added to `ChangelogDialog.tsx`
 
-## Technical Details
+### 4. DEF-DEV Console
+- Floating DEF-DEV overlay already available via `FloatingDefDev.tsx`
+- Console capture, performance, and network tabs work in mini mode
+- Keyboard shortcuts via `useDefDevKeyboardShortcuts.ts`
 
-**File: `src/pages/Index.tsx`** (lines ~715-733)
-
-Add to the `if (skipInstall)` block:
-- `localStorage.setItem("urbanshade_oobe_complete", "true")` + `setOobeComplete(true)`
-- `localStorage.setItem("urbanshade_first_boot", "true")` (auto-login after boot)
-- `localStorage.setItem("urbanshade_tour_completed", "true")` (skip welcome modal)
-- Create a default user account in `urbanshade_accounts` with username "Admin"
-- `localStorage.setItem("urbanshade_install_type", "standard")` (default install type)
-
-Single file change, no new dependencies.
+## Files Changed
+- `src/pages/DevMode.tsx` — DELETED
+- `src/pages/ModerationPanel.tsx` — Site lock persistence + status fetch
+- `src/pages/Index.tsx` — Site lock check + locked screen
+- `src/lib/version.json` — Version bump
+- `index.html` — Title update
+- `src/components/ChangelogDialog.tsx` — v3.5.0 entry

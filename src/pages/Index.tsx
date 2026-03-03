@@ -89,6 +89,8 @@ const Index = () => {
   const [bugcheckData, setBugcheckData] = useState<BugcheckData | null>(null);
   const [lockdownMode, setLockdownMode] = useState(false);
   const [lockdownProtocol, setLockdownProtocol] = useState<string>("");
+  const [siteLocked, setSiteLocked] = useState(false);
+  const [siteLockReason, setSiteLockReason] = useState<string>("");
   const [showTour, setShowTour] = useState(false);
   const [safeMode, setSafeMode] = useState(() => {
     return sessionStorage.getItem("urbanshade_safe_mode") === "true";
@@ -122,6 +124,44 @@ const Index = () => {
     idleTimeMinutes: 5,
     enabled: loggedIn && !crashed && !shuttingDown && !rebooting && !isLocked,
   });
+
+  // Check site lock status from Supabase
+  useEffect(() => {
+    const checkSiteLock = async () => {
+      try {
+        const { supabase } = await import("@/integrations/supabase/client");
+        const { data } = await supabase
+          .from('site_locks')
+          .select('is_locked, lock_reason')
+          .eq('id', 'global')
+          .maybeSingle();
+        
+        if (data?.is_locked) {
+          // Check if user is admin (admins bypass site lock)
+          const { data: session } = await supabase.auth.getSession();
+          if (session.session) {
+            const { data: roleData } = await supabase.rpc('has_role', { 
+              _user_id: session.session.user.id, 
+              _role: 'admin' 
+            });
+            if (roleData) return; // Admin bypasses lock
+          }
+          setSiteLocked(true);
+          setSiteLockReason(data.lock_reason || 'Site is currently locked by an administrator.');
+        } else {
+          setSiteLocked(false);
+        }
+      } catch (e) {
+        // Silently fail - don't block the site if we can't check
+        console.warn("Could not check site lock status:", e);
+      }
+    };
+    
+    checkSiteLock();
+    // Re-check every 30 seconds
+    const interval = setInterval(checkSiteLock, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Check if admin setup is complete
   useEffect(() => {
@@ -771,6 +811,29 @@ const Index = () => {
         lockoutTime={naviSecurity.lockoutTime}
         onUnlock={naviSecurity.clearLockout}
       />
+    );
+  }
+
+  // Site lock from admin panel (Supabase-backed)
+  if (siteLocked) {
+    return (
+      <div className="fixed inset-0 z-[9999] bg-gradient-to-b from-red-950 via-slate-950 to-black flex items-center justify-center">
+        <div className="text-center max-w-lg p-8">
+          <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-red-500/20 border-2 border-red-500/50 flex items-center justify-center animate-pulse">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h1 className="text-3xl font-bold text-red-400 mb-4 font-mono tracking-wider">SITE LOCKED</h1>
+          <p className="text-slate-400 mb-6 font-mono text-sm leading-relaxed">{siteLockReason}</p>
+          <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 mb-6">
+            <p className="text-xs text-red-300/70 font-mono">
+              An administrator has locked access to this site. Please check back later or contact support.
+            </p>
+          </div>
+          <div className="text-xs text-slate-600 font-mono">
+            URBANSHADE SECURITY SYSTEM • ALL ACCESS RESTRICTED
+          </div>
+        </div>
+      </div>
     );
   }
 
