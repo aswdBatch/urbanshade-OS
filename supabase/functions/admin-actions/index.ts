@@ -965,8 +965,8 @@ Deno.serve(async (req) => {
           .eq('user_id', targetUserId)
           .maybeSingle();
           
-        if (targetRole?.role === 'creator') {
-          return new Response(JSON.stringify({ error: 'Cannot demote a creator' }), {
+        if (targetRole?.role === 'creator' && !isCreator) {
+          return new Response(JSON.stringify({ error: 'Only creators can demote other creators' }), {
             status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         }
@@ -977,12 +977,15 @@ Deno.serve(async (req) => {
             status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         }
+
+        // Determine which role to delete
+        const roleToDelete = targetRole?.role === 'creator' ? 'creator' : 'admin';
         
         const { error } = await supabaseAdmin
           .from('user_roles')
           .delete()
           .eq('user_id', targetUserId)
-          .eq('role', 'admin');
+          .eq('role', roleToDelete);
 
         if (error) throw error;
         console.log(`Creator ${user.id} revoked admin from user ${targetUserId}`);
