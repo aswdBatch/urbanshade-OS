@@ -831,12 +831,16 @@ Deno.serve(async (req) => {
 
         const { message, priority, target } = body;
         
+        // Check if target is a specific user ID (UUID) vs a group target
+        const validAudiences = ['all', 'online', 'admins', 'vips'];
+        const isUserTarget = target && !validAudiences.includes(target);
+        
         const { data: naviMsg, error: naviError } = await supabaseAdmin
           .from('navi_messages')
           .insert({
             message,
             priority: priority || 'info',
-            target_audience: target || 'all',
+            target_audience: isUserTarget ? 'all' : (target || 'all'),
             sent_by: user.id
           })
           .select()
@@ -846,7 +850,10 @@ Deno.serve(async (req) => {
 
         let targetUserIds: string[] = [];
         
-        if (target === 'all' || !target) {
+        if (isUserTarget) {
+          // Direct message to a specific user
+          targetUserIds = [target];
+        } else if (target === 'all' || !target) {
           const { data: allProfiles } = await supabaseAdmin.from('profiles').select('user_id');
           targetUserIds = allProfiles?.map(p => p.user_id) || [];
         } else if (target === 'vips') {
