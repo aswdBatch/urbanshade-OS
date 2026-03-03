@@ -77,9 +77,10 @@ Deno.serve(async (req) => {
 
     const userRoles = rolesData.map(r => r.role);
     const isCreator = userRoles.includes('creator');
-    const isTrialAdmin = !isCreator && userRoles.includes('trial_admin') && !userRoles.includes('admin');
-    // Priority: creator > admin > trial_admin
-    const adminRole = isCreator ? 'creator' : userRoles.includes('admin') ? 'admin' : 'trial_admin';
+    const isCoCreator = userRoles.includes('co_creator');
+    const isTrialAdmin = !isCreator && !isCoCreator && userRoles.includes('trial_admin') && !userRoles.includes('admin');
+    // Priority: creator > co_creator > admin > trial_admin
+    const adminRole = isCreator ? 'creator' : isCoCreator ? 'co_creator' : userRoles.includes('admin') ? 'admin' : 'trial_admin';
 
     // Update last_seen on access so online indicators work
     await supabaseAdmin
@@ -143,7 +144,7 @@ Deno.serve(async (req) => {
           };
         });
 
-        return new Response(JSON.stringify({ users: usersWithStatus, isCreator, adminRole }), {
+        return new Response(JSON.stringify({ users: usersWithStatus, isCreator, isCoCreator, adminRole }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
       }
@@ -944,7 +945,7 @@ Deno.serve(async (req) => {
 
         const { error } = await supabaseAdmin
           .from('user_roles')
-          .update({ role: 'creator', granted_by: user.id })
+          .update({ role: 'co_creator', granted_by: user.id })
           .eq('user_id', targetUserId)
           .eq('role', 'admin');
 
@@ -965,21 +966,28 @@ Deno.serve(async (req) => {
           .eq('user_id', targetUserId)
           .maybeSingle();
           
-        if (targetRole?.role === 'creator' && !isCreator) {
-          return new Response(JSON.stringify({ error: 'Only creators can demote other creators' }), {
+        if (targetRole?.role === 'creator') {
+          return new Response(JSON.stringify({ error: 'Cannot demote the creator' }), {
+            status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Co-creators can only be demoted by creators
+        if (targetRole?.role === 'co_creator' && !isCreator) {
+          return new Response(JSON.stringify({ error: 'Only the creator can demote co-creators' }), {
             status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         }
         
-        // Full admins can only be demoted by creators; trial admins can be demoted by any admin
-        if (targetRole?.role === 'admin' && !isCreator) {
-          return new Response(JSON.stringify({ error: 'Only creators can demote full admins' }), {
+        // Full admins can only be demoted by creators or co-creators; trial admins can be demoted by any admin
+        if (targetRole?.role === 'admin' && !isCreator && !isCoCreator) {
+          return new Response(JSON.stringify({ error: 'Only creators/co-creators can demote full admins' }), {
             status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         }
 
         // Determine which role to delete
-        const roleToDelete = targetRole?.role === 'creator' ? 'creator' : 'admin';
+        const roleToDelete = targetRole?.role === 'co_creator' ? 'co_creator' : 'admin';
         
         const { error } = await supabaseAdmin
           .from('user_roles')

@@ -580,7 +580,7 @@ const UserDetailsPanel = ({
             )}
           </>
         ) : (
-          (isDemo || isCreator) && (
+          (isDemo || isCreator || adminRole === 'co_creator') && (
             <div className="space-y-2">
               <Button onClick={onDeop} className="w-full bg-orange-600 hover:bg-orange-500 gap-2">
                 <UserCog className="w-4 h-4" /> Demote Admin (De-OP)
@@ -1267,6 +1267,7 @@ const ModerationPanel = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
+  const [isCoCreator, setIsCoCreator] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [adminRole, setAdminRole] = useState<string>('admin');
   const [users, setUsers] = useState<UserData[]>([]);
@@ -1370,6 +1371,7 @@ const ModerationPanel = () => {
 
         setIsAdmin(true);
         setIsCreator(response.data.isCreator || false);
+        setIsCoCreator(response.data.isCoCreator || false);
         setAdminRole(response.data.adminRole || 'admin');
         setUsers(response.data.users || []);
         
