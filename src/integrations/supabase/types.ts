@@ -1428,7 +1428,13 @@ export type Database = {
       record_navi_metrics: { Args: never; Returns: undefined }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user" | "creator" | "trial_admin"
+      app_role:
+        | "admin"
+        | "moderator"
+        | "user"
+        | "creator"
+        | "co_creator"
+        | "trial_admin"
       ticket_status:
         | "open"
         | "pending_human"
@@ -1562,7 +1568,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user", "creator", "trial_admin"],
+      app_role: [
+        "admin",
+        "moderator",
+        "user",
+        "creator",
+        "co_creator",
+        "trial_admin",
+      ],
       ticket_status: [
         "open",
         "pending_human",
