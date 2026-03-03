@@ -25,6 +25,7 @@ import ModManagerTab from "./tabs/ModManagerTab";
 import SupabaseTab from "./tabs/SupabaseTab";
 import FakeModTab from "./tabs/FakeModTab";
 import AdminTab from "./tabs/AdminTab";
+import ScreenPreviewTab from "./tabs/ScreenPreviewTab";
 import { TabId, LogEntry, ActionEntry, RecoveryImage, BugcheckEntry, FakeModerationAction, CrashEntry } from "./hooks/useDefDevState";
 import { loadState } from "@/lib/persistence";
 
@@ -385,6 +386,8 @@ const DefDevMain = () => {
         );
       case "admin":
         return <AdminTab />;
+      case "screenpreview":
+        return <ScreenPreviewTab />;
       default:
         return <div className="p-8 text-center text-slate-500">Tab not implemented</div>;
     }

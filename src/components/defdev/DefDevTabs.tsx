@@ -1,4 +1,4 @@
-import { Terminal, Activity, Send, Database, HardDrive, Shield, Skull, Gavel, Cpu, Globe, Zap } from "lucide-react";
+import { Terminal, Activity, Send, Database, HardDrive, Shield, Skull, Gavel, Cpu, Globe, Zap, Monitor } from "lucide-react";
 import { TabId } from "./hooks/useDefDevState";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -40,6 +40,7 @@ const TAB_GROUPS = [
     tabs: [
       { id: "images" as TabId, label: "Recovery", icon: HardDrive, color: "text-orange-400" },
       { id: "fakemod" as TabId, label: "FakeMod", icon: Gavel, color: "text-rose-400" },
+      { id: "screenpreview" as TabId, label: "Screens", icon: Monitor, color: "text-pink-400" },
       { id: "admin" as TabId, label: "Admin", icon: Skull, color: "text-amber-400" },
     ]
   },
