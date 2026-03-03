@@ -15,6 +15,7 @@ export const BannedScreen = ({ reason, expiresAt, isFakeBan, onFakeBanDismiss }:
   const [countdown, setCountdown] = useState(5);
   const [appealState, setAppealState] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle');
   const [appealUsername, setAppealUsername] = useState('');
+  const [appealMessage, setAppealMessage] = useState('');
 
   // For fake bans, show the "just kidding" after 5 seconds
   useEffect(() => {
@@ -128,8 +129,19 @@ export const BannedScreen = ({ reason, expiresAt, isFakeBan, onFakeBanDismiss }:
                     value={appealUsername}
                     onChange={(e) => setAppealUsername(e.target.value)}
                     placeholder="Enter your username"
-                    className="w-64 px-3 py-2 bg-transparent border border-white/40 text-white placeholder:text-white/40 rounded text-sm focus:outline-none focus:border-white/70"
+                    className="w-full max-w-md px-3 py-2 bg-transparent border border-white/40 text-white placeholder:text-white/40 rounded text-sm focus:outline-none focus:border-white/70"
                   />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm text-white/70">Why should your ban be lifted?</label>
+                  <textarea
+                    value={appealMessage}
+                    onChange={(e) => setAppealMessage(e.target.value.slice(0, 1000))}
+                    placeholder="Explain why you believe this ban should be reconsidered..."
+                    rows={4}
+                    className="w-full max-w-md px-3 py-2 bg-transparent border border-white/40 text-white placeholder:text-white/40 rounded text-sm focus:outline-none focus:border-white/70 resize-none"
+                  />
+                  <span className="text-xs text-white/40">{appealMessage.length}/1000</span>
                 </div>
                 {appealState === 'error' && (
                   <p className="text-sm text-white/80">Failed to send. Try again or email directly.</p>
@@ -137,13 +149,18 @@ export const BannedScreen = ({ reason, expiresAt, isFakeBan, onFakeBanDismiss }:
                 <Button
                   variant="outline"
                   className="w-fit border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white"
-                  disabled={!appealUsername.trim()}
+                  disabled={!appealUsername.trim() || !appealMessage.trim()}
                   onClick={async () => {
                     setAppealState('loading');
                     try {
                       const status = expiresAt ? "Temporarily Suspended" : "Permanently Banned";
                       const { data, error } = await supabase.functions.invoke('send-appeal', {
-                        body: { reason: reason || "No reason provided", status, username: appealUsername.trim() },
+                        body: { 
+                          reason: reason || "No reason provided", 
+                          status, 
+                          username: appealUsername.trim(),
+                          appealMessage: appealMessage.trim(),
+                        },
                       });
                       if (error) throw error;
                       if (data?.success) {

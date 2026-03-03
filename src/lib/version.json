@@ -1,11 +1,11 @@
 {
   "major": 3,
-  "minor": 5,
+  "minor": 6,
   "patch": 0,
-  "codename": "Polished",
-  "build": 8500,
-  "fullVersion": "3.5.0",
-  "displayVersion": "V3.5.0",
-  "shortVersion": "3.5.0",
+  "codename": "Enforced",
+  "build": 8600,
+  "fullVersion": "3.6.0",
+  "displayVersion": "V3.6.0",
+  "shortVersion": "3.6.0",
   "releaseDate": "2026-03-03"
 }

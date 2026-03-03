@@ -10,6 +10,11 @@ export interface BanInfo {
   actionType: string | null;
 }
 
+export interface PendingWarning {
+  id: string;
+  reason: string | null;
+}
+
 export const useBanCheck = () => {
   const [banInfo, setBanInfo] = useState<BanInfo>({
     isBanned: false,
@@ -24,6 +29,7 @@ export const useBanCheck = () => {
   const [vipReason, setVipReason] = useState<string | null>(null);
   const [showVipWelcome, setShowVipWelcome] = useState(false);
   const [tempBanDismissed, setTempBanDismissed] = useState(false);
+  const [pendingWarning, setPendingWarning] = useState<PendingWarning | null>(null);
 
   const checkBanStatus = useCallback(async () => {
     try {
@@ -110,8 +116,33 @@ export const useBanCheck = () => {
         }
       } catch (banError) {
         console.warn('Ban check failed (possibly offline):', banError);
-        // Don't block user if we can't check - assume not banned
         setBanInfo({ isBanned: false, isFakeBan: false, isTempBan: false, reason: null, expiresAt: null, actionType: null });
+      }
+
+      // Check for unacknowledged warnings
+      try {
+        const { data: warnData } = await (supabase as any)
+          .from('moderation_actions')
+          .select('id, reason')
+          .eq('target_user_id', user.id)
+          .eq('is_active', true)
+          .eq('action_type', 'warn')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (warnData) {
+          const ackedWarnings: string[] = JSON.parse(localStorage.getItem(`urbanshade_ack_warnings_${user.id}`) || '[]');
+          if (!ackedWarnings.includes(warnData.id)) {
+            setPendingWarning({ id: warnData.id, reason: warnData.reason });
+          } else {
+            setPendingWarning(null);
+          }
+        } else {
+          setPendingWarning(null);
+        }
+      } catch (warnError) {
+        console.warn('Warning check failed (possibly offline):', warnError);
       }
 
     } catch (error) {
@@ -135,6 +166,17 @@ export const useBanCheck = () => {
   const dismissTempBan = useCallback(() => {
     setTempBanDismissed(true);
   }, []);
+
+  const acknowledgeWarning = useCallback(async () => {
+    if (!pendingWarning) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const ackedWarnings: string[] = JSON.parse(localStorage.getItem(`urbanshade_ack_warnings_${user.id}`) || '[]');
+      ackedWarnings.push(pendingWarning.id);
+      localStorage.setItem(`urbanshade_ack_warnings_${user.id}`, JSON.stringify(ackedWarnings));
+    }
+    setPendingWarning(null);
+  }, [pendingWarning]);
 
   useEffect(() => {
     checkBanStatus();
@@ -168,8 +210,10 @@ export const useBanCheck = () => {
     vipReason,
     showVipWelcome,
     tempBanDismissed,
+    pendingWarning,
     dismissVipWelcome,
     dismissTempBan,
+    acknowledgeWarning,
     refreshBanStatus: checkBanStatus,
   };
 };

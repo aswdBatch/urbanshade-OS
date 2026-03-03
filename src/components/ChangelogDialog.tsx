@@ -63,6 +63,37 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }
 
   const changelogs: Record<string, VersionData> = {
+    "3.6.0": {
+      icon: <Shield className="w-5 h-5" />,
+      color: "from-amber-500 to-orange-600",
+      tagline: "ENFORCED",
+      overview: "Moderation screens overhauled: warnings now block OS access until acknowledged, temp bans require acknowledgment before continuing, ban appeals now include a message field, and moderators can preview all screens in DEF-DEV.",
+      sections: {
+        "⚠️ Warning Acknowledgment": [
+          { text: "Warnings now show a full-screen gate — users must click 'I Understand' to continue", isHighlight: true },
+          { text: "Unacknowledged warnings tracked per-user via localStorage + Supabase" },
+          { text: "Amber-themed screen matching the OS moderation style" },
+        ],
+        "🔒 Temp Ban Gate": [
+          { text: "Temporary suspensions now require acknowledgment before accessing the OS", isHighlight: true },
+          { text: "Full-screen temp ban screen replaces the old dismissible dialog" },
+          { text: "Shows time remaining, disabled features, and reason" },
+        ],
+        "📝 Ban Appeal Improvements": [
+          { text: "Added a textarea for users to write their appeal message", isHighlight: true },
+          { text: "Both username and message required to submit appeal" },
+          { text: "Appeal message included in the email sent to admins (replaces placeholder)" },
+        ],
+        "🖥️ Screen Preview Tab (DEF-DEV)": [
+          { text: "New 'Screens' tab in DEF-DEV Tools for moderators", isHighlight: true },
+          { text: "Preview permanent ban, temp ban, and warning screens with mock data" },
+          { text: "Renders actual production components with close button overlay" },
+        ],
+        "🎭 FakeMod Update": [
+          { text: "FAKE_WARN now shows the real warning acknowledgment screen instead of a toast" },
+        ],
+      }
+    },
     "3.5.0": {
       icon: <Sparkles className="w-5 h-5" />,
       color: "from-purple-500 to-indigo-600",

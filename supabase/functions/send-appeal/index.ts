@@ -16,7 +16,7 @@ serve(async (req) => {
       throw new Error('RESEND_API_KEY is not configured');
     }
 
-    const { reason, status, username } = await req.json();
+    const { reason, status, username, appealMessage } = await req.json();
 
     if (!username || typeof username !== 'string') {
       return new Response(JSON.stringify({ error: 'Username is required' }), {
@@ -25,16 +25,27 @@ serve(async (req) => {
       });
     }
 
+    if (!appealMessage || typeof appealMessage !== 'string' || appealMessage.trim().length === 0) {
+      return new Response(JSON.stringify({ error: 'Appeal message is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Sanitize and limit
+    const sanitizedMessage = appealMessage.trim().slice(0, 1000);
+    const sanitizedUsername = username.trim().slice(0, 100);
+
     const emailBody = `#------------------------------------------------#
 | Unban request from user:
-| ${username}
+| ${sanitizedUsername}
 #------------------------------------------------#
-| Unban reason:
-| Write reason here.
+| Appeal message:
+| ${sanitizedMessage}
 #------------------------------------------------#
 |
-|By writing this email i agree to not break the rules again,
-|and i lose y right to appeal again.
+| By writing this email I agree to not break the rules again,
+| and I lose my right to appeal again.
 |
 #------------------------------------------------#
 
@@ -51,7 +62,7 @@ Ban details:
       body: JSON.stringify({
         from: 'UrbanShade OS <onboarding@resend.dev>',
         to: 'emailbot00noreply@gmail.com',
-        subject: `Ban Appeal Request - ${username}`,
+        subject: `Ban Appeal Request - ${sanitizedUsername}`,
         text: emailBody,
       }),
     });
