@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .in('role', ['admin', 'creator', 'trial_admin']);
+      .in('role', ['admin', 'creator', 'co_creator', 'trial_admin']);
 
     if (!rolesData || rolesData.length === 0) {
       console.log(`Access denied for user ${user.id} - not an admin or creator`);
