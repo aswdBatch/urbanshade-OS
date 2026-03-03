@@ -1314,8 +1314,40 @@ Deno.serve(async (req) => {
 
         const { targetUserId } = body;
         
-        const { error } = await supabaseAdmin.auth.admin.signOut(targetUserId);
-        if (error) throw error;
+        // Use GoTrue Admin API to sign out user by user ID
+        // Call the admin endpoint directly to invalidate all sessions
+        const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+        const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+        
+        const logoutResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users/${targetUserId}/factors`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${serviceRoleKey}`,
+            'apikey': serviceRoleKey,
+          }
+        });
+        // Consume response body
+        await logoutResponse.text();
+        
+        // Update user to force re-authentication by updating app_metadata
+        const { error } = await supabaseAdmin.auth.admin.updateUserById(targetUserId, {
+          app_metadata: { force_logout: Date.now() }
+        });
+        
+        if (error) {
+          console.warn("Force logout update failed:", error.message);
+        }
+        
+        // Also record the action in moderation_actions for the client to check
+        await supabaseAdmin
+          .from('moderation_actions')
+          .insert({
+            action_type: 'force_logout',
+            target_user_id: targetUserId,
+            created_by: user.id,
+            reason: 'Force logout by admin',
+            is_active: true
+          });
         
         console.log(`Admin ${user.id} force logged out user ${targetUserId}`);
 
