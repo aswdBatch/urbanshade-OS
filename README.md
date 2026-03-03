@@ -1,4 +1,12 @@
-People, we got the green light - we're all good :D
+small update:
+We're working on just polishing stuff.
+Def-Dev is first - we've already finished that.
+
+We're working on polishing the docs and the main moving forward
+
+We're sorry for the lack of updates this past month - school's been hitting us hard
+
+We promise we're working on it!
 
 ---
 ## Quick viewable status:
