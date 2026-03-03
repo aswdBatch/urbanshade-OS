@@ -916,6 +916,46 @@ Deno.serve(async (req) => {
         });
       }
 
+      // =============================================
+      // PROMOTE TO CO-CREATOR (creator-only)
+      // =============================================
+      if (action === 'promote_to_creator') {
+        if (!isCreator) {
+          return new Response(JSON.stringify({ error: 'Only creators can promote to co-creator' }), {
+            status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const { targetUserId } = body;
+
+        // Check target is currently admin
+        const { data: targetRole } = await supabaseAdmin
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', targetUserId)
+          .eq('role', 'admin')
+          .maybeSingle();
+
+        if (!targetRole) {
+          return new Response(JSON.stringify({ error: 'User must be an admin first' }), {
+            status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const { error } = await supabaseAdmin
+          .from('user_roles')
+          .update({ role: 'creator', granted_by: user.id })
+          .eq('user_id', targetUserId)
+          .eq('role', 'admin');
+
+        if (error) throw error;
+        console.log(`Creator ${user.id} promoted admin ${targetUserId} to co-creator`);
+
+        return new Response(JSON.stringify({ success: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
       if (action === 'deop') {
         const { targetUserId } = body;
         
