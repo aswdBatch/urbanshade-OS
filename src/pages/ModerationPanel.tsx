@@ -232,7 +232,7 @@ const StatusCard = ({ status, onUpdate }: { status: StatusEntry; onUpdate: (id: 
 // =============================================
 const UserDetailsPanel = ({ 
   user, onClose, onWarn, onBan, onUnban, onOp, onDeop, onVip, onRevokeVip, onRemoveWarning, 
-  isDemo, isCreator, adminRole, onSetClearance, onForceLogout, onResetPassword, onSetTrialAdmin, onPromoteTrial
+  isDemo, isCreator, adminRole, onSetClearance, onForceLogout, onResetPassword, onSetTrialAdmin, onPromoteTrial, onMakeCoCreator
 }: { 
   user: UserData; 
   onClose: () => void;
@@ -252,6 +252,7 @@ const UserDetailsPanel = ({
   onResetPassword: () => void;
   onSetTrialAdmin: () => void;
   onPromoteTrial: () => void;
+  onMakeCoCreator: () => void;
 }) => {
   const rank = user.personnelRank || (user.role === 'admin' ? 'Admin' : user.isVip ? 'VIP' : 'Staff');
   const isTrialAdmin = adminRole === 'trial_admin';
@@ -580,9 +581,16 @@ const UserDetailsPanel = ({
           </>
         ) : (
           (isDemo || isCreator) && (
-            <Button onClick={onDeop} className="w-full bg-orange-600 hover:bg-orange-500 gap-2">
-              <UserCog className="w-4 h-4" /> Demote Admin (De-OP)
-            </Button>
+            <div className="space-y-2">
+              <Button onClick={onDeop} className="w-full bg-orange-600 hover:bg-orange-500 gap-2">
+                <UserCog className="w-4 h-4" /> Demote Admin (De-OP)
+              </Button>
+              {isCreator && user.role === 'admin' && (
+                <Button onClick={onMakeCoCreator} className="w-full bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-500 hover:to-amber-500 gap-2">
+                  <Crown className="w-4 h-4" /> Promote to Co-Creator
+                </Button>
+              )}
+            </div>
           )
         )}
       </div>
@@ -1992,6 +2000,17 @@ const ModerationPanel = () => {
     } catch { toast.error('Failed to grant trial admin'); }
   };
 
+  const handleMakeCoCreator = async () => {
+    if (!selectedUser) return;
+    if (isDemoMode) { toast.success(`[DEMO] Promoted ${selectedUser.username} to co-creator`); return; }
+    try {
+      const response = await supabase.functions.invoke('admin-actions', { body: { action: 'promote_to_creator', targetUserId: selectedUser.user_id } });
+      if (response.error) throw response.error;
+      toast.success(`${selectedUser.username} is now a co-creator! 👑`);
+      setShowUserDetails(false); fetchUsers();
+    } catch { toast.error('Failed to promote to co-creator'); }
+  };
+
   const handlePromoteTrial = async () => {
     if (!selectedUser) return;
     if (isDemoMode) { toast.success(`[DEMO] Promoted ${selectedUser.username} to full admin`); return; }
@@ -2802,6 +2821,7 @@ const ModerationPanel = () => {
           onResetPassword={handleResetPassword}
           onSetTrialAdmin={handleSetTrialAdmin}
           onPromoteTrial={handlePromoteTrial}
+          onMakeCoCreator={handleMakeCoCreator}
         />
       )}
 
