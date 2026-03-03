@@ -1415,6 +1415,27 @@ const ModerationPanel = () => {
     checkAdminAndFetch();
   }, [navigate]);
 
+  // Fetch site lock status on load
+  useEffect(() => {
+    const fetchLockStatus = async () => {
+      if (isDemoMode) return;
+      try {
+        const { data } = await supabase
+          .from('site_locks')
+          .select('is_locked, lock_reason')
+          .eq('id', 'global')
+          .maybeSingle();
+        
+        if (data?.is_locked) {
+          setLockdownActive(true);
+        }
+      } catch (e) {
+        console.warn("Could not fetch site lock status:", e);
+      }
+    };
+    fetchLockStatus();
+  }, [isDemoMode]);
+
   // Fetch test emergency status
   const fetchTestEmergencyStatus = async () => {
     if (isDemoMode) return;
@@ -1589,27 +1610,85 @@ const ModerationPanel = () => {
     }
   };
 
-  const handleLockdown = () => {
-    setLockdownActive(true);
+  const handleLockdown = async () => {
     setShowLockdownDialog(false);
-    toast.success(`Lockdown initiated for zone: ${lockdownZone}`);
-    setActivities(prev => [{
-      id: Date.now().toString(),
-      type: "system",
-      message: `🚨 LOCKDOWN INITIATED - Zone: ${lockdownZone.toUpperCase()}`,
-      timestamp: new Date()
-    }, ...prev]);
+    
+    if (isDemoMode) {
+      setLockdownActive(true);
+      toast.success(`[DEMO] Lockdown initiated for zone: ${lockdownZone}`);
+      setActivities(prev => [{
+        id: Date.now().toString(), type: "system",
+        message: `🚨 LOCKDOWN INITIATED - Zone: ${lockdownZone.toUpperCase()}`,
+        timestamp: new Date()
+      }, ...prev]);
+      return;
+    }
+
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) return;
+
+      const { error } = await supabase
+        .from('site_locks')
+        .upsert({
+          id: 'global',
+          is_locked: true,
+          lock_reason: `Zone: ${lockdownZone}`,
+          locked_at: new Date().toISOString(),
+          locked_by: session.session.user.id
+        }, { onConflict: 'id' });
+
+      if (error) throw error;
+
+      setLockdownActive(true);
+      toast.success(`Lockdown initiated for zone: ${lockdownZone}`);
+      setActivities(prev => [{
+        id: Date.now().toString(), type: "system",
+        message: `🚨 LOCKDOWN INITIATED - Zone: ${lockdownZone.toUpperCase()}`,
+        timestamp: new Date()
+      }, ...prev]);
+    } catch (error) {
+      console.error("Failed to lock site:", error);
+      toast.error("Failed to initiate lockdown");
+    }
   };
 
-  const handleLiftLockdown = () => {
-    setLockdownActive(false);
-    toast.success("Lockdown lifted");
-    setActivities(prev => [{
-      id: Date.now().toString(),
-      type: "system",
-      message: "Lockdown lifted - normal operations resumed",
-      timestamp: new Date()
-    }, ...prev]);
+  const handleLiftLockdown = async () => {
+    if (isDemoMode) {
+      setLockdownActive(false);
+      toast.success("[DEMO] Lockdown lifted");
+      setActivities(prev => [{
+        id: Date.now().toString(), type: "system",
+        message: "Lockdown lifted - normal operations resumed",
+        timestamp: new Date()
+      }, ...prev]);
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('site_locks')
+        .upsert({
+          id: 'global',
+          is_locked: false,
+          lock_reason: null,
+          locked_at: null,
+          locked_by: null
+        }, { onConflict: 'id' });
+
+      if (error) throw error;
+
+      setLockdownActive(false);
+      toast.success("Lockdown lifted");
+      setActivities(prev => [{
+        id: Date.now().toString(), type: "system",
+        message: "Lockdown lifted - normal operations resumed",
+        timestamp: new Date()
+      }, ...prev]);
+    } catch (error) {
+      console.error("Failed to lift lockdown:", error);
+      toast.error("Failed to lift lockdown");
+    }
   };
 
   // Handle OP (grant admin)
