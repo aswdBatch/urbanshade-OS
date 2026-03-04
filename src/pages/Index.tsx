@@ -27,9 +27,8 @@ import { LockScreen } from "@/components/LockScreen";
 import { BugcheckScreen, createBugcheck, BugcheckData } from "@/components/BugcheckScreen";
 import { BannedScreen } from "@/components/BannedScreen";
 import { TempBanPopup } from "@/components/TempBanPopup";
-import { TempBanScreen } from "@/components/TempBanScreen";
 import { TempBanBanner } from "@/components/TempBanBanner";
-import { ModerationWarningScreen } from "@/components/ModerationWarningScreen";
+import { ModerationWarningPopup } from "@/components/ModerationWarningPopup";
 import { VipWelcomeDialog } from "@/components/VipWelcomeDialog";
 import { BootPasswordPrompt } from "@/components/BootPasswordPrompt";
 import { MobileBlockScreen } from "@/components/MobileBlockScreen";
@@ -801,26 +800,11 @@ const Index = () => {
     );
   }
 
-  // Temp ban gate - must acknowledge before proceeding
-  if (banCheck.isBanned && !banCheck.isLoading && banCheck.isTempBan && !banCheck.tempBanDismissed) {
-    return (
-      <TempBanScreen
-        reason={banCheck.reason}
-        expiresAt={banCheck.expiresAt}
-        onAcknowledge={banCheck.dismissTempBan}
-      />
-    );
-  }
+  // Temp ban gate - must acknowledge before proceeding (now a dialog popup)
+  const showTempBanGate = banCheck.isBanned && !banCheck.isLoading && banCheck.isTempBan && !banCheck.tempBanDismissed;
 
-  // Warning gate - must acknowledge before proceeding
-  if (!banCheck.isLoading && banCheck.pendingWarning) {
-    return (
-      <ModerationWarningScreen
-        reason={banCheck.pendingWarning.reason}
-        onAcknowledge={banCheck.acknowledgeWarning}
-      />
-    );
-  }
+  // Warning gate - must acknowledge before proceeding (now a dialog popup)
+  const showWarningGate = !banCheck.isLoading && !!banCheck.pendingWarning;
 
   // NAVI AI lockout (after ban checks)
   if (naviSecurity.isLockedOut && naviSecurity.lockoutTime) {
@@ -1027,16 +1011,6 @@ const Index = () => {
     );
   }
 
-  // FakeMod: Show warning screen
-  if (fakeWarnData) {
-    return (
-      <ModerationWarningScreen
-        reason={fakeWarnData.reason}
-        onAcknowledge={() => setFakeWarnData(null)}
-        isFake
-      />
-    );
-  }
 
   return (
     <>
@@ -1082,12 +1056,21 @@ const Index = () => {
         reason={banCheck.vipReason}
       />
 
-      {/* FakeMod: Fake Temp ban popup */}
+      {/* Temp ban gate popup */}
       <TempBanPopup
-        open={!!fakeTempBanData}
-        onDismiss={() => setFakeTempBanData(null)}
-        reason={fakeTempBanData?.reason || null}
-        expiresAt={fakeTempBanData?.expiresAt ? new Date(fakeTempBanData.expiresAt) : null}
+        open={showTempBanGate || !!fakeTempBanData}
+        onDismiss={fakeTempBanData ? () => setFakeTempBanData(null) : banCheck.dismissTempBan}
+        reason={fakeTempBanData?.reason || banCheck.reason}
+        expiresAt={fakeTempBanData?.expiresAt ? new Date(fakeTempBanData.expiresAt) : banCheck.expiresAt}
+        isFake={!!fakeTempBanData}
+      />
+
+      {/* Warning gate popup */}
+      <ModerationWarningPopup
+        open={showWarningGate || !!fakeWarnData}
+        onDismiss={fakeWarnData ? () => setFakeWarnData(null) : banCheck.acknowledgeWarning}
+        reason={fakeWarnData?.reason || banCheck.pendingWarning?.reason || null}
+        isFake={!!fakeWarnData}
       />
 
       {/* Mobile block overlay - shows on top of everything on mobile devices */}

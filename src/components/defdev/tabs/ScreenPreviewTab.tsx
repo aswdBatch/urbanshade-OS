@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Monitor, X, Ban, AlertTriangle, Clock } from "lucide-react";
 import { BannedScreen } from "@/components/BannedScreen";
-import { TempBanScreen } from "@/components/TempBanScreen";
-import { ModerationWarningScreen } from "@/components/ModerationWarningScreen";
+import { TempBanPopup } from "@/components/TempBanPopup";
+import { ModerationWarningPopup } from "@/components/ModerationWarningPopup";
 
 type PreviewScreen = "ban" | "temp_ban" | "warning" | null;
 
@@ -35,7 +35,7 @@ const PREVIEW_CARDS = [
     icon: Clock,
     color: "bg-amber-500/20 border-amber-500/40 text-amber-400",
     hoverColor: "hover:bg-amber-500/30",
-    description: "Temp suspension acknowledgment gate",
+    description: "Temp suspension dialog with checkbox acknowledgment",
   },
   {
     id: "warning" as const,
@@ -43,55 +43,12 @@ const PREVIEW_CARDS = [
     icon: AlertTriangle,
     color: "bg-yellow-500/20 border-yellow-500/40 text-yellow-400",
     hoverColor: "hover:bg-yellow-500/30",
-    description: "Warning acknowledgment screen",
+    description: "Warning dialog with checkbox acknowledgment",
   },
 ];
 
 const ScreenPreviewTab = () => {
   const [activePreview, setActivePreview] = useState<PreviewScreen>(null);
-
-  if (activePreview) {
-    return (
-      <div className="fixed inset-0 z-[99999]">
-        {/* Close button overlay */}
-        <button
-          onClick={() => setActivePreview(null)}
-          className="fixed top-4 right-4 z-[100000] w-10 h-10 rounded-full bg-black/80 border border-white/30 flex items-center justify-center hover:bg-black/90 transition-colors"
-          title="Close preview"
-        >
-          <X className="w-5 h-5 text-white" />
-        </button>
-
-        {/* Preview label */}
-        <div className="fixed top-4 left-4 z-[100000] px-3 py-1.5 bg-black/80 border border-white/30 rounded text-xs font-mono text-white/70">
-          PREVIEW MODE — Click ✕ to close
-        </div>
-
-        {activePreview === "ban" && (
-          <BannedScreen
-            reason={MOCK_DATA.ban.reason}
-            expiresAt={null}
-            isFakeBan={false}
-          />
-        )}
-        {activePreview === "temp_ban" && (
-          <TempBanScreen
-            reason={MOCK_DATA.temp_ban.reason}
-            expiresAt={MOCK_DATA.temp_ban.expiresAt}
-            onAcknowledge={() => setActivePreview(null)}
-            isFake
-          />
-        )}
-        {activePreview === "warning" && (
-          <ModerationWarningScreen
-            reason={MOCK_DATA.warning.reason}
-            onAcknowledge={() => setActivePreview(null)}
-            isFake
-          />
-        )}
-      </div>
-    );
-  }
 
   return (
     <div className="p-6 space-y-6">
@@ -127,6 +84,44 @@ const ScreenPreviewTab = () => {
           The ban screen's appeal button will attempt to send a real email if clicked — use with care.
         </p>
       </div>
+
+      {/* Permanent ban - full screen with close button */}
+      {activePreview === "ban" && (
+        <div className="fixed inset-0 z-[99999]">
+          <button
+            onClick={() => setActivePreview(null)}
+            className="fixed top-4 right-4 z-[100000] w-10 h-10 rounded-full bg-black/80 border border-white/30 flex items-center justify-center hover:bg-black/90 transition-colors"
+            title="Close preview"
+          >
+            <X className="w-5 h-5 text-white" />
+          </button>
+          <div className="fixed top-4 left-4 z-[100000] px-3 py-1.5 bg-black/80 border border-white/30 rounded text-xs font-mono text-white/70">
+            PREVIEW MODE — Click ✕ to close
+          </div>
+          <BannedScreen
+            reason={MOCK_DATA.ban.reason}
+            expiresAt={null}
+            isFakeBan={false}
+          />
+        </div>
+      )}
+
+      {/* Temp ban - dialog popup */}
+      <TempBanPopup
+        open={activePreview === "temp_ban"}
+        onDismiss={() => setActivePreview(null)}
+        reason={MOCK_DATA.temp_ban.reason}
+        expiresAt={MOCK_DATA.temp_ban.expiresAt}
+        isFake
+      />
+
+      {/* Warning - dialog popup */}
+      <ModerationWarningPopup
+        open={activePreview === "warning"}
+        onDismiss={() => setActivePreview(null)}
+        reason={MOCK_DATA.warning.reason}
+        isFake
+      />
     </div>
   );
 };
