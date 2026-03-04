@@ -36,22 +36,71 @@ serve(async (req) => {
     const sanitizedMessage = appealMessage.trim().slice(0, 1000);
     const sanitizedUsername = username.trim().slice(0, 100);
 
-    const emailBody = `#------------------------------------------------#
-| Unban request from user:
-| ${sanitizedUsername}
-#------------------------------------------------#
-| Appeal message:
-| ${sanitizedMessage}
-#------------------------------------------------#
-|
-| By writing this email I agree to not break the rules again,
-| and I lose my right to appeal again.
-|
-#------------------------------------------------#
+    const esc = (s: string) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
-Ban details:
-- Reason: ${reason || "No reason provided"}
-- Status: ${status || "Unknown"}`;
+    const emailHtml = `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#0d0d1a;font-family:'Courier New',Courier,monospace;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0d0d1a;padding:32px 16px;">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a2e;border-radius:8px;overflow:hidden;border:1px solid #2a2a4a;">
+
+<!-- Header -->
+<tr><td style="background:#dc2626;padding:20px 28px;">
+  <h1 style="margin:0;font-size:18px;font-weight:700;color:#ffffff;letter-spacing:3px;text-transform:uppercase;">⛔ Ban Appeal Request</h1>
+</td></tr>
+
+<!-- User -->
+<tr><td style="padding:24px 28px 0;">
+  <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:2px;">From User</p>
+  <p style="margin:0;font-size:16px;color:#f0f0f0;font-weight:600;">${esc(sanitizedUsername)}</p>
+</td></tr>
+
+<!-- Divider -->
+<tr><td style="padding:16px 28px 0;"><div style="border-top:1px solid #2a2a4a;"></div></td></tr>
+
+<!-- Appeal Message -->
+<tr><td style="padding:16px 28px 0;">
+  <p style="margin:0 0 8px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:2px;">Appeal Message</p>
+  <div style="background:#12122a;border:1px solid #2a2a4a;border-radius:6px;padding:16px;">
+    <p style="margin:0;font-size:14px;color:#d0d0d0;line-height:1.6;white-space:pre-wrap;">${esc(sanitizedMessage)}</p>
+  </div>
+</td></tr>
+
+<!-- Agreement -->
+<tr><td style="padding:16px 28px 0;">
+  <div style="background:#1e1e0e;border:1px solid #4a4a2a;border-radius:6px;padding:12px 16px;">
+    <p style="margin:0;font-size:12px;color:#c8c880;line-height:1.5;">⚠️ By submitting this appeal, the user agrees to not break the rules again and forfeits the right to appeal again.</p>
+  </div>
+</td></tr>
+
+<!-- Divider -->
+<tr><td style="padding:16px 28px 0;"><div style="border-top:1px solid #2a2a4a;"></div></td></tr>
+
+<!-- Ban Details -->
+<tr><td style="padding:16px 28px 24px;">
+  <p style="margin:0 0 12px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:2px;">Ban Details</p>
+  <table cellpadding="0" cellspacing="0" style="width:100%;">
+    <tr>
+      <td style="padding:6px 0;font-size:12px;color:#666;width:80px;">Reason</td>
+      <td style="padding:6px 0;font-size:13px;color:#e0e0e0;">${esc(reason || "No reason provided")}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 0;font-size:12px;color:#666;width:80px;">Status</td>
+      <td style="padding:6px 0;font-size:13px;color:#ff6b6b;font-weight:600;">${esc(status || "Unknown")}</td>
+    </tr>
+  </table>
+</td></tr>
+
+<!-- Footer -->
+<tr><td style="background:#12122a;padding:16px 28px;border-top:1px solid #2a2a4a;">
+  <p style="margin:0;font-size:11px;color:#555;text-align:center;">UrbanShade OS — Moderation System</p>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body></html>`;
 
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -63,7 +112,7 @@ Ban details:
         from: 'UrbanShade OS <onboarding@resend.dev>',
         to: 'emailbot00noreply@gmail.com',
         subject: `Ban Appeal Request - ${sanitizedUsername}`,
-        text: emailBody,
+        html: emailHtml,
       }),
     });
 
