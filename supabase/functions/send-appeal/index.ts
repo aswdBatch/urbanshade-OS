@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,6 +15,52 @@ serve(async (req) => {
     const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
     if (!RESEND_API_KEY) {
       throw new Error('RESEND_API_KEY is not configured');
+    }
+
+    // Authenticate user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const userId = claimsData.claims.sub;
+
+    // Verify the user actually has an active ban
+    const serviceClient = createClient(supabaseUrl, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+
+    const { data: banData } = await serviceClient
+      .from('moderation_actions')
+      .select('id')
+      .eq('target_user_id', userId)
+      .eq('is_active', true)
+      .in('action_type', ['ban', 'temp_ban'])
+      .limit(1);
+
+    if (!banData || banData.length === 0) {
+      return new Response(JSON.stringify({ error: 'No active ban found for this user' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const { reason, status, username, appealMessage } = await req.json();
@@ -54,6 +101,7 @@ serve(async (req) => {
 <tr><td style="padding:24px 28px 0;">
   <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:2px;">From User</p>
   <p style="margin:0;font-size:16px;color:#f0f0f0;font-weight:600;">${esc(sanitizedUsername)}</p>
+  <p style="margin:4px 0 0;font-size:11px;color:#666;">User ID: ${esc(userId)}</p>
 </td></tr>
 
 <!-- Divider -->
