@@ -119,7 +119,7 @@ const ALL_APPS: AppEntry[] = [
 
 const CATEGORIES: AppCategory[] = ["Productivity", "System", "Media", "Communication", "Games", "Facility", "Security", "Science", "Reference"];
 
-const categoryMeta: Record<AppCategory, { icon: React.ElementType; color: string }> = {
+const categoryMeta: Record<AppCategory, { icon: LucideIcon; color: string }> = {
   Productivity: { icon: FileText, color: "blue" },
   System: { icon: Cpu, color: "cyan" },
   Media: { icon: Play, color: "purple" },
