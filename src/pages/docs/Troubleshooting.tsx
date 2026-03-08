@@ -1,5 +1,5 @@
-import { HelpCircle, AlertTriangle, CheckCircle, XCircle, RotateCcw, Bug, Wrench, ChevronDown, Search, ExternalLink, Hash, ArrowRight, Zap, LifeBuoy } from "lucide-react";
-import { DocLayout, DocHero, DocSection, DocCard, DocAlert } from "@/components/docs";
+import { HelpCircle, AlertTriangle, CheckCircle, RotateCcw, Bug, Wrench, ChevronDown, Search, ExternalLink, Hash, ArrowRight, LifeBuoy } from "lucide-react";
+import { DocLayout, DocHero, DocSection, DocAlert } from "@/components/docs";
 import { useState, useMemo, useRef, useEffect } from "react";
 
 // Decision tree for "What's wrong?"
