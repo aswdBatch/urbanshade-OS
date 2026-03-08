@@ -33,7 +33,7 @@ import type { LogEntry, ActionEntry } from "./hooks/useDefDevState";
 
 const DefDevMain = () => {
   const state = useDefDevState();
-  const sessionStartRef = useRef(Date.now());
+  const sessionStartRef = useRef<number>(Date.now());
 
   // Console capture
   useEffect(() => {
