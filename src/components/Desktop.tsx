@@ -3,7 +3,6 @@ import { Taskbar } from "./Taskbar";
 import { DesktopIcon } from "./DesktopIcon";
 import { StartMenu } from "./StartMenu";
 import { WindowManager } from "./WindowManager";
-import { RecoveryMode } from "./RecoveryMode";
 import { ContextMenu, getDesktopMenuItems } from "./ContextMenu";
 import { AltTabSwitcher } from "./AltTabSwitcher";
 import { WindowSnapIndicator } from "./WindowSnapIndicator";
