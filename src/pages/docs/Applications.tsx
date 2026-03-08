@@ -254,7 +254,7 @@ const Applications = () => {
             {CATEGORIES.map((cat) => {
               const count = filteredApps.filter(a => a.category === cat).length;
               if (count === 0 && activeCategory !== cat) return null;
-              const meta = categoryMeta[cat];
+              const _meta = categoryMeta[cat];
               return (
                 <button
                   key={cat}
