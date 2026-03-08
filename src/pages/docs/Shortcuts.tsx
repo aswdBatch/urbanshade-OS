@@ -191,7 +191,7 @@ const Shortcuts = () => {
           <h4 className="font-mono text-cyan-400 text-sm uppercase tracking-wider">URBANSHADE OS — SHORTCUT REFERENCE</h4>
           <div className="grid sm:grid-cols-3 gap-4 text-sm">
             {CATEGORIES.map((cat) => {
-              const colorName = cat === "Boot" ? "amber" : cat === "Desktop" ? "blue" : "green";
+              const _colorName = cat === "Boot" ? "amber" : cat === "Desktop" ? "blue" : "green";
               const textColor = categoryColors[cat].text;
               const shortcuts = ALL_SHORTCUTS.filter(s => s.category === cat);
               return (
