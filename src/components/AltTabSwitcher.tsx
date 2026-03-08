@@ -1,11 +1,5 @@
 import { cn } from "@/lib/utils";
-
-interface WindowData {
-  id: string;
-  app: { id: string; name: string; icon?: React.ReactNode };
-  zIndex: number;
-  minimized?: boolean;
-}
+import { WindowData } from "@/types/window";
 
 interface AltTabSwitcherProps {
   windows: WindowData[];

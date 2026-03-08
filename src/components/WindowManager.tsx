@@ -1,5 +1,5 @@
 import { Window } from "./Window";
-import { App } from "./Desktop";
+import { App, WindowData } from "@/types/window";
 import { FileExplorer } from "./apps/FileExplorer";
 import { SystemMonitor } from "./apps/SystemMonitor";
 import { PersonnelDirectory } from "./apps/PersonnelDirectory";
@@ -62,12 +62,7 @@ import { Inventory } from "./apps/Inventory";
 import { SystemMessages } from "./apps/SystemMessages";
 import { NotificationHistory } from "./NotificationHistory";
 import { ToasterSimulator } from "./apps/ToasterSimulator";
-interface WindowData {
-  id: string;
-  app: App;
-  zIndex: number;
-  minimized?: boolean;
-}
+import { UrbanshadeInstaller } from "./apps/UrbanshadeInstaller";
 
 interface WindowManagerProps {
   windows: WindowData[];
@@ -80,14 +75,6 @@ interface WindowManagerProps {
   onLockdown?: (protocolName: string) => void;
   onUpdate?: () => void;
 }
-
-interface WindowData {
-  id: string;
-  app: App;
-  zIndex: number;
-}
-
-import { UrbanshadeInstaller } from "./apps/UrbanshadeInstaller";
 
 export const WindowManager = ({ windows, onClose, onFocus, onMinimize, allWindows, onCloseWindow, onCriticalKill, onLockdown, onUpdate }: WindowManagerProps) => {
   const getAppContent = (appId: string) => {

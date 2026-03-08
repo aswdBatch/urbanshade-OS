@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Search, X, AppWindow, FileText, Settings as SettingsIcon, Calculator, Terminal, Command } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { App } from "./Desktop";
+import { App } from "@/types/window";
 import { evaluate } from "mathjs";
 
 interface GlobalSearchProps {

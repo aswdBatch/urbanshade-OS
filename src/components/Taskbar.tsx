@@ -46,7 +46,7 @@ const NotificationButton = ({
     </>
   );
 };
-import { App } from "./Desktop";
+import { App, WindowData } from "@/types/window";
 import { NotificationCenter } from "./NotificationCenter";
 import { ShutdownOptionsDialog } from "./ShutdownOptionsDialog";
 import { QuickSettingsFlyout } from "./QuickSettingsFlyout";
@@ -55,13 +55,6 @@ import { useAutoSync } from "@/hooks/useAutoSync";
 import { useDoNotDisturb } from "@/hooks/useDoNotDisturb";
 import { useSyncHistory } from "@/hooks/useSyncHistory";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
-interface WindowData {
-  id: string;
-  app: App;
-  zIndex: number;
-  minimized?: boolean;
-}
 
 interface TaskbarProps {
   onStartClick: () => void;

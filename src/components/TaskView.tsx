@@ -1,13 +1,6 @@
 import { useState, useEffect } from "react";
 import { X, Plus, Monitor } from "lucide-react";
-import { App } from "./Desktop";
-
-interface WindowData {
-  id: string;
-  app: App;
-  zIndex: number;
-  minimized?: boolean;
-}
+import { App, WindowData } from "@/types/window";
 
 interface TaskViewProps {
   open: boolean;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { App } from "./Desktop";
+import { App } from "@/types/window";
 
 interface DesktopIconProps {
   app: App;
