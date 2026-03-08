@@ -1,6 +1,6 @@
 import { Package, Upload, FileCode, BookOpen, Shield, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
-import { DocLayout, DocHero, DocSection, DocCode, DocAlert, DocCard } from "@/components/docs";
+import { DocLayout, DocHero, DocSection, DocCode, DocAlert } from "@/components/docs";
 
 const UURDocs = () => {
   const manifestExample = `{
