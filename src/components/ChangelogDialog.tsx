@@ -63,26 +63,46 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }
 
   const changelogs: Record<string, VersionData> = {
+    "3.6.1": {
+      icon: <Star className="w-5 h-5" />,
+      color: "from-emerald-500 to-teal-600",
+      tagline: "REFINED",
+      overview: "Tech debt sweep: extracted reusable hooks and shared types, created centralized app registry, fixed TypeScript hygiene, updated changelog accuracy, and cleaned up dead code.",
+      sections: {
+        "🏗️ Architecture Refactor": [
+          { text: "Extracted useBootSequence hook — all boot/crash/shutdown state in one place", isHighlight: true },
+          { text: "Created shared App and WindowData types in src/types/window.ts" },
+          { text: "Centralized app registry in src/lib/appRegistry.tsx (70+ apps)" },
+          { text: "Extracted useModerationGates hook for fake mod testing state" },
+        ],
+        "🧹 Code Quality": [
+          { text: "Removed duplicate WindowData interfaces across 5 files" },
+          { text: "Typed crashTypes as Record<string, CrashType> instead of any" },
+          { text: "Cleaned up unused icon aliases and dead VIP code" },
+        ],
+      }
+    },
     "3.6.0": {
       icon: <Shield className="w-5 h-5" />,
       color: "from-amber-500 to-orange-600",
       tagline: "ENFORCED",
-      overview: "Moderation screens overhauled: warnings now block OS access until acknowledged, temp bans require acknowledgment before continuing, ban appeals now include a message field, and moderators can preview all screens in DEF-DEV.",
+      overview: "Moderation gates overhauled: warnings and temp bans now show dialog popups requiring checkbox acknowledgment before continuing. Ban appeals include styled HTML emails with auth verification. Moderators can preview all screens in DEF-DEV.",
       sections: {
         "⚠️ Warning Acknowledgment": [
-          { text: "Warnings now show a full-screen gate — users must click 'I Understand' to continue", isHighlight: true },
+          { text: "Warnings now show a dialog popup — users must check 'I Understand' to continue", isHighlight: true },
           { text: "Unacknowledged warnings tracked per-user via localStorage + Supabase" },
-          { text: "Amber-themed screen matching the OS moderation style" },
+          { text: "Amber-themed dialog matching the OS moderation style" },
         ],
         "🔒 Temp Ban Gate": [
-          { text: "Temporary suspensions now require acknowledgment before accessing the OS", isHighlight: true },
-          { text: "Full-screen temp ban screen replaces the old dismissible dialog" },
+          { text: "Temporary suspensions now require dialog acknowledgment before accessing the OS", isHighlight: true },
+          { text: "Dialog popup with checkbox replaces the old dismissible toast" },
           { text: "Shows time remaining, disabled features, and reason" },
         ],
         "📝 Ban Appeal Improvements": [
           { text: "Added a textarea for users to write their appeal message", isHighlight: true },
           { text: "Both username and message required to submit appeal" },
-          { text: "Appeal message included in the email sent to admins (replaces placeholder)" },
+          { text: "Styled HTML email template matching UrbanShade dark/red aesthetic" },
+          { text: "Edge function now authenticates users and verifies active ban before sending" },
         ],
         "🖥️ Screen Preview Tab (DEF-DEV)": [
           { text: "New 'Screens' tab in DEF-DEV Tools for moderators", isHighlight: true },
@@ -90,7 +110,7 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
           { text: "Renders actual production components with close button overlay" },
         ],
         "🎭 FakeMod Update": [
-          { text: "FAKE_WARN now shows the real warning acknowledgment screen instead of a toast" },
+          { text: "FAKE_WARN now shows the real warning acknowledgment dialog instead of a toast" },
         ],
       }
     },
