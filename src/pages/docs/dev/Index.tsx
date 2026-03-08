@@ -1,16 +1,25 @@
-import { Code, Palette, Puzzle, Terminal, BookOpen, Zap, ChevronRight, Layers, Cpu, GitBranch, Package } from "lucide-react";
+import { Code, Palette, Puzzle, Terminal, BookOpen, Zap, ChevronRight, Layers, Cpu, GitBranch, Package, FileCode } from "lucide-react";
 import { Link } from "react-router-dom";
-import { DocLayout, DocHero, DocSection, DocAlert } from "@/components/docs";
+import { DocLayout, DocHero, DocSection } from "@/components/docs";
 
 const DevDocsIndex = () => {
   const sections = [
-    { icon: Layers, title: "Architecture Overview", description: "Component hierarchy, state management, and data flow.", link: "/docs/dev/architecture", badge: "Start Here" },
-    { icon: Palette, title: "Theming & Styling", description: "Create custom themes and use design tokens.", link: "/docs/dev/theming" },
-    { icon: Puzzle, title: "Building Apps", description: "Create new desktop applications.", link: "/docs/dev/apps" },
-    { icon: Terminal, title: "Terminal Commands", description: "Register custom terminal commands.", link: "/docs/dev/terminal" },
-    { icon: Cpu, title: "System Bus API", description: "Inter-component communication.", link: "/docs/dev/system-bus" },
-    { icon: Package, title: "UUR Packages", description: "Create and publish packages.", link: "/docs/dev/uur" },
-    { icon: GitBranch, title: "Contributing", description: "Git workflow and PR guidelines.", link: "/docs/dev/contributing" }
+    { icon: Layers, title: "Architecture Overview", description: "Boot flow, component hierarchy, state management, and hook architecture.", link: "/docs/dev/architecture", badge: "Start Here" },
+    { icon: Palette, title: "Theming & Styling", description: "Design tokens, useThemeEngine, and the Theme Editor app.", link: "/docs/dev/theming" },
+    { icon: Puzzle, title: "Building Apps", description: "Register apps via appRegistry.tsx and WindowManager.", link: "/docs/dev/apps" },
+    { icon: Terminal, title: "Terminal Commands", description: "Built-in commands and the Terminal Scripts system.", link: "/docs/dev/terminal" },
+    { icon: Cpu, title: "System Bus API", description: "Typed event bus for crashes, reboots, lockdowns, and more.", link: "/docs/dev/system-bus" },
+    { icon: Package, title: "UUR Packages", description: "In-simulation package repository.", link: "/docs/dev/uur" },
+    { icon: GitBranch, title: "Contributing", description: "Project structure, version bumps, and PR workflow.", link: "/docs/dev/contributing" }
+  ];
+
+  const keyFiles = [
+    { file: "src/lib/appRegistry.tsx", desc: "Central app definition factory" },
+    { file: "src/lib/systemBus.ts", desc: "Cross-component event bus" },
+    { file: "src/components/WindowManager.tsx", desc: "Window rendering switch" },
+    { file: "src/lib/terminalScripts.ts", desc: "Terminal script runner" },
+    { file: "src/lib/persistence.ts", desc: "localStorage state persistence" },
+    { file: "src/types/window.ts", desc: "App & WindowData interfaces" },
   ];
 
   return (
@@ -27,6 +36,29 @@ const DevDocsIndex = () => {
         subtitle="Create applications, themes, terminal commands, and extensions. Everything you need to extend the Urbanshade experience."
         accentColor="teal"
       />
+
+      {/* Tech Stack */}
+      <DocSection title="Tech Stack" icon={Zap} accentColor="teal">
+        <div className="flex flex-wrap gap-3">
+          {["React 18", "TypeScript", "Vite", "Tailwind CSS", "Supabase", "shadcn/ui"].map(tech => (
+            <div key={tech} className="px-3 py-1.5 rounded-lg bg-teal-500/10 border border-teal-500/30 text-teal-400 text-sm font-medium">
+              {tech}
+            </div>
+          ))}
+        </div>
+      </DocSection>
+
+      {/* Key Files */}
+      <DocSection title="Key Files" icon={FileCode} accentColor="teal">
+        <div className="grid md:grid-cols-2 gap-3">
+          {keyFiles.map(kf => (
+            <div key={kf.file} className="flex items-start gap-3 p-3 rounded-xl bg-slate-800/30 border border-slate-700">
+              <code className="text-xs text-teal-400 bg-slate-900 px-2 py-1 rounded font-mono flex-shrink-0">{kf.file.split('/').pop()}</code>
+              <span className="text-sm text-slate-400">{kf.desc}</span>
+            </div>
+          ))}
+        </div>
+      </DocSection>
 
       {/* Quick Start */}
       <DocSection title="Quick Start" icon={BookOpen} accentColor="teal">
@@ -78,10 +110,6 @@ const DevDocsIndex = () => {
             </Link>
           ))}
         </div>
-
-        <DocAlert variant="info" title="Work in Progress">
-          Developer documentation is actively being written. Some sections may be incomplete. Check back soon for updates!
-        </DocAlert>
       </DocSection>
     </DocLayout>
   );
