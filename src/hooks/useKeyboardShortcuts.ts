@@ -1,11 +1,5 @@
 import { useEffect, useCallback, useState } from 'react';
-
-interface WindowData {
-  id: string;
-  app: { id: string; name: string };
-  zIndex: number;
-  minimized?: boolean;
-}
+import { App, WindowData } from '@/types/window';
 
 interface UseKeyboardShortcutsProps {
   windows: WindowData[];
@@ -13,8 +7,8 @@ interface UseKeyboardShortcutsProps {
   onMinimizeWindow: (id: string) => void;
   onCloseWindow: (id: string) => void;
   onToggleStartMenu: () => void;
-  openWindow: (app: any) => void;
-  allApps: any[];
+  openWindow: (app: App) => void;
+  allApps: App[];
   onToggleSearch?: () => void;
   onToggleTaskView?: () => void;
   onLock?: () => void;

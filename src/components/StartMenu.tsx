@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { App } from "./Desktop";
+import { App } from "@/types/window";
 import { 
   LogOut, RotateCcw, Power, Shield, HardDrive, Clock, X, 
   Search, Settings, Grid3X3, ChevronRight, User, Zap
