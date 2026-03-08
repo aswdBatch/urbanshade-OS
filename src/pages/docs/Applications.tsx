@@ -16,7 +16,7 @@ type AppCategory = "Productivity" | "System" | "Media" | "Communication" | "Game
 interface AppEntry {
   id: string;
   name: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   description: string;
   category: AppCategory;
   builtin: boolean; // true = built-in, false = downloadable
