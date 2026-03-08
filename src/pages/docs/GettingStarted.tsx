@@ -1,5 +1,5 @@
-import { Rocket, Monitor, CheckCircle, LogIn, Layout, Terminal, Keyboard, Settings, User, Clock, ExternalLink, ChevronDown, ChevronRight, Zap, HardDrive, Gamepad2, Shield, X } from "lucide-react";
-import { DocLayout, DocHero, DocSection, DocCard, DocCode, DocAlert, DocTable } from "@/components/docs";
+import { Rocket, Monitor, CheckCircle, LogIn, Layout, Terminal, Keyboard, Settings, User, Clock, ExternalLink, ChevronDown, ChevronRight, Zap, HardDrive, Gamepad2, X } from "lucide-react";
+import { DocLayout, DocHero, DocSection, DocCard, DocAlert, DocTable } from "@/components/docs";
 import { useState } from "react";
 
 const installTypes = [
