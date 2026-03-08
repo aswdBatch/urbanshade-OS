@@ -1,11 +1,11 @@
 {
   "major": 3,
-  "minor": 7,
+  "minor": 5,
   "patch": 0,
-  "codename": "Documented",
+  "codename": "Polished",
   "build": 8710,
-  "fullVersion": "3.7.0",
-  "displayVersion": "V3.7.0",
-  "shortVersion": "3.7.0",
+  "fullVersion": "3.5.0",
+  "displayVersion": "V3.5.0",
+  "shortVersion": "3.5.0",
   "releaseDate": "2026-03-08"
 }
