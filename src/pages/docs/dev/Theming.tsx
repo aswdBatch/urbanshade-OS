@@ -1,5 +1,5 @@
-import { Palette, Droplets, Sun, Moon, Code } from "lucide-react";
-import { DocLayout, DocHero, DocSection, DocCode, DocAlert } from "@/components/docs";
+import { Palette, Droplets, Sun, Moon, Code, Zap } from "lucide-react";
+import { DocLayout, DocHero, DocSection, DocCode, DocAlert, DocCard } from "@/components/docs";
 
 const Theming = () => {
   const rootTokens = `:root {
@@ -10,7 +10,12 @@ const Theming = () => {
   --accent: 186 100% 50%;
   --muted: 210 30% 15%;
   --glow: 186 100% 50%;
-  /* ... more tokens */
+  --secondary: 212 40% 10%;
+  --destructive: 0 84% 60%;
+  --border: 210 30% 18%;
+  --card: 212 60% 6%;
+  --popover: 212 60% 6%;
+  /* ... and more */
 }`;
 
   const lightTokens = `.light {
@@ -48,8 +53,8 @@ const Theming = () => {
   return (
     <DocLayout
       title="Theming & Styling"
-      description="Create custom themes for UrbanShade OS using CSS custom properties and Tailwind semantic classes."
-      keywords={["theming", "styling", "css", "design tokens", "dark mode", "light mode"]}
+      description="Create custom themes for UrbanShade OS using CSS custom properties, useThemeEngine, and the Theme Editor app."
+      keywords={["theming", "styling", "css", "design tokens", "dark mode", "light mode", "useThemeEngine"]}
       accentColor="purple"
       breadcrumbs={[{ label: "Developer", path: "/docs/dev" }]}
       prevPage={{ title: "Architecture", path: "/docs/dev/architecture" }}
@@ -58,13 +63,14 @@ const Theming = () => {
       <DocHero
         icon={Palette}
         title="Theming & Styling"
-        subtitle="Create custom themes for UrbanShade OS using design tokens and semantic CSS classes."
+        subtitle="Create custom themes using design tokens, the theme engine, and the built-in Theme Editor."
         accentColor="purple"
       />
 
       <DocSection title="Design Tokens" icon={Droplets} accentColor="purple">
         <p className="text-slate-400 mb-4">
-          UrbanShade uses CSS custom properties (variables) for theming. These are defined in <code className="px-2 py-0.5 bg-slate-800 rounded text-purple-400">index.css</code>.
+          UrbanShade uses CSS custom properties (variables) in HSL format, defined in <code className="px-2 py-0.5 bg-slate-800 rounded text-purple-400">src/index.css</code>. 
+          All colors are referenced through Tailwind semantic classes.
         </p>
         <DocCode title="Root Variables" code={rootTokens} />
       </DocSection>
@@ -75,12 +81,36 @@ const Theming = () => {
             <div key={i} className="space-y-2">
               <div className={`h-16 rounded-lg ${c.color} border border-slate-700`} />
               <div>
-                <p className="font-medium text-white text-sm">{c.name}</p>
+                <p className="font-medium text-slate-200 text-sm">{c.name}</p>
                 <p className="text-xs text-slate-500 font-mono">{c.hsl}</p>
               </div>
             </div>
           ))}
         </div>
+      </DocSection>
+
+      <DocSection title="Theme Engine & Presets" icon={Zap} accentColor="purple" id="engine">
+        <p className="text-slate-400 mb-4">
+          Two hooks power the theming system:
+        </p>
+        <div className="space-y-3">
+          <DocCard title="useThemeEngine" accentColor="purple">
+            <p className="mt-2 text-sm text-slate-400">
+              Manages the active theme, applies CSS variables to the document root, handles theme switching, 
+              and persists the user's selection to localStorage.
+            </p>
+          </DocCard>
+          <DocCard title="useThemePresets" accentColor="purple">
+            <p className="mt-2 text-sm text-slate-400">
+              Provides a library of built-in theme presets (dark, light, high-contrast, and custom facility themes). 
+              Used by the Settings app and Theme Editor.
+            </p>
+          </DocCard>
+        </div>
+        <p className="text-slate-400 mt-4">
+          The <strong>Theme Editor</strong> app (accessible via Settings → Appearance) provides a visual UI 
+          for creating custom themes by adjusting CSS variables in real time.
+        </p>
       </DocSection>
 
       <DocSection title="Light & Dark Mode" icon={Sun} accentColor="purple">

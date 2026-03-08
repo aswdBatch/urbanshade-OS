@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Developer Documentation | Urbanshade OS</title>
-  <meta name="description" content="Developer documentation for Urbanshade OS. Architecture overview, theming, building apps, SystemBus, and contributing guidelines.">
-  <meta name="keywords" content="urbanshade, developer, documentation, architecture, theming, apps, contributing, react, typescript">
+  <meta name="description" content="Developer documentation for Urbanshade OS. Architecture, app registration, SystemBus API, terminal scripts, and theming.">
+  <meta name="keywords" content="urbanshade, developer, documentation, architecture, theming, apps, appRegistry, systemBus, terminal scripts">
   <link rel="canonical" href="https://urbanshade.lovable.app/docs/dev">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   
@@ -44,9 +44,7 @@
     }
     
     .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
-    
     header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
-    
     .breadcrumb { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem; }
     .breadcrumb a { color: var(--accent-teal); text-decoration: none; }
     
@@ -59,122 +57,36 @@
     }
     
     .subtitle { color: var(--text-secondary); margin-top: 0.5rem; }
-    
-    h2 {
-      font-size: 1.25rem;
-      color: var(--accent-teal);
-      margin: 2.5rem 0 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    
+    h2 { font-size: 1.25rem; color: var(--accent-teal); margin: 2.5rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
     h3 { font-size: 1rem; color: var(--text-primary); margin: 1.5rem 0 0.75rem; }
-    
     p { color: var(--text-secondary); margin-bottom: 1rem; }
+    code { background: var(--bg-secondary); padding: 0.125rem 0.375rem; border-radius: 0.25rem; color: var(--accent-teal); font-size: 0.875rem; }
     
-    .topic-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1rem;
-    }
+    .tech-stack { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0; }
+    .tech-badge { background: rgba(20, 184, 166, 0.1); border: 1px solid rgba(20, 184, 166, 0.3); border-radius: 0.5rem; padding: 0.5rem 1rem; color: var(--accent-teal); font-size: 0.875rem; }
     
-    .topic-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent-teal);
-      border-radius: 0.5rem;
-      padding: 1.25rem;
-      transition: border-color 0.2s, transform 0.2s;
-    }
+    .key-files { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+    .key-file { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; }
+    .key-file code { color: var(--accent-teal); }
+    .key-file span { color: var(--text-muted); font-size: 0.8rem; display: block; margin-top: 0.25rem; }
     
-    .topic-card:hover {
-      border-color: var(--accent-teal);
-      transform: translateY(-2px);
-    }
+    .topic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+    .topic-card { background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--accent-teal); border-radius: 0.5rem; padding: 1.25rem; transition: border-color 0.2s, transform 0.2s; }
+    .topic-card:hover { border-color: var(--accent-teal); transform: translateY(-2px); }
+    .topic-card h3 { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.75rem 0; }
+    .topic-card p { font-size: 0.875rem; margin-bottom: 0; }
     
-    .topic-card h3 {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 0 0 0.75rem 0;
-    }
+    .code-block { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; margin: 1rem 0; overflow-x: auto; font-size: 0.875rem; white-space: pre; }
+    .code-block code { background: none; padding: 0; color: var(--text-primary); }
+    .comment { color: var(--text-muted); }
     
-    .topic-card p { font-size: 0.875rem; margin-bottom: 1rem; }
-    
-    .topic-card a {
-      color: var(--accent-teal);
-      text-decoration: none;
-      font-size: 0.875rem;
-    }
-    
-    .tech-stack {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 0.75rem;
-      margin: 1rem 0;
-    }
-    
-    .tech-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      padding: 1rem;
-      text-align: center;
-    }
-    
-    .tech-item strong { color: var(--accent-teal); display: block; margin-bottom: 0.25rem; }
-    .tech-item span { color: var(--text-muted); font-size: 0.8rem; }
-    
-    .code-block {
-      background: var(--bg-primary);
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      padding: 1rem;
-      margin: 1rem 0;
-      overflow-x: auto;
-      font-size: 0.875rem;
-    }
-    
-    .code-block code { color: var(--text-primary); }
-    .code-block .comment { color: var(--text-muted); }
-    .code-block .keyword { color: var(--accent-teal); }
-    .code-block .string { color: var(--accent-green); }
-    
-    .info-box {
-      background: rgba(20, 184, 166, 0.1);
-      border: 1px solid rgba(20, 184, 166, 0.3);
-      border-radius: 0.5rem;
-      padding: 1rem 1.5rem;
-      margin: 1.5rem 0;
-    }
-    
+    .info-box { background: rgba(20, 184, 166, 0.1); border: 1px solid rgba(20, 184, 166, 0.3); border-radius: 0.5rem; padding: 1rem 1.5rem; margin: 1.5rem 0; }
     .info-box strong { color: var(--accent-teal); }
     
-    .nav-links {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
-    }
+    .nav-links { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .nav-links a { color: var(--accent-teal); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: 0.5rem; }
     
-    .nav-links a {
-      color: var(--accent-teal);
-      text-decoration: none;
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-    }
-    
-    footer {
-      margin-top: 3rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.875rem;
-    }
-    
+    footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.875rem; }
     footer a { color: var(--accent-teal); text-decoration: none; }
   </style>
 </head>
@@ -190,33 +102,26 @@
     
     <main>
       <section>
-        <h2>Technology Stack</h2>
-        <p>Urbanshade OS is built with modern web technologies:</p>
+        <h2>Tech Stack</h2>
         <div class="tech-stack">
-          <div class="tech-item">
-            <strong>React 18</strong>
-            <span>UI Library</span>
-          </div>
-          <div class="tech-item">
-            <strong>TypeScript</strong>
-            <span>Type Safety</span>
-          </div>
-          <div class="tech-item">
-            <strong>Vite</strong>
-            <span>Build Tool</span>
-          </div>
-          <div class="tech-item">
-            <strong>Tailwind CSS</strong>
-            <span>Styling</span>
-          </div>
-          <div class="tech-item">
-            <strong>Supabase</strong>
-            <span>Backend</span>
-          </div>
-          <div class="tech-item">
-            <strong>shadcn/ui</strong>
-            <span>Components</span>
-          </div>
+          <span class="tech-badge">React 18</span>
+          <span class="tech-badge">TypeScript</span>
+          <span class="tech-badge">Vite</span>
+          <span class="tech-badge">Tailwind CSS</span>
+          <span class="tech-badge">Supabase</span>
+          <span class="tech-badge">shadcn/ui</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Key Files</h2>
+        <div class="key-files">
+          <div class="key-file"><code>appRegistry.tsx</code><span>Central app definition factory</span></div>
+          <div class="key-file"><code>systemBus.ts</code><span>Cross-component event bus</span></div>
+          <div class="key-file"><code>WindowManager.tsx</code><span>Window rendering switch</span></div>
+          <div class="key-file"><code>terminalScripts.ts</code><span>Terminal script runner</span></div>
+          <div class="key-file"><code>persistence.ts</code><span>localStorage state persistence</span></div>
+          <div class="key-file"><code>window.ts</code><span>App & WindowData interfaces</span></div>
         </div>
       </section>
       
@@ -225,104 +130,70 @@
         <div class="topic-grid">
           <div class="topic-card">
             <h3>🏗️ Architecture</h3>
-            <p>Understand the component hierarchy, state management, and data flow patterns used in Urbanshade OS.</p>
+            <p>Boot flow, component hierarchy, state management via Index.tsx (god component), and 40+ custom hooks organized by domain.</p>
           </div>
           <div class="topic-card">
             <h3>🎨 Theming</h3>
-            <p>Learn about the design token system, CSS variables, and how to create custom themes.</p>
+            <p>Design tokens in index.css, useThemeEngine and useThemePresets hooks, and the visual Theme Editor app.</p>
           </div>
           <div class="topic-card">
             <h3>📱 Building Apps</h3>
-            <p>Create desktop applications for Urbanshade OS with React components and window integration.</p>
+            <p>Register apps in appRegistry.tsx (createAppRegistry factory), add a switch case in WindowManager.tsx. Supports minimalInclude, standardInclude, and downloadable flags.</p>
           </div>
           <div class="topic-card">
-            <h3>💻 Terminal Commands</h3>
-            <p>Add custom commands to the terminal with argument parsing and output formatting.</p>
+            <h3>💻 Terminal & Scripts</h3>
+            <p>Built-in commands (ls, cd, cat, sudo, etc.) and the TerminalScript system for saving/running multi-command sequences.</p>
           </div>
           <div class="topic-card">
-            <h3>📡 SystemBus</h3>
-            <p>Use the event-driven SystemBus for inter-component communication and loose coupling.</p>
+            <h3>📡 SystemBus API</h3>
+            <p>Typed event bus with SystemEventType enum: TRIGGER_CRASH, TRIGGER_BUGCHECK, TRIGGER_LOCKDOWN, ENTER_RECOVERY, etc. Convenience methods like triggerCrash(), triggerReboot().</p>
           </div>
           <div class="topic-card">
             <h3>📦 UUR Packages</h3>
-            <p>Create and publish packages for the Urbanshade User Repository.</p>
+            <p>In-simulation package repository for community-created apps. Submit via UUR app, reviewed by moderation team.</p>
           </div>
           <div class="topic-card">
             <h3>🤝 Contributing</h3>
-            <p>Guidelines for contributing to Urbanshade OS - code standards, PR process, and issue templates.</p>
+            <p>Project structure, version bump checklist (version.json, index.html title, ChangelogDialog), and PR workflow.</p>
           </div>
         </div>
       </section>
       
       <section>
-        <h2>Quick Start: Creating an App</h2>
-        <p>Here's a minimal example of creating an app for Urbanshade OS:</p>
-        
-        <div class="code-block">
-          <code>
-            <span class="comment">// src/components/apps/MyApp.tsx</span><br>
-            <span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;<br><br>
-            <span class="keyword">interface</span> MyAppProps {<br>
-            &nbsp;&nbsp;windowId: <span class="keyword">string</span>;<br>
-            }<br><br>
-            <span class="keyword">export const</span> MyApp = ({ windowId }: MyAppProps) => {<br>
-            &nbsp;&nbsp;<span class="keyword">return</span> (<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&lt;div className=<span class="string">"h-full flex flex-col bg-background p-4"</span>&gt;<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1 className=<span class="string">"text-xl font-bold"</span>&gt;My App&lt;/h1&gt;<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p className=<span class="string">"text-muted-foreground"</span>&gt;Hello, Urbanshade!&lt;/p&gt;<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
-            &nbsp;&nbsp;);<br>
-            };
-          </code>
-        </div>
+        <h2>Adding a New App (Quick Reference)</h2>
+        <div class="code-block"><code><span class="comment">// 1. Create component: src/components/apps/MyApp.tsx</span>
+<span class="comment">// 2. Register in src/lib/appRegistry.tsx:</span>
+{ id: "my-app", name: "My App", icon: &lt;Rocket /&gt;, run: () => openAppById("my-app"), standardInclude: true }
+
+<span class="comment">// 3. Add switch case in src/components/WindowManager.tsx:</span>
+case "my-app":
+  return &lt;MyApp windowId={window.id} /&gt;;</code></div>
         
         <div class="info-box">
-          <strong>💡 Tip:</strong> Apps receive a <code style="background: var(--bg-secondary); padding: 0.125rem 0.375rem; border-radius: 0.25rem;">windowId</code> prop 
-          that uniquely identifies the window instance. Use semantic color classes like <code style="background: var(--bg-secondary); padding: 0.125rem 0.375rem; border-radius: 0.25rem;">bg-background</code> 
-          for proper theming support.
+          <strong>💡 Tip:</strong> Apps receive a <code>windowId</code> prop. Use semantic color classes like <code>bg-background</code> for theming support. Use <code>h-full flex flex-col</code> as root layout.
         </div>
       </section>
       
       <section>
         <h2>Project Structure</h2>
-        <div class="code-block">
-          <code>
-            src/<br>
-            ├── components/<br>
-            │&nbsp;&nbsp;&nbsp;├── apps/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Application components</span><br>
-            │&nbsp;&nbsp;&nbsp;├── ui/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># shadcn/ui components</span><br>
-            │&nbsp;&nbsp;&nbsp;├── shared/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Shared components</span><br>
-            │&nbsp;&nbsp;&nbsp;└── ...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># System components</span><br>
-            ├── hooks/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Custom React hooks</span><br>
-            ├── lib/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Utilities and helpers</span><br>
-            ├── pages/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Route pages</span><br>
-            └── integrations/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># External integrations</span>
-          </code>
-        </div>
-      </section>
-      
-      <section>
-        <h2>Key Concepts</h2>
-        
-        <h3>State Management</h3>
-        <p>
-          Urbanshade OS uses a combination of React state, localStorage for persistence, 
-          React Query for server state, and the SystemBus for event-driven communication.
-        </p>
-        
-        <h3>Window Management</h3>
-        <p>
-          The WindowManager component handles all window operations including creation, 
-          positioning, resizing, and z-index management. Apps are rendered inside windows 
-          based on their component type.
-        </p>
-        
-        <h3>Theming</h3>
-        <p>
-          Themes are defined using CSS custom properties in index.css. The design system 
-          uses semantic tokens (--background, --foreground, --primary, etc.) that adapt 
-          based on the active theme.
-        </p>
+        <div class="code-block"><code>src/
+├── components/
+│   ├── apps/              <span class="comment"># Desktop application components</span>
+│   ├── ui/                <span class="comment"># shadcn/ui primitives</span>
+│   ├── shared/            <span class="comment"># Shared UI (avatars, spinners)</span>
+│   ├── widgets/           <span class="comment"># Desktop widgets</span>
+│   ├── docs/              <span class="comment"># Documentation layout components</span>
+│   ├── defdev/            <span class="comment"># DEF-DEV developer tools</span>
+│   └── *.tsx              <span class="comment"># System components (Desktop, Taskbar)</span>
+├── hooks/                 <span class="comment"># 40+ custom React hooks by domain</span>
+├── lib/                   <span class="comment"># Utilities, registries, helpers</span>
+│   ├── appRegistry.tsx    <span class="comment"># Central app definition factory</span>
+│   ├── systemBus.ts       <span class="comment"># Cross-component event bus</span>
+│   ├── persistence.ts     <span class="comment"># localStorage state management</span>
+│   └── version.json       <span class="comment"># Current version metadata</span>
+├── pages/                 <span class="comment"># Route pages</span>
+├── types/                 <span class="comment"># Shared TypeScript interfaces</span>
+└── integrations/          <span class="comment"># Supabase client and types</span></code></div>
       </section>
       
       <div class="nav-links">

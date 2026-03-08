@@ -1,5 +1,5 @@
-import { GitBranch, BookOpen, Code, GitPullRequest, Users, Heart, CheckCircle, AlertCircle } from "lucide-react";
-import { DocLayout, DocHero, DocSection, DocCard, DocAlert } from "@/components/docs";
+import { GitBranch, BookOpen, Code, GitPullRequest, Users, Heart, CheckCircle, AlertCircle, FileText } from "lucide-react";
+import { DocLayout, DocHero, DocSection, DocCard, DocAlert, DocCode } from "@/components/docs";
 
 const ContributingDocs = () => {
   const guidelines = [
@@ -41,11 +41,43 @@ const ContributingDocs = () => {
     "Screenshots included for UI changes"
   ];
 
+  const versionBumpChecklist = `// Version bump checklist — do ALL of these:
+
+1. src/lib/version.json
+   → Update "version" and "codename"
+
+2. index.html  
+   → Update the <title> tag to include new version
+
+3. src/components/ChangelogDialog.tsx
+   → Add a new changelog entry for the version`;
+
+  const projectStructure = `src/
+├── components/
+│   ├── apps/              # Desktop application components
+│   ├── ui/                # shadcn/ui primitives
+│   ├── shared/            # Shared UI (avatars, spinners, etc.)
+│   ├── widgets/           # Desktop widgets
+│   ├── docs/              # Documentation layout components
+│   ├── defdev/            # DEF-DEV developer tools
+│   ├── moderation/        # Moderation panel tabs
+│   └── *.tsx              # System components (Desktop, Taskbar, etc.)
+├── hooks/                 # 40+ custom React hooks by domain
+├── lib/                   # Utilities, registries, and helpers
+│   ├── appRegistry.tsx    # Central app definition factory
+│   ├── systemBus.ts       # Cross-component event bus
+│   ├── persistence.ts     # localStorage state management
+│   ├── terminalScripts.ts # Terminal script runner
+│   └── version.json       # Current version metadata
+├── pages/                 # Route pages (docs, admin, status, etc.)
+├── types/                 # Shared TypeScript interfaces
+└── integrations/          # Supabase client and generated types`;
+
   return (
     <DocLayout
       title="Contributing"
-      description="How to contribute to UrbanShade OS - code style, PR guidelines, and ways to help."
-      keywords={["contributing", "github", "pull request", "open source"]}
+      description="How to contribute to UrbanShade OS - project structure, version bumps, and PR workflow."
+      keywords={["contributing", "github", "pull request", "project structure", "version"]}
       accentColor="teal"
       breadcrumbs={[{ label: "Developer", path: "/docs/dev" }]}
       prevPage={{ title: "UUR Packages", path: "/docs/dev/uur" }}
@@ -54,7 +86,7 @@ const ContributingDocs = () => {
       <DocHero
         icon={GitBranch}
         title="Contributing to UrbanShade OS"
-        subtitle="Thank you for your interest in contributing! We welcome contributions of all kinds."
+        subtitle="Project structure, version bump workflow, and contribution guidelines."
         accentColor="teal"
       />
 
@@ -62,6 +94,17 @@ const ContributingDocs = () => {
         <Heart className="w-4 h-4 inline mr-2 text-pink-400" />
         Every contribution, no matter how small, helps make UrbanShade OS better for everyone!
       </DocAlert>
+
+      <DocSection title="Project Structure" icon={FileText} accentColor="teal" id="structure">
+        <DocCode title="Directory Layout" code={projectStructure} />
+      </DocSection>
+
+      <DocSection title="Version Bump Checklist" icon={BookOpen} accentColor="teal" id="versions">
+        <p className="text-slate-400 mb-4">
+          When releasing a new version, you must update <strong>three files</strong>:
+        </p>
+        <DocCode title="Version Bump Steps" code={versionBumpChecklist} />
+      </DocSection>
 
       <DocSection title="Getting Started" icon={BookOpen} accentColor="teal">
         <div className="space-y-3">
@@ -78,7 +121,7 @@ const ContributingDocs = () => {
                 {item.step}
               </div>
               <div>
-                <h4 className="font-medium text-white">{item.title}</h4>
+                <h4 className="font-medium text-slate-200">{item.title}</h4>
                 <p className="text-sm text-slate-500 mt-0.5">{item.desc}</p>
               </div>
             </div>
@@ -126,23 +169,6 @@ const ContributingDocs = () => {
           <DocCard title="Testing" description="Help test new features and report issues." icon={CheckCircle} accentColor="green" />
         </div>
       </DocSection>
-
-      <div className="p-6 rounded-xl bg-gradient-to-br from-teal-500/10 via-slate-800/50 to-cyan-500/10 border border-teal-500/20 text-center space-y-4">
-        <h3 className="text-lg font-bold text-teal-100">Join Our Community</h3>
-        <p className="text-slate-400 text-sm max-w-lg mx-auto">
-          Have questions or want to discuss your contribution ideas? 
-          Connect with other contributors and the core team!
-        </p>
-        <a
-          href="https://github.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 hover:text-teal-400 hover:border-teal-500/30 transition-all text-sm"
-        >
-          <GitBranch className="w-4 h-4" />
-          GitHub
-        </a>
-      </div>
     </DocLayout>
   );
 };

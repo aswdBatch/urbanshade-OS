@@ -1,6 +1,6 @@
 import { Package, Upload, FileCode, BookOpen, Shield, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
-import { DocLayout, DocHero, DocSection, DocCode, DocAlert, DocCard } from "@/components/docs";
+import { DocLayout, DocHero, DocSection, DocCode, DocAlert } from "@/components/docs";
 
 const UURDocs = () => {
   const manifestExample = `{
@@ -24,13 +24,13 @@ export const MyAwesomeApp = () => {
 
   return (
     <div className="p-4 space-y-4">
-      <h1 className="text-xl font-bold text-cyan-400">
+      <h1 className="text-xl font-bold text-foreground">
         My Awesome App
       </h1>
-      <p className="text-slate-400">Count: {count}</p>
+      <p className="text-muted-foreground">Count: {count}</p>
       <button
         onClick={() => setCount(c => c + 1)}
-        className="px-4 py-2 bg-cyan-500 rounded-lg"
+        className="px-4 py-2 bg-primary text-primary-foreground rounded-lg"
       >
         Increment
       </button>
@@ -62,9 +62,14 @@ export default MyAwesomeApp;`;
       <DocHero
         icon={Package}
         title="UrbanShade User Repository"
-        subtitle="The official package repository for community-created apps, themes, and extensions."
+        subtitle="The in-simulation package repository for community-created apps, themes, and extensions."
         accentColor="teal"
       />
+
+      <DocAlert variant="info" title="Simulation Feature">
+        UUR is an in-simulation feature — packages are conceptual within the UrbanShade OS experience. 
+        The submission system uses Supabase for real review tracking.
+      </DocAlert>
 
       <div className="grid md:grid-cols-3 gap-4 mb-8">
         <div className="p-4 rounded-xl bg-teal-500/10 border border-teal-500/30 text-center">

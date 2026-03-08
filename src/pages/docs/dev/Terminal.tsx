@@ -1,4 +1,4 @@
-import { Terminal, Zap, Code } from "lucide-react";
+import { Terminal, Zap, Code, FileText } from "lucide-react";
 import { DocLayout, DocHero, DocSection, DocCode, DocAlert } from "@/components/docs";
 
 const TerminalDocs = () => {
@@ -15,23 +15,70 @@ const TerminalDocs = () => {
     { name: "sudo", description: "Execute command as admin", usage: "sudo <command>", example: "sudo reboot" }
   ];
 
-  const customCommandExample = `// In src/lib/terminalScripts.ts
-export const customCommands = {
-  greet: {
-    description: "Greet the user",
-    usage: "greet [name]",
-    execute: (args: string[]) => {
-      const name = args[0] || "User";
-      return \`Hello, \${name}! Welcome to UrbanShade OS.\`;
-    }
-  }
-};`;
+  const scriptInterface = `// src/lib/terminalScripts.ts
+
+interface TerminalScript {
+  id: string;           // Unique ID (auto-generated)
+  name: string;         // Display name
+  description?: string; // Optional description
+  commands: string[];   // Array of commands to execute in sequence
+  createdAt: string;    // ISO timestamp
+  lastRun?: string;     // Last execution timestamp
+  runCount: number;     // Times executed
+}`;
+
+  const scriptApiExample = `import { 
+  getScripts, 
+  saveScript, 
+  updateScript, 
+  deleteScript, 
+  markScriptRun, 
+  getScript 
+} from "@/lib/terminalScripts";
+
+// Get all saved scripts (includes defaults if none saved)
+const scripts = getScripts();
+
+// Save a new script
+const newScript = saveScript({
+  name: "Morning Routine",
+  description: "Run diagnostics and check status",
+  commands: ["neofetch", "uptime", "whoami"]
+});
+
+// Update an existing script
+updateScript(newScript.id, { 
+  name: "Updated Routine",
+  commands: ["neofetch", "uptime", "whoami", "echo Done!"]
+});
+
+// Mark a script as run (increments runCount, sets lastRun)
+markScriptRun(newScript.id);
+
+// Delete a script
+deleteScript(newScript.id);`;
+
+  const defaultScriptsExample = `// Built-in default scripts:
+
+{
+  id: "system-check",
+  name: "System Check",
+  description: "Run basic system diagnostics",
+  commands: ["neofetch", "uptime", "whoami"]
+}
+
+{
+  id: "dev-setup",
+  name: "Dev Setup", 
+  description: "Enable developer mode and open DEF-DEV",
+  commands: ["sudo set developer_mode true", "echo \\"Dev mode enabled\\""]
+}`;
 
   return (
     <DocLayout
       title="Terminal Commands"
-      description="Built-in terminal commands and how to register custom commands in UrbanShade OS."
-      keywords={["terminal", "commands", "cli", "shell", "api"]}
+      description="Built-in terminal commands and the Terminal Scripts system in UrbanShade OS."
+      keywords={["terminal", "commands", "cli", "shell", "scripts"]}
       accentColor="teal"
       breadcrumbs={[{ label: "Developer", path: "/docs/dev" }]}
       prevPage={{ title: "Building Apps", path: "/docs/dev/apps" }}
@@ -39,8 +86,8 @@ export const customCommands = {
     >
       <DocHero
         icon={Terminal}
-        title="Terminal Command API"
-        subtitle="The UrbanShade terminal supports built-in commands and allows developers to register custom commands."
+        title="Terminal & Scripts"
+        subtitle="Built-in commands and the script runner for saving and executing multi-command sequences."
         accentColor="teal"
       />
 
@@ -69,16 +116,21 @@ export const customCommands = {
         </div>
       </DocSection>
 
-      <DocSection title="Creating Custom Commands" icon={Code} accentColor="teal">
+      <DocSection title="Terminal Scripts" icon={FileText} accentColor="teal" id="scripts">
         <p className="text-slate-400 mb-4">
-          Register custom commands by adding them to the terminal scripts file:
+          The script system (<code className="text-teal-400">src/lib/terminalScripts.ts</code>) lets you 
+          save, load, and run multi-command scripts. Scripts are persisted to localStorage.
         </p>
-        <DocCode title="Custom Command Example" code={customCommandExample} />
+        <DocCode title="TerminalScript Interface" code={scriptInterface} />
+      </DocSection>
+
+      <DocSection title="Script API" icon={Code} accentColor="teal" id="api">
+        <DocCode title="Using the Script Manager" code={scriptApiExample} />
         
-        <DocAlert variant="tip" title="Pro Tip">
-          Commands can return strings for simple output or JSX elements for rich formatting.
-          Access the virtual file system through the provided context object.
+        <DocAlert variant="tip" title="Default Scripts">
+          If no scripts are saved, <code>getScripts()</code> returns two built-in defaults:
         </DocAlert>
+        <DocCode title="Default Scripts" code={defaultScriptsExample} />
       </DocSection>
     </DocLayout>
   );
