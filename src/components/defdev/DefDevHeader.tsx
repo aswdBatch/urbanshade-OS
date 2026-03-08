@@ -133,8 +133,8 @@ const DefDevHeader = ({ onHandshakeStatusChange }: DefDevHeaderProps) => {
             <Bug className="w-6 h-6 text-amber-400" />
           </div>
           <div>
-            <h1 className="font-bold text-amber-400 text-lg tracking-wide">DEF-DEV 3.0 CONSOLE</h1>
-            <p className="text-xs text-amber-600/80 font-mono">UrbanShade Developer Environment</p>
+            <h1 className="font-bold text-amber-400 text-lg tracking-wide">DEF-DEV 3.5 CONSOLE</h1>
+            <p className="text-xs text-amber-600/80 font-mono">UrbanShade Developer Environment • V3.8</p>
           </div>
         </div>
         
