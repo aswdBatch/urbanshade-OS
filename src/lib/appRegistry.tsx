@@ -54,7 +54,7 @@ export const createAppRegistry = (openAppById: (id: string) => void): App[] => [
   { id: "antivirus", name: "Virus Scanner", icon: <Shield className="w-11 h-11" />, run: () => openAppById("antivirus"), downloadable: true },
   { id: "backup", name: "Data Backup", icon: <HardDrive className="w-11 h-11" />, run: () => openAppById("backup"), downloadable: true },
   { id: "compression", name: "File Compressor", icon: <FileArchive className="w-11 h-11" />, run: () => openAppById("compression"), downloadable: true },
-  { id: "pdf-reader", name: "PDF Viewer", icon: <PdfIcon className="w-11 h-11" />, run: () => openAppById("pdf-reader"), downloadable: true },
+  { id: "pdf-reader", name: "PDF Viewer", icon: <FileText className="w-11 h-11" />, run: () => openAppById("pdf-reader"), downloadable: true },
   { id: "spreadsheet", name: "Data Sheets", icon: <Sheet className="w-11 h-11" />, run: () => openAppById("spreadsheet"), downloadable: true },
   { id: "presentation", name: "Slide Maker", icon: <Presentation className="w-11 h-11" />, run: () => openAppById("presentation"), downloadable: true },
   { id: "video-editor", name: "Video Editor", icon: <Video className="w-11 h-11" />, run: () => openAppById("video-editor"), downloadable: true },
