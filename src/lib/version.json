@@ -1,11 +1,11 @@
 {
   "major": 3,
-  "minor": 6,
-  "patch": 1,
-  "codename": "Refined",
-  "build": 8610,
-  "fullVersion": "3.6.1",
-  "displayVersion": "V3.6.1",
-  "shortVersion": "3.6.1",
+  "minor": 7,
+  "patch": 0,
+  "codename": "Documented",
+  "build": 8710,
+  "fullVersion": "3.7.0",
+  "displayVersion": "V3.7.0",
+  "shortVersion": "3.7.0",
   "releaseDate": "2026-03-08"
 }
