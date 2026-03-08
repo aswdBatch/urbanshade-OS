@@ -532,7 +532,7 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
 
   const handleCriticalKill = (
     processName: string,
-    type: CrashType = "kernel",
+    type: SimpleCrashType = "kernel",
   ) => {
     setKilledProcess(processName);
     setCrashType(type);
@@ -543,7 +543,7 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
     }
   };
 
-  const handleCustomCrash = (title: string, message: string, type: CrashType) => {
+  const handleCustomCrash = (title: string, message: string, type: SimpleCrashType) => {
     setCustomCrashData({ title, message });
     setKilledProcess("admin.custom");
     setCrashType(type);
