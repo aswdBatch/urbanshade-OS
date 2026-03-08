@@ -1,4 +1,4 @@
-import { Keyboard, Power, Monitor, Terminal, Lightbulb, Search, Zap, Download, Printer } from "lucide-react";
+import { Keyboard, Power, Monitor, Terminal, Lightbulb, Search, Zap } from "lucide-react";
 import { DocLayout, DocHero, DocSection, DocAlert } from "@/components/docs";
 import { useState, useMemo, useRef, useEffect } from "react";
 
