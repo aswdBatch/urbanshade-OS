@@ -1,12 +1,12 @@
 import {
-  Folder, Terminal, Settings, Globe, FileText, Calculator, Music, Image, Clock, Cpu,
-  PenTool, Play, Archive, Search, ExternalLink, ChevronDown, Shield, Camera, MapPin,
+  Terminal, Settings, Globe, FileText, Calculator, Music, Image, Clock, Cpu,
+  Play, Search, ExternalLink, Shield, Camera, MapPin,
   BookOpen, Zap, Wind, Lock, Grid3x3, Radio, Mail, Bell, History, Package, Puzzle,
   Skull, MessageSquare, Gamepad2, Coins, Award, Dices, Timer, Cookie, HardDrive,
   Sheet, Video, Mic, Wifi, Key, ScanLine, Languages, BookOpenCheck, Globe2,
   MapPinned, Telescope, Beaker, Fingerprint, KeyRound, FileArchive, Monitor,
   Database, Activity, FileWarning, StickyNote, Palette, Volume2, CloudRain,
-  Calendar, Newspaper, Download, Boxes, Users
+  Calendar, Download, Boxes, Users, type LucideIcon
 } from "lucide-react";
 import { DocLayout, DocHero, DocSection, DocAlert } from "@/components/docs";
 import { useState, useMemo, useEffect, useRef } from "react";
