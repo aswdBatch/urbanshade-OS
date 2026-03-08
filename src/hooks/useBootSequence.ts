@@ -551,7 +551,7 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
   };
 
   const handleAdminCrash = (type: string) => {
-    const crashTypes: Record<string, CrashType> = {
+    const crashTypes: Record<string, SimpleCrashType> = {
       kernel: "kernel", bluescreen: "bluescreen", memory: "memory",
       corruption: "corruption", overload: "overload", virus: "virus",
     };

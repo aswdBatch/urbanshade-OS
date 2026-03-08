@@ -5,23 +5,10 @@ import {
   Lock, FileWarning, Grid3x3, ShoppingBag, StickyNote, Palette, Volume2,
   CloudRain, Clock as ClockIcon, Calendar, Newspaper, Key, HardDrive,
   FileArchive, Sheet, Presentation, Video, Image, Mic, Gamepad2, MessageSquare,
-  Monitor, Package, Star, Download, Spade, Award, Coins, Dices, Timer, Cookie,
+  Monitor, Package, Spade, Award, Coins, Dices, Timer, Cookie,
   Bell, History, Puzzle, Skull, ScanLine, Languages, BookOpenCheck, Globe2,
   MapPinned, Telescope, Beaker, Fingerprint, KeyRound,
 } from "lucide-react";
-
-// Icon aliases to avoid name collisions
-const PdfIcon = FileText;
-const DiskIcon = HardDrive;
-const SettingsIcon = () => <Zap className="w-11 h-11" />; // placeholder, replaced below
-const PerformanceIcon = Activity;
-const EncryptionIcon = Lock;
-const PhysicsIcon = CalcIcon;
-const VideoIcon = Video;
-const MailOpen = Mail;
-const FolderUp = FileText;
-const TerminalSquare = Terminal;
-const Network = Wifi;
 
 export const createAppRegistry = (openAppById: (id: string) => void): App[] => [
   { id: "app-store", name: "App Store", icon: <ShoppingBag className="w-11 h-11" />, run: () => openAppById("app-store"), minimalInclude: true },
