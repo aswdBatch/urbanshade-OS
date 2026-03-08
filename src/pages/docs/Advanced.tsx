@@ -1,6 +1,6 @@
-import { Cpu, RotateCcw, Shield, Wrench, Lock, Skull, Bug, Zap, ChevronRight, ExternalLink, AlertTriangle, CheckCircle, Settings, Monitor } from "lucide-react";
+import { Cpu, RotateCcw, Shield, Wrench, Skull, Bug, Zap, AlertTriangle, CheckCircle, Monitor } from "lucide-react";
 import { Link } from "react-router-dom";
-import { DocLayout, DocHero, DocSection, DocCard, DocAlert, DocCode } from "@/components/docs";
+import { DocLayout, DocHero, DocSection, DocAlert, DocCode } from "@/components/docs";
 
 const Advanced = () => {
   // BIOS settings reference
