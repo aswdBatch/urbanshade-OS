@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { CrashType, CrashData, triggerCrash } from "@/components/CrashScreen";
 import { BugcheckData, createBugcheck } from "@/components/BugcheckScreen";
+
+export type SimpleCrashType = "kernel" | "virus" | "bluescreen" | "memory" | "corruption" | "overload";
 import { actionDispatcher } from "@/lib/actionDispatcher";
 import { systemBus } from "@/lib/systemBus";
 import { commandQueue, QueuedCommand } from "@/lib/commandQueue";
