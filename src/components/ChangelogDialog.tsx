@@ -63,6 +63,29 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }
 
   const changelogs: Record<string, VersionData> = {
+    "3.7.0": {
+      icon: <Info className="w-5 h-5" />,
+      color: "from-blue-500 to-cyan-600",
+      tagline: "DOCUMENTED",
+      overview: "Complete documentation overhaul: every docs page rebuilt with interactive features, searchable indexes, visual guides, and 85+ app catalog. 9 phases of polish across the entire docs hub.",
+      sections: {
+        "📚 Docs Hub Upgrade": [
+          { text: "Animated hero with scanline effect, category filtering, read-time estimates", isHighlight: true },
+          { text: "85+ apps in the Application Catalog with search, badges, and open links" },
+          { text: "Terminal Guide with 35 searchable commands, copy buttons, and related commands" },
+          { text: "Keyboard Shortcuts with 22 keybinds, collapsible cheat sheet, and search" },
+        ],
+        "🔍 Interactive Features": [
+          { text: "Troubleshooting diagnostic wizard with decision tree and 20 solutions", isHighlight: true },
+          { text: "Getting Started boot sequence diagram and installation matrix" },
+          { text: "Advanced Features: BIOS settings table, Safe Mode comparison, 12 bugcheck codes" },
+        ],
+        "🛡️ Safety & Moderation Polish": [
+          { text: "5-layer protection infographic, reporting flow diagram, severity scale" },
+          { text: "Badge gallery with 8 badge types, trust hierarchy visualization, fake badge examples" },
+        ],
+      }
+    },
     "3.6.1": {
       icon: <Star className="w-5 h-5" />,
       color: "from-emerald-500 to-teal-600",
