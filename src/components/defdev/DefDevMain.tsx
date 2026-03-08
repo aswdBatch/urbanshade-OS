@@ -28,13 +28,12 @@ import FakeModTab from "./tabs/FakeModTab";
 import AdminTab from "./tabs/AdminTab";
 import ScreenPreviewTab from "./tabs/ScreenPreviewTab";
 
-import { useDefDevState, simplifyError } from "./hooks/useDefDevState";
+import { useDefDevState } from "./hooks/useDefDevState";
 import type { LogEntry, ActionEntry } from "./hooks/useDefDevState";
 
 const DefDevMain = () => {
   const state = useDefDevState();
-  const logIdRef = useRef(0);
-  const actionIdRef = useRef(0);
+  const sessionStartRef = useRef(Date.now());
   const sessionStartRef = useRef(Date.now());
 
   // Console capture

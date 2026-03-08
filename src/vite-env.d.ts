@@ -1,7 +1,5 @@
 /// <reference types="vite/client" />
 
-import type { SystemBus } from "@/lib/systemBus";
-
 interface UrbanShadeGlobals {
   adminPanel: () => void;
   maintenanceMode: () => void;
@@ -13,7 +11,7 @@ interface UrbanShadeGlobals {
     clearLockout: () => void;
     getStatus: () => { violations: number; warningLevel: string; isLockedOut: boolean };
   };
-  systemBus: SystemBus;
+  systemBus: any;
 }
 
 declare global {
