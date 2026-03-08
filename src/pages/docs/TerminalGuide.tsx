@@ -1,4 +1,4 @@
-import { Terminal, Folder, Cpu, Sparkles, HelpCircle, Zap, Search, ExternalLink, ChevronDown, ChevronRight, Copy, Check, Network, Hash } from "lucide-react";
+import { Terminal, Folder, Cpu, Sparkles, HelpCircle, Zap, Search, ExternalLink, ChevronDown, Copy, Check, Network, Hash } from "lucide-react";
 import { DocLayout, DocHero, DocSection, DocCode, DocAlert } from "@/components/docs";
 import { useState, useMemo, useRef, useEffect } from "react";
 
