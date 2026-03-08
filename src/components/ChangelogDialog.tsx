@@ -63,6 +63,39 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }
 
   const changelogs: Record<string, VersionData> = {
+    "3.8.0": {
+      icon: <Sparkles className="w-5 h-5" />,
+      color: "from-amber-500 to-orange-600",
+      tagline: "STREAMLINED",
+      overview: "Massive architecture overhaul: Index.tsx god component eliminated via useBootSequence hook, DEF-DEV console consolidated with shared state, 6 missing sidebar tabs restored, status bar added, keyboard shortcuts expanded, and window globals typed.",
+      sections: {
+        "🏗️ State Machine Extraction": [
+          { text: "Index.tsx reduced from 1082 lines to ~200 — now a thin renderer", isHighlight: true },
+          { text: "All boot/crash/shutdown state managed by useBootSequence hook" },
+          { text: "SiteLockedScreen extracted to its own component" },
+          { text: "useModerationGates hook handles fake mod state" },
+        ],
+        "🔧 DEF-DEV Consolidation": [
+          { text: "DefDevMain now uses shared useDefDevState hook — no duplicated state", isHighlight: true },
+          { text: "6 missing sidebar tabs restored: Boot Analyzer, Crash Analyzer, Memory, Components, Supabase, Mods" },
+          { text: "New status bar showing log counts, errors, storage usage, and session uptime" },
+          { text: "Header version updated to DEF-DEV 3.5 Console" },
+        ],
+        "⌨️ Keyboard Shortcuts": [
+          { text: "Ctrl+Shift+1-9 switches DEF-DEV tabs", isHighlight: true },
+          { text: "Ctrl+L clears console, Ctrl+K focuses search" },
+          { text: "Ctrl+Shift+T focuses terminal tab" },
+        ],
+        "🔒 Typed Window Globals": [
+          { text: "UrbanShadeGlobals interface in vite-env.d.ts", isHighlight: true },
+          { text: "adminPanel(), maintenanceMode(), devMode(), systemBus all typed" },
+        ],
+        "📋 System": [
+          { text: "Version bumped to 3.8.0 'Streamlined'", isHighlight: true },
+          { text: "Build number updated to 8720" },
+        ],
+      }
+    },
     "3.5.0": {
       icon: <Sparkles className="w-5 h-5" />,
       color: "from-purple-500 to-indigo-600",

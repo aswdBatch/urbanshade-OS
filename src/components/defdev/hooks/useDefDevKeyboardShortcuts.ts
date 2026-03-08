@@ -5,32 +5,69 @@ interface DefDevShortcuts {
   onCaptureSnapshot?: () => void;
   onToggleMockApi?: () => void;
   onSwitchTab?: (tab: string) => void;
+  onClearLogs?: () => void;
+  onFocusSearch?: () => void;
+  onFocusTerminal?: () => void;
 }
+
+const TAB_MAP: Record<string, string> = {
+  '1': 'console',
+  '2': 'terminal',
+  '3': 'actions',
+  '4': 'bugchecks',
+  '5': 'performance',
+  '6': 'network',
+  '7': 'storage',
+  '8': 'events',
+  '9': 'admin',
+};
 
 export const useDefDevKeyboardShortcuts = (callbacks: DefDevShortcuts) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Only trigger with Ctrl/Cmd + Shift
-      if (!(e.ctrlKey || e.metaKey) || !e.shiftKey) return;
+      const ctrl = e.ctrlKey || e.metaKey;
 
-      switch (e.key.toLowerCase()) {
-        case 'd': // Toggle floating DEF-DEV
+      // Ctrl+Shift shortcuts
+      if (ctrl && e.shiftKey) {
+        switch (e.key.toLowerCase()) {
+          case 'd':
+            e.preventDefault();
+            callbacks.onToggleFloating?.();
+            break;
+          case 's':
+            e.preventDefault();
+            callbacks.onCaptureSnapshot?.();
+            break;
+          case 'm':
+            e.preventDefault();
+            callbacks.onToggleMockApi?.();
+            break;
+          case 't':
+            e.preventDefault();
+            callbacks.onFocusTerminal?.();
+            callbacks.onSwitchTab?.('terminal');
+            break;
+        }
+        // Ctrl+Shift+Number for tabs
+        if (TAB_MAP[e.key]) {
           e.preventDefault();
-          callbacks.onToggleFloating?.();
-          break;
-        case 's': // Capture snapshot
-          e.preventDefault();
-          callbacks.onCaptureSnapshot?.();
-          break;
-        case 'm': // Toggle mock API
-          e.preventDefault();
-          callbacks.onToggleMockApi?.();
-          break;
-        case '1': callbacks.onSwitchTab?.('console'); break;
-        case '2': callbacks.onSwitchTab?.('performance'); break;
-        case '3': callbacks.onSwitchTab?.('network'); break;
-        case '4': callbacks.onSwitchTab?.('storage'); break;
-        case '5': callbacks.onSwitchTab?.('timetravel'); break;
+          callbacks.onSwitchTab?.(TAB_MAP[e.key]);
+        }
+        return;
+      }
+
+      // Ctrl-only shortcuts
+      if (ctrl && !e.shiftKey) {
+        switch (e.key.toLowerCase()) {
+          case 'l':
+            e.preventDefault();
+            callbacks.onClearLogs?.();
+            break;
+          case 'k':
+            e.preventDefault();
+            callbacks.onFocusSearch?.();
+            break;
+        }
       }
     };
 
