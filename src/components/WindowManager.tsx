@@ -1,5 +1,5 @@
 import { Window } from "./Window";
-import { App, WindowData } from "@/types/window";
+import { WindowData } from "@/types/window";
 import { FileExplorer } from "./apps/FileExplorer";
 import { SystemMonitor } from "./apps/SystemMonitor";
 import { PersonnelDirectory } from "./apps/PersonnelDirectory";

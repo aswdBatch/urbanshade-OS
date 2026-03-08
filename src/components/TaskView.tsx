@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { X, Plus, Monitor } from "lucide-react";
-import { App, WindowData } from "@/types/window";
+import { WindowData } from "@/types/window";
 
 interface TaskViewProps {
   open: boolean;
