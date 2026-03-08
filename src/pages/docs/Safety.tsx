@@ -1,4 +1,4 @@
-import { Shield, Award, Lock, Flag, Eye, ArrowRight, CheckCircle, AlertTriangle, Zap } from "lucide-react";
+import { Shield, Award, Lock, Flag, Eye, ArrowRight, AlertTriangle, Zap } from "lucide-react";
 import { DocLayout, DocHero, DocSection, DocCard, DocAlert } from "@/components/docs";
 
 const Safety = () => {
