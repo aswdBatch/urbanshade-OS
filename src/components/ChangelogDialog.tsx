@@ -63,91 +63,42 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }
 
   const changelogs: Record<string, VersionData> = {
-    "3.7.0": {
-      icon: <Info className="w-5 h-5" />,
-      color: "from-blue-500 to-cyan-600",
-      tagline: "DOCUMENTED",
-      overview: "Complete documentation overhaul: every docs page rebuilt with interactive features, searchable indexes, visual guides, and 85+ app catalog. 9 phases of polish across the entire docs hub.",
-      sections: {
-        "📚 Docs Hub Upgrade": [
-          { text: "Animated hero with scanline effect, category filtering, read-time estimates", isHighlight: true },
-          { text: "85+ apps in the Application Catalog with search, badges, and open links" },
-          { text: "Terminal Guide with 35 searchable commands, copy buttons, and related commands" },
-          { text: "Keyboard Shortcuts with 22 keybinds, collapsible cheat sheet, and search" },
-        ],
-        "🔍 Interactive Features": [
-          { text: "Troubleshooting diagnostic wizard with decision tree and 20 solutions", isHighlight: true },
-          { text: "Getting Started boot sequence diagram and installation matrix" },
-          { text: "Advanced Features: BIOS settings table, Safe Mode comparison, 12 bugcheck codes" },
-        ],
-        "🛡️ Safety & Moderation Polish": [
-          { text: "5-layer protection infographic, reporting flow diagram, severity scale" },
-          { text: "Badge gallery with 8 badge types, trust hierarchy visualization, fake badge examples" },
-        ],
-      }
-    },
-    "3.6.1": {
-      icon: <Star className="w-5 h-5" />,
-      color: "from-emerald-500 to-teal-600",
-      tagline: "REFINED",
-      overview: "Tech debt sweep: extracted reusable hooks and shared types, created centralized app registry, fixed TypeScript hygiene, updated changelog accuracy, and cleaned up dead code.",
-      sections: {
-        "🏗️ Architecture Refactor": [
-          { text: "Extracted useBootSequence hook — all boot/crash/shutdown state in one place", isHighlight: true },
-          { text: "Created shared App and WindowData types in src/types/window.ts" },
-          { text: "Centralized app registry in src/lib/appRegistry.tsx (70+ apps)" },
-          { text: "Extracted useModerationGates hook for fake mod testing state" },
-        ],
-        "🧹 Code Quality": [
-          { text: "Removed duplicate WindowData interfaces across 5 files" },
-          { text: "Typed crashTypes as Record<string, CrashType> instead of any" },
-          { text: "Cleaned up unused icon aliases and dead VIP code" },
-        ],
-      }
-    },
-    "3.6.0": {
-      icon: <Shield className="w-5 h-5" />,
-      color: "from-amber-500 to-orange-600",
-      tagline: "ENFORCED",
-      overview: "Moderation gates overhauled: warnings and temp bans now show dialog popups requiring checkbox acknowledgment before continuing. Ban appeals include styled HTML emails with auth verification. Moderators can preview all screens in DEF-DEV.",
-      sections: {
-        "⚠️ Warning Acknowledgment": [
-          { text: "Warnings now show a dialog popup — users must check 'I Understand' to continue", isHighlight: true },
-          { text: "Unacknowledged warnings tracked per-user via localStorage + Supabase" },
-          { text: "Amber-themed dialog matching the OS moderation style" },
-        ],
-        "🔒 Temp Ban Gate": [
-          { text: "Temporary suspensions now require dialog acknowledgment before accessing the OS", isHighlight: true },
-          { text: "Dialog popup with checkbox replaces the old dismissible toast" },
-          { text: "Shows time remaining, disabled features, and reason" },
-        ],
-        "📝 Ban Appeal Improvements": [
-          { text: "Added a textarea for users to write their appeal message", isHighlight: true },
-          { text: "Both username and message required to submit appeal" },
-          { text: "Styled HTML email template matching UrbanShade dark/red aesthetic" },
-          { text: "Edge function now authenticates users and verifies active ban before sending" },
-        ],
-        "🖥️ Screen Preview Tab (DEF-DEV)": [
-          { text: "New 'Screens' tab in DEF-DEV Tools for moderators", isHighlight: true },
-          { text: "Preview permanent ban, temp ban, and warning screens with mock data" },
-          { text: "Renders actual production components with close button overlay" },
-        ],
-        "🎭 FakeMod Update": [
-          { text: "FAKE_WARN now shows the real warning acknowledgment dialog instead of a toast" },
-        ],
-      }
-    },
     "3.5.0": {
       icon: <Sparkles className="w-5 h-5" />,
       color: "from-purple-500 to-indigo-600",
       tagline: "POLISHED",
-      overview: "The polish update: site lock now works for real, legacy DEF-DEV monolith removed, enhanced developer console, version consistency pass, and documentation improvements.",
+      overview: "The polish update: site lock, DEF-DEV cleanup, documentation overhaul, architecture refactor, moderation gates, ban appeal emails, and developer console enhancements — all rolled into one massive release.",
       sections: {
         "🔒 Site Lock (Working!)": [
           { text: "Admin site lock now persists to Supabase and blocks non-admin users", isHighlight: true },
           { text: "Locked screen shown to all visitors when site is locked" },
           { text: "Admins bypass the lock automatically" },
           { text: "Lock status synced in real-time (30s polling)" },
+        ],
+        "📚 Documentation Overhaul": [
+          { text: "Animated hero with scanline effect, category filtering, read-time estimates", isHighlight: true },
+          { text: "85+ apps in the Application Catalog with search, badges, and open links" },
+          { text: "Terminal Guide with 35 searchable commands, copy buttons, and related commands" },
+          { text: "Keyboard Shortcuts with 22 keybinds, collapsible cheat sheet, and search" },
+          { text: "Troubleshooting diagnostic wizard with decision tree and 20 solutions" },
+          { text: "Getting Started boot sequence diagram and installation matrix" },
+          { text: "5-layer protection infographic, reporting flow diagram, severity scale" },
+          { text: "Badge gallery with 8 badge types, trust hierarchy visualization" },
+        ],
+        "🏗️ Architecture Refactor": [
+          { text: "Extracted useBootSequence hook — all boot/crash/shutdown state in one place", isHighlight: true },
+          { text: "Created shared App and WindowData types in src/types/window.ts" },
+          { text: "Centralized app registry in src/lib/appRegistry.tsx (70+ apps)" },
+          { text: "Extracted useModerationGates hook for fake mod testing state" },
+          { text: "Removed duplicate WindowData interfaces across 5 files" },
+          { text: "Cleaned up unused icon aliases and dead VIP code" },
+        ],
+        "⚠️ Moderation Gates": [
+          { text: "Warnings now show a dialog popup — users must check 'I Understand' to continue", isHighlight: true },
+          { text: "Temporary suspensions require dialog acknowledgment before accessing the OS" },
+          { text: "Ban appeal textarea with styled HTML email template" },
+          { text: "Edge function authenticates users and verifies active ban before sending" },
+          { text: "New 'Screens' tab in DEF-DEV for previewing ban/warn screens" },
         ],
         "🧹 DEF-DEV Cleanup": [
           { text: "Removed legacy 1500-line DevMode.tsx monolith", isHighlight: true },
