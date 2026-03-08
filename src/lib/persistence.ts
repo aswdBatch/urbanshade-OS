@@ -1,5 +1,5 @@
 // Persistence system for saving application state
-export const saveState = (key: string, data: any) => {
+export const saveState = <T>(key: string, data: T) => {
   try {
     localStorage.setItem(`urbanshade_${key}`, JSON.stringify(data));
   } catch (error) {
