@@ -280,7 +280,7 @@ export const UserSelectionScreen = ({ onLogin, onShutdown, onRestart }: UserSele
                       placeholder="Enter password"
                       autoFocus
                       disabled={loading}
-                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-900/60 border border-slate-600/50 text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all"
+                      className={`w-full pl-12 pr-4 py-3 rounded-xl bg-slate-900/60 border border-slate-600/50 text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all ${error ? 'animate-shake' : ''}`}
                     />
                   </div>
 
