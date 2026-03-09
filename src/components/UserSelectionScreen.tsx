@@ -166,10 +166,10 @@ export const UserSelectionScreen = ({ onLogin, onShutdown, onRestart }: UserSele
               key={user.id}
               onClick={() => handleUserSelect(user.id)}
               disabled={loading}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left w-64 transition-all ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left w-64 transition-all duration-200 ${
                 selectedUser === user.id
                   ? "bg-cyan-500/20 border-cyan-500/50 scale-[1.02]"
-                  : "bg-slate-800/60 border-slate-700/50 hover:bg-slate-700/60 hover:border-cyan-500/30"
+                  : "bg-slate-800/60 border-slate-700/50 hover:bg-slate-700/60 hover:border-cyan-500/30 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/5"
               }`}
             >
               <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border ${
