@@ -18,6 +18,22 @@ interface StartMenuProps {
   onLogout: () => void;
 }
 
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+};
+
+const formatDate = () => {
+  return new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
 export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown, onLogout }: StartMenuProps) => {
   const [search, setSearch] = useState("");
   const [rebootMenuOpen, setRebootMenuOpen] = useState(false);
@@ -26,15 +42,14 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
   const searchRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  // User data
   const currentUserData = JSON.parse(localStorage.getItem("urbanshade_current_user") || "{}");
   const userName = currentUserData.name || currentUserData.username || "User";
+  const firstName = userName.split(" ")[0];
   const userRole = currentUserData.role || "User";
   const profileIconName = localStorage.getItem("urbanshade_profile_icon") || "User";
   const profileColor = localStorage.getItem("urbanshade_profile_color") || "#00d4ff";
   const ProfileIcon = (icons as any)[profileIconName] || icons.User;
 
-  // Grouped apps for right panel (alphabetical)
   const groupedApps = useMemo(() => {
     const sorted = [...apps].sort((a, b) => a.name.localeCompare(b.name));
     const groups: Record<string, App[]> = {};
@@ -46,7 +61,6 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
     return groups;
   }, [apps]);
 
-  // Search filtering
   const filteredApps = useMemo(() => {
     if (!search) return [];
     return apps.filter(app =>
@@ -55,8 +69,6 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
     );
   }, [apps, search]);
 
-
-  // Close with animation
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
@@ -100,7 +112,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
   return (
     <div
       ref={menuRef}
-      className={`fixed left-4 top-[56px] w-[480px] rounded-xl bg-background/95 backdrop-blur-2xl border border-border/40 z-[9999] shadow-2xl overflow-hidden ${isClosing ? 'animate-start-menu-out' : 'animate-start-menu-in'}`}
+      className={`fixed left-4 top-[56px] w-[520px] rounded-xl bg-background/95 backdrop-blur-2xl border border-border/40 z-[9999] shadow-2xl overflow-hidden ${isClosing ? 'animate-start-menu-out' : 'animate-start-menu-in'}`}
     >
       {/* Search */}
       <div className="p-4 pb-3">
@@ -125,9 +137,16 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
         </div>
       </div>
 
+      {/* Greeting */}
+      {!isSearching && (
+        <div className="px-5 pb-3">
+          <h2 className="text-lg font-semibold text-foreground">{getGreeting()}, {firstName}</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">{formatDate()}</p>
+        </div>
+      )}
+
       {/* Main Content */}
       {isSearching ? (
-        /* Search Results */
         <ScrollArea className="h-[360px] px-4 pb-2">
           <div className="space-y-1">
             {filteredApps.length === 0 && (
@@ -149,28 +168,29 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
           </div>
         </ScrollArea>
       ) : (
-        /* All Apps A-Z */
-        <ScrollArea className="h-[400px] border-t border-border/20">
-          <div className="px-2 pb-2">
+        <ScrollArea className="h-[360px] border-t border-border/20">
+          <div className="px-3 pb-3 pt-1">
             {Object.entries(groupedApps).map(([letter, letterApps]) => (
               <div key={letter}>
-                <div className="px-2 py-1.5 sticky top-0 bg-background/90 backdrop-blur-sm z-10">
+                <div className="px-1 py-1.5 sticky top-0 bg-background/90 backdrop-blur-sm z-10">
                   <span className="text-[11px] font-bold text-primary/80">{letter}</span>
                 </div>
-                {letterApps.map((app) => (
-                  <button
-                    key={app.id}
-                    onClick={() => handleOpenApp(app)}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/50 transition-all text-left group active:scale-[0.98]"
-                  >
-                    <div className="w-7 h-7 flex items-center justify-center text-foreground/60 group-hover:text-primary shrink-0 [&>svg]:w-5 [&>svg]:h-5 transition-colors">
-                      {app.icon}
-                    </div>
-                    <span className="text-sm text-foreground/80 group-hover:text-foreground truncate transition-colors">
-                      {app.name}
-                    </span>
-                  </button>
-                ))}
+                <div className="grid grid-cols-4 gap-1.5">
+                  {letterApps.map((app) => (
+                    <button
+                      key={app.id}
+                      onClick={() => handleOpenApp(app)}
+                      className="flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-xl hover:bg-muted/50 transition-all group active:scale-[0.95] hover:scale-[1.03]"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors shrink-0 [&>svg]:w-5 [&>svg]:h-5 text-primary">
+                        {app.icon}
+                      </div>
+                      <span className="text-[11px] font-medium text-foreground/70 group-hover:text-foreground text-center leading-tight line-clamp-2 w-full transition-colors">
+                        {app.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
