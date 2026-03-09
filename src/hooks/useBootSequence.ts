@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getShortVersion, getBuildNumber } from "@/lib/versionInfo";
 import { toast } from "sonner";
 import { CrashType, CrashData, triggerCrash } from "@/components/CrashScreen";
 import { BugcheckData, createBugcheck } from "@/components/BugcheckScreen";
@@ -430,6 +431,19 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
       unsubCloseAdmin();
     };
   }, []);
+
+  // ── Changelog auto-open ──
+  useEffect(() => {
+    if (loggedIn && !crashed && !lockdownMode) {
+      const lastSeenVersion = localStorage.getItem("urbanshade_last_seen_version");
+      const lastSeenBuild = localStorage.getItem("urbanshade_last_seen_build");
+      const isNewVersion = lastSeenVersion !== getShortVersion();
+      const isNewBuild = lastSeenBuild !== String(getBuildNumber());
+      if (isNewVersion || isNewBuild) {
+        setTimeout(() => setShowChangelog(true), 500);
+      }
+    }
+  }, [loggedIn, crashed, lockdownMode]);
 
   // ── Tour check ──
   useEffect(() => {
