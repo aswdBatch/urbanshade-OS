@@ -5,7 +5,6 @@ import { VERSION } from "@/lib/versionInfo";
 // Lazy imports for all app components
 import { FileExplorer } from "./apps/FileExplorer";
 import { SystemMonitor } from "./apps/SystemMonitor";
-import { PersonnelDirectory } from "./apps/PersonnelDirectory";
 import { ActionLogger } from "./apps/ActionLogger";
 import { NetworkScanner } from "./apps/NetworkScanner";
 import { Terminal } from "./apps/Terminal";
