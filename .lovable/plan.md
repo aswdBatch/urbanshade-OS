@@ -1,27 +1,22 @@
 
+# Plan: V3.5.0 Improvement Sweep (Architectural)
 
-# Start Menu: Keyboard Navigation + Polish & Animations
+## Completed
 
-## Changes -- `src/components/StartMenu.tsx`
+### Phase 1: Split useBootSequence (620 → ~300 lines)
+- ✅ Extracted `useBootKeyboard.ts` — keyboard shortcuts with `useRef` keyBuffer (no re-render storm)
+- ✅ Extracted `useBootConsoleCommands.ts` — window.adminPanel/maintenanceMode/normalMode/devMode
+- ✅ Extracted `useCommandQueueHandler.ts` — 150-line command queue switch block
+- ✅ Separated admin setup check into its own `useEffect`
 
-### 1. Keyboard Navigation
-- Track a `focusedIndex` state for the currently highlighted tile
-- Arrow keys (Up/Down/Left/Right) move focus through the grid (4 columns, so Left/Right move by 1, Up/Down move by 4)
-- Enter opens the focused app, Escape closes the menu
-- When searching, Up/Down navigate the filtered list, Enter opens highlighted result
-- Visual focus ring on the active tile (`ring-2 ring-primary/60`)
-- Reset `focusedIndex` when search changes or menu opens
+### Phase 2: Complete Window Global Types
+- ✅ Added `__URBANSHADE_VERBOSE__`, `__URBANSHADE_WIFI_DISABLED__`, `__URBANSHADE_OFFLINE_MODE__`, `__URBANSHADE_TELEMETRY__`, `__URBANSHADE_AUTO_UPDATES__` to `vite-env.d.ts`
+- ✅ Added typed `systemBus`, `devStorage`, `webkitAudioContext`
+- ✅ Replaced `(window as any)` in `systemBus.ts` and `devStorage.ts`
 
-### 2. Polish & Animations
-- **Tile entrance**: Stagger-in animation on each tile when the menu opens -- use `animate-stagger-in` with incremental `animationDelay` based on index
-- **Hover glow**: Add a subtle `shadow-primary/10` on hover for tiles, making the icon background brighten more smoothly
-- **Letter headers**: Fade in with slight delay per group
-- **Search results**: Already have stagger-in -- keep as-is
-- **Footer buttons**: Add `active:scale-95` for tactile press feedback
-- **Greeting**: Fade-in animation on the greeting text
+### Phase 3: Remove Dead Changelog Auto-Open
+- ✅ Removed redundant `useEffect` from `ChangelogDialog.tsx` (was dead code when controlled)
+- ✅ Removed unused `useEffect` import
 
-### 3. Tailwind Config
-- Add `animate-stagger-in` keyframe if not already present (check first, may already exist from prior work)
-
-All changes contained to `src/components/StartMenu.tsx` and potentially `tailwind.config.ts` for any missing keyframes.
-
+### Phase 4: Fix keyBuffer Re-render Storm
+- ✅ Converted `keyBuffer` from `useState` to `useRef` in `useBootKeyboard.ts`

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { App } from "@/types/window";
 import { 
@@ -34,10 +34,13 @@ const formatDate = () => {
   });
 };
 
+const GRID_COLS = 4;
+
 export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown, onLogout }: StartMenuProps) => {
   const [search, setSearch] = useState("");
   const [rebootMenuOpen, setRebootMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const menuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -61,6 +64,11 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
     return groups;
   }, [apps]);
 
+  // Flat list of all apps in display order for keyboard navigation
+  const flatApps = useMemo(() => {
+    return Object.values(groupedApps).flat();
+  }, [groupedApps]);
+
   const filteredApps = useMemo(() => {
     if (!search) return [];
     return apps.filter(app =>
@@ -69,13 +77,76 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
     );
   }, [apps, search]);
 
-  const handleClose = () => {
+  const isSearching = search.length > 0;
+  const navApps = isSearching ? filteredApps : flatApps;
+
+  const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       setIsClosing(false);
       onClose();
     }, 180);
-  };
+  }, [onClose]);
+
+  const handleOpenApp = useCallback((app: App) => {
+    onOpenApp(app);
+    handleClose();
+  }, [onOpenApp, handleClose]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const count = navApps.length;
+      if (count === 0 && e.key !== "Escape") return;
+
+      switch (e.key) {
+        case "Escape":
+          e.preventDefault();
+          handleClose();
+          break;
+        case "ArrowDown":
+          e.preventDefault();
+          setFocusedIndex(prev => {
+            if (isSearching) return Math.min(prev + 1, count - 1);
+            return Math.min(prev + GRID_COLS, count - 1);
+          });
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setFocusedIndex(prev => {
+            if (isSearching) return Math.max(prev - 1, 0);
+            return Math.max(prev - GRID_COLS, 0);
+          });
+          break;
+        case "ArrowRight":
+          if (!isSearching) {
+            e.preventDefault();
+            setFocusedIndex(prev => Math.min(prev + 1, count - 1));
+          }
+          break;
+        case "ArrowLeft":
+          if (!isSearching) {
+            e.preventDefault();
+            setFocusedIndex(prev => Math.max(prev - 1, 0));
+          }
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (focusedIndex >= 0 && focusedIndex < count) {
+            handleOpenApp(navApps[focusedIndex]);
+          }
+          break;
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open, navApps, focusedIndex, isSearching, handleClose, handleOpenApp]);
+
+  // Reset focus when search changes
+  useEffect(() => {
+    setFocusedIndex(-1);
+  }, [search]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -91,23 +162,21 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
       setTimeout(() => searchRef.current?.focus(), 100);
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [open, onClose]);
+  }, [open, handleClose]);
 
   useEffect(() => {
     if (!open) {
       setSearch("");
       setIsClosing(false);
+      setFocusedIndex(-1);
     }
   }, [open]);
 
   if (!open && !isClosing) return null;
 
-  const handleOpenApp = (app: App) => {
-    onOpenApp(app);
-    handleClose();
-  };
-
-  const isSearching = search.length > 0;
+  // Calculate global index for a tile given its letter group and position
+  let globalIndexCounter = 0;
+  const getGlobalIndex = () => globalIndexCounter++;
 
   return (
     <div
@@ -139,7 +208,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
 
       {/* Greeting */}
       {!isSearching && (
-        <div className="px-5 pb-3">
+        <div className="px-5 pb-3 animate-fade-in">
           <h2 className="text-lg font-semibold text-foreground">{getGreeting()}, {firstName}</h2>
           <p className="text-xs text-muted-foreground mt-0.5">{formatDate()}</p>
         </div>
@@ -156,7 +225,8 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
               <button
                 key={app.id}
                 onClick={() => handleOpenApp(app)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/60 transition-all text-left group active:scale-[0.98] animate-stagger-in"
+                onMouseEnter={() => setFocusedIndex(i)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/60 transition-all text-left group active:scale-[0.98] animate-stagger-in ${focusedIndex === i ? 'bg-muted/60 ring-2 ring-primary/40' : ''}`}
                 style={{ animationDelay: `${i * 25}ms` }}
               >
                 <div className="w-8 h-8 flex items-center justify-center text-primary shrink-0 [&>svg]:w-5 [&>svg]:h-5">
@@ -170,26 +240,40 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
       ) : (
         <ScrollArea className="h-[360px] border-t border-border/20">
           <div className="px-3 pb-3 pt-1">
-            {Object.entries(groupedApps).map(([letter, letterApps]) => (
+            {Object.entries(groupedApps).map(([letter, letterApps], groupIdx) => (
               <div key={letter}>
-                <div className="px-1 py-1.5 sticky top-0 bg-background/90 backdrop-blur-sm z-10">
+                <div
+                  className="px-1 py-1.5 sticky top-0 bg-background/90 backdrop-blur-sm z-10 animate-fade-in"
+                  style={{ animationDelay: `${groupIdx * 30}ms` }}
+                >
                   <span className="text-[11px] font-bold text-primary/80">{letter}</span>
                 </div>
                 <div className="grid grid-cols-4 gap-1.5">
-                  {letterApps.map((app) => (
-                    <button
-                      key={app.id}
-                      onClick={() => handleOpenApp(app)}
-                      className="flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-xl hover:bg-muted/50 transition-all group active:scale-[0.95] hover:scale-[1.03]"
-                    >
-                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors shrink-0 [&>svg]:w-5 [&>svg]:h-5 text-primary">
-                        {app.icon}
-                      </div>
-                      <span className="text-[11px] font-medium text-foreground/70 group-hover:text-foreground text-center leading-tight line-clamp-2 w-full transition-colors">
-                        {app.name}
-                      </span>
-                    </button>
-                  ))}
+                  {letterApps.map((app) => {
+                    const idx = getGlobalIndex();
+                    return (
+                      <button
+                        key={app.id}
+                        onClick={() => handleOpenApp(app)}
+                        onMouseEnter={() => setFocusedIndex(idx)}
+                        className={`flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-xl transition-all duration-150 group active:scale-[0.93] hover:scale-[1.03] animate-stagger-in ${
+                          focusedIndex === idx
+                            ? 'bg-muted/60 ring-2 ring-primary/40 scale-[1.03]'
+                            : 'hover:bg-muted/50 hover:shadow-[0_0_12px_hsl(var(--primary)/0.08)]'
+                        }`}
+                        style={{ animationDelay: `${idx * 20}ms` }}
+                      >
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-150 shrink-0 [&>svg]:w-5 [&>svg]:h-5 text-primary ${
+                          focusedIndex === idx ? 'bg-primary/25' : 'bg-primary/10 group-hover:bg-primary/20'
+                        }`}>
+                          {app.icon}
+                        </div>
+                        <span className="text-[11px] font-medium text-foreground/70 group-hover:text-foreground text-center leading-tight line-clamp-2 w-full transition-colors">
+                          {app.name}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -204,7 +288,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
             navigate("/acc-manage");
             handleClose();
           }}
-          className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-muted/50 transition-all"
+          className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-muted/50 transition-all active:scale-95"
         >
           <div 
             className="w-8 h-8 rounded-full flex items-center justify-center"
@@ -221,7 +305,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
         <div className="flex items-center gap-1">
           <button 
             onClick={() => { onShutdown(); handleClose(); }}
-            className="w-9 h-9 rounded-lg hover:bg-muted/50 flex items-center justify-center transition-all group"
+            className="w-9 h-9 rounded-lg hover:bg-muted/50 flex items-center justify-center transition-all group active:scale-90"
             title="Shut down"
           >
             <Power className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
@@ -230,7 +314,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
           <Popover open={rebootMenuOpen} onOpenChange={setRebootMenuOpen}>
             <PopoverTrigger asChild>
               <button 
-                className="w-9 h-9 rounded-lg hover:bg-muted/50 flex items-center justify-center transition-all group"
+                className="w-9 h-9 rounded-lg hover:bg-muted/50 flex items-center justify-center transition-all group active:scale-90"
                 title="Restart options"
               >
                 <RotateCcw className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
@@ -250,7 +334,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
                   <button
                     key={item.label}
                     onClick={item.action}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/50 transition-all text-left group"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/50 transition-all text-left group active:scale-95"
                   >
                     <item.icon className="w-4 h-4 text-primary" />
                     <div>
@@ -265,7 +349,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
           
           <button 
             onClick={() => { onLogout(); handleClose(); }}
-            className="w-9 h-9 rounded-lg hover:bg-muted/50 flex items-center justify-center transition-all group"
+            className="w-9 h-9 rounded-lg hover:bg-muted/50 flex items-center justify-center transition-all group active:scale-90"
             title="Sign out"
           >
             <LogOut className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
