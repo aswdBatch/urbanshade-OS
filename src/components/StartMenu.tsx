@@ -2,11 +2,9 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { App } from "@/types/window";
 import { 
-  LogOut, RotateCcw, Power, Shield, HardDrive, Clock, X, 
-  Search, ChevronRight, Zap
+  LogOut, RotateCcw, Power, Shield, HardDrive, X, Search
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { useRecentFiles, RecentFile } from "@/hooks/useRecentFiles";
 import { ScrollArea } from "./ui/scroll-area";
 import * as icons from "lucide-react";
 
@@ -26,7 +24,6 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
   const [isClosing, setIsClosing] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
-  const { recentFiles, addRecent, clearRecent } = useRecentFiles();
   const navigate = useNavigate();
 
   // User data
@@ -58,14 +55,6 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
     );
   }, [apps, search]);
 
-  const pinnedApps = apps.slice(0, 9);
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  };
 
   // Close with animation
   const handleClose = () => {
@@ -102,25 +91,8 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
   if (!open && !isClosing) return null;
 
   const handleOpenApp = (app: App) => {
-    addRecent({ name: app.name, type: "app", appId: app.id });
     onOpenApp(app);
     handleClose();
-  };
-
-  const getRecentIcon = (item: RecentFile) => {
-    if (item.type === "app") {
-      const app = apps.find(a => a.id === item.appId);
-      return app?.icon || <Zap className="w-4 h-4" />;
-    }
-    return <Zap className="w-4 h-4" />;
-  };
-
-  const formatRecentTime = (timestamp: number) => {
-    const diff = Date.now() - timestamp;
-    if (diff < 60000) return "Just now";
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-    return new Date(timestamp).toLocaleDateString();
   };
 
   const isSearching = search.length > 0;
@@ -128,7 +100,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
   return (
     <div
       ref={menuRef}
-      className={`fixed left-4 top-[56px] w-[640px] rounded-xl bg-background/95 backdrop-blur-2xl border border-border/40 z-[9999] shadow-2xl overflow-hidden ${isClosing ? 'animate-start-menu-out' : 'animate-start-menu-in'}`}
+      className={`fixed left-4 top-[56px] w-[480px] rounded-xl bg-background/95 backdrop-blur-2xl border border-border/40 z-[9999] shadow-2xl overflow-hidden ${isClosing ? 'animate-start-menu-out' : 'animate-start-menu-in'}`}
     >
       {/* Search */}
       <div className="p-4 pb-3">
@@ -177,106 +149,32 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
           </div>
         </ScrollArea>
       ) : (
-        /* Two-Panel Layout */
-        <div className="flex h-[360px] border-t border-border/20">
-          {/* Left Panel: Pinned + Recommended */}
-          <div className="w-[300px] border-r border-border/20 flex flex-col">
-            <ScrollArea className="flex-1">
-              <div className="p-4 pt-3">
-                <div className="mb-4">
-                  <h2 className="text-lg font-semibold text-foreground">{getGreeting()}, {userName.split(' ')[0]} 👋</h2>
-                  <p className="text-xs text-muted-foreground mt-0.5">{new Date().toLocaleDateString("en-US", { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+        /* All Apps A-Z */
+        <ScrollArea className="h-[400px] border-t border-border/20">
+          <div className="px-2 pb-2">
+            {Object.entries(groupedApps).map(([letter, letterApps]) => (
+              <div key={letter}>
+                <div className="px-2 py-1.5 sticky top-0 bg-background/90 backdrop-blur-sm z-10">
+                  <span className="text-[11px] font-bold text-primary/80">{letter}</span>
                 </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {pinnedApps.map((app, i) => (
-                    <button
-                      key={app.id}
-                      onClick={() => handleOpenApp(app)}
-                      className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-muted/60 transition-all group active:scale-95 animate-stagger-in"
-                      style={{ animationDelay: `${i * 15}ms` }}
-                    >
-                      <div className="w-12 h-12 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-200 [&>svg]:w-7 [&>svg]:h-7">
-                        {app.icon}
-                      </div>
-                      <span className="text-[11px] text-center text-foreground/80 leading-tight line-clamp-2 group-hover:text-foreground">
-                        {app.name}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Recommended / Recent */}
-                {recentFiles.length > 0 && (
-                  <div className="mt-4 pt-3 border-t border-border/20">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-                        <Clock className="w-3 h-3" />
-                        Recommended
-                      </h3>
-                      <button onClick={clearRecent} className="text-[10px] text-muted-foreground hover:text-foreground transition-colors">
-                        Clear
-                      </button>
+                {letterApps.map((app) => (
+                  <button
+                    key={app.id}
+                    onClick={() => handleOpenApp(app)}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/50 transition-all text-left group active:scale-[0.98]"
+                  >
+                    <div className="w-7 h-7 flex items-center justify-center text-foreground/60 group-hover:text-primary shrink-0 [&>svg]:w-5 [&>svg]:h-5 transition-colors">
+                      {app.icon}
                     </div>
-                    <div className="space-y-1">
-                      {recentFiles.slice(0, 3).map((item) => (
-                        <button
-                          key={item.id}
-                          onClick={() => {
-                            if (item.appId) {
-                              const app = apps.find(a => a.id === item.appId);
-                              if (app) handleOpenApp(app);
-                            }
-                          }}
-                          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-muted/50 transition-all text-left"
-                        >
-                          <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-primary shrink-0 [&>svg]:w-3.5 [&>svg]:h-3.5">
-                            {getRecentIcon(item)}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs text-foreground truncate">{item.name}</p>
-                            <p className="text-[10px] text-muted-foreground">{formatRecentTime(item.timestamp)}</p>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-          </div>
-
-          {/* Right Panel: All Apps A-Z */}
-          <div className="flex-1 flex flex-col min-w-0">
-            <div className="px-4 pt-3 pb-2">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">All Apps</h3>
-            </div>
-            <ScrollArea className="flex-1">
-              <div className="px-2 pb-2">
-                {Object.entries(groupedApps).map(([letter, letterApps]) => (
-                  <div key={letter}>
-                    <div className="px-2 py-1.5 sticky top-0 bg-background/90 backdrop-blur-sm z-10">
-                      <span className="text-[11px] font-bold text-primary/80">{letter}</span>
-                    </div>
-                    {letterApps.map((app) => (
-                      <button
-                        key={app.id}
-                        onClick={() => handleOpenApp(app)}
-                        className="w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg hover:bg-muted/50 transition-all text-left group active:scale-[0.98]"
-                      >
-                        <div className="w-5 h-5 flex items-center justify-center text-foreground/60 group-hover:text-primary shrink-0 [&>svg]:w-4 [&>svg]:h-4 transition-colors">
-                          {app.icon}
-                        </div>
-                        <span className="text-[13px] text-foreground/80 group-hover:text-foreground truncate transition-colors">
-                          {app.name}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
+                    <span className="text-sm text-foreground/80 group-hover:text-foreground truncate transition-colors">
+                      {app.name}
+                    </span>
+                  </button>
                 ))}
               </div>
-            </ScrollArea>
+            ))}
           </div>
-        </div>
+        </ScrollArea>
       )}
 
       {/* Footer */}
