@@ -115,5 +115,5 @@ class SystemBus {
 // Singleton instance
 export const systemBus = new SystemBus();
 
-// Make available globally for debugging
-(window as any).systemBus = systemBus;
+// Make available globally for debugging (typed via vite-env.d.ts)
+(window as Window).systemBus = systemBus;

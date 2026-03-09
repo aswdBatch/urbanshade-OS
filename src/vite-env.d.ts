@@ -15,5 +15,14 @@ interface Window {
   normalMode?: () => void;
   devMode?: () => void;
   naviSecurity?: NaviSecurityGlobals;
-  systemBus?: any;
+  systemBus?: import("@/lib/systemBus").SystemBus;
+  devStorage?: typeof import("@/lib/devStorage").devStorage;
+  webkitAudioContext?: typeof AudioContext;
+
+  // UrbanShade feature flags (set in Settings)
+  __URBANSHADE_VERBOSE__?: boolean;
+  __URBANSHADE_WIFI_DISABLED__?: boolean;
+  __URBANSHADE_OFFLINE_MODE__?: boolean;
+  __URBANSHADE_TELEMETRY__?: boolean;
+  __URBANSHADE_AUTO_UPDATES__?: boolean;
 }

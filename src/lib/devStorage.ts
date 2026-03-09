@@ -84,5 +84,5 @@ export const devStorage = {
   }
 };
 
-// Make available globally for debugging
-(window as any).devStorage = devStorage;
+// Make available globally for debugging (typed via vite-env.d.ts)
+(window as Window).devStorage = devStorage;
