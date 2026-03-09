@@ -117,7 +117,9 @@ export const Taskbar = ({
       </div>
 
       {/* Top Taskbar */}
-      <div className="fixed left-0 right-0 top-0 h-12 flex justify-between items-center px-4 z-[800] bg-background/40 backdrop-blur-xl border-b border-primary/10">
+      <div className="fixed left-0 right-0 top-0 h-12 flex justify-between items-center px-4 z-[800] bg-background/40 backdrop-blur-xl border-b border-primary/10 relative">
+        {/* Glass edge highlight */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/15 to-transparent" />
         <div className="flex items-center gap-2">
           <button onClick={onStartClick} data-start-button className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all duration-200">
             <img src="/favicon.svg" alt="U" className="w-7 h-7" />
