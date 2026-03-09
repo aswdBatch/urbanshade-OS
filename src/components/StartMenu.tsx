@@ -97,7 +97,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
   return (
     <div
       ref={menuRef}
-      className="fixed left-4 top-[56px] w-[580px] rounded-xl bg-background/95 backdrop-blur-2xl border border-border/40 z-[9999] shadow-2xl overflow-hidden animate-scale-in"
+      className="fixed left-4 top-[56px] w-[580px] rounded-xl bg-background/95 backdrop-blur-2xl border border-border/40 z-[9999] shadow-2xl overflow-hidden animate-start-menu-in"
     >
       {/* Search Header */}
       <div className="p-5 pb-4">
@@ -109,7 +109,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
             placeholder="Type to search apps, settings, or files..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-muted/50 border border-border/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all text-sm"
+            className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-muted/50 border border-border/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 focus:shadow-[0_0_20px_hsl(var(--primary)/0.15)] transition-all text-sm"
           />
           {search && (
             <button
@@ -148,10 +148,10 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
               <button
                 key={app.id}
                 onClick={() => handleOpenApp(app)}
-                className="flex flex-col items-center gap-1.5 p-3 rounded-xl hover:bg-muted/60 transition-all group"
-                style={{ animationDelay: `${index * 15}ms` }}
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl hover:bg-muted/60 transition-all group active:scale-95 animate-stagger-in"
+                style={{ animationDelay: `${index * 20}ms` }}
               >
-                <div className="w-10 h-10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-200">
                   {app.icon}
                 </div>
                 <span className="text-[11px] text-center text-foreground/80 leading-tight line-clamp-2 group-hover:text-foreground">
@@ -201,7 +201,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
       </div>
 
       {/* Footer */}
-      <div className="border-t border-border/30 p-3 bg-muted/20 flex items-center justify-between">
+      <div className="border-t border-border/30 p-3 bg-muted/20 flex items-center justify-between transition-colors">
         <button 
           onClick={() => {
             navigate("/acc-manage");

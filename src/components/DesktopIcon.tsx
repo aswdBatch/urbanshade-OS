@@ -5,10 +5,12 @@ interface DesktopIconProps {
   app: App;
   isSelected?: boolean;
   onSelect?: () => void;
+  index?: number;
 }
 
-export const DesktopIcon = ({ app, isSelected, onSelect }: DesktopIconProps) => {
+export const DesktopIcon = ({ app, isSelected, onSelect, index = 0 }: DesktopIconProps) => {
   const [isPressed, setIsPressed] = useState(false);
+  const [isLaunching, setIsLaunching] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -16,6 +18,8 @@ export const DesktopIcon = ({ app, isSelected, onSelect }: DesktopIconProps) => 
   };
 
   const handleDoubleClick = () => {
+    setIsLaunching(true);
+    setTimeout(() => setIsLaunching(false), 400);
     app.run();
   };
 
@@ -23,13 +27,15 @@ export const DesktopIcon = ({ app, isSelected, onSelect }: DesktopIconProps) => 
     <div
       className={`
         w-20 h-[88px] flex flex-col items-center gap-1.5 p-2 rounded-lg
-        select-none cursor-pointer transition-all duration-150 group
+        select-none cursor-pointer transition-all duration-150 group animate-stagger-in
         ${isSelected 
           ? "bg-primary/20 ring-1 ring-primary/50" 
           : "hover:bg-white/5"
         }
         ${isPressed ? "scale-95" : ""}
+        ${isLaunching ? "animate-toggle-pulse" : ""}
       `}
+      style={{ animationDelay: `${index * 30}ms` }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onMouseDown={() => setIsPressed(true)}
@@ -42,7 +48,7 @@ export const DesktopIcon = ({ app, isSelected, onSelect }: DesktopIconProps) => 
         transition-all duration-200 relative
         ${isSelected 
           ? "bg-primary/15 text-primary shadow-lg shadow-primary/20" 
-          : "bg-background/60 backdrop-blur-sm border border-border/50 text-foreground/70 group-hover:text-primary group-hover:border-primary/30 group-hover:bg-primary/5"
+          : "bg-background/60 backdrop-blur-sm border border-border/50 text-foreground/70 group-hover:text-primary group-hover:border-primary/30 group-hover:bg-primary/5 group-hover:shadow-[0_4px_12px_hsl(var(--primary)/0.1)]"
         }
       `}>
         <div className="w-6 h-6 flex items-center justify-center [&>svg]:w-6 [&>svg]:h-6">

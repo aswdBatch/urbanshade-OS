@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Minus, Square, Copy, Loader2 } from "lucide-react";
+import { X, Minus, Square, Copy } from "lucide-react";
 import { useWindowSnap, SnapZone } from "@/hooks/useWindowSnap";
 
 interface WindowProps {
@@ -192,7 +192,7 @@ export const Window = ({
     <>
       <div
         ref={windowRef}
-        className={`absolute rounded-xl overflow-hidden gpu-accelerated flex flex-col ${getAnimationClass()} ${isDragging ? '' : 'transition-all duration-200 ease-out'}`}
+        className={`absolute rounded-xl overflow-hidden gpu-accelerated flex flex-col ${getAnimationClass()} ${isDragging ? 'is-dragging' : 'transition-all duration-200 ease-out'}`}
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
@@ -214,6 +214,7 @@ export const Window = ({
               : 'linear-gradient(180deg, hsl(var(--glass)) 0%, hsl(var(--glass-strong)) 100%)',
             backdropFilter: 'blur(12px)',
             borderBottom: '1px solid hsl(var(--border))',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
           }}
           onMouseDown={handleMouseDown}
           onDoubleClick={handleTitleDoubleClick}
@@ -240,10 +241,10 @@ export const Window = ({
               onClick={handleMinimize}
               onMouseEnter={() => setIsHoveringControls('min')}
               onMouseLeave={() => setIsHoveringControls(null)}
-              className="w-11 h-11 flex items-center justify-center transition-colors hover:bg-white/10"
+              className="w-11 h-11 flex items-center justify-center transition-colors duration-150 hover:bg-white/10"
               title="Minimize"
             >
-              <Minus className={`w-4 h-4 transition-colors ${isHoveringControls === 'min' ? 'text-foreground' : 'text-muted-foreground'}`} />
+              <Minus className={`w-4 h-4 transition-colors duration-150 ${isHoveringControls === 'min' ? 'text-foreground' : 'text-muted-foreground'}`} />
             </button>
 
             {/* Maximize/Restore */}
@@ -251,13 +252,13 @@ export const Window = ({
               onClick={handleMaximize}
               onMouseEnter={() => setIsHoveringControls('max')}
               onMouseLeave={() => setIsHoveringControls(null)}
-              className="w-11 h-11 flex items-center justify-center transition-colors hover:bg-white/10"
+              className="w-11 h-11 flex items-center justify-center transition-colors duration-150 hover:bg-white/10"
               title={isMaximized ? "Restore" : "Maximize"}
             >
               {isMaximized ? (
-                <Copy className={`w-3.5 h-3.5 transition-colors ${isHoveringControls === 'max' ? 'text-foreground' : 'text-muted-foreground'}`} />
+                <Copy className={`w-3.5 h-3.5 transition-colors duration-150 ${isHoveringControls === 'max' ? 'text-foreground' : 'text-muted-foreground'}`} />
               ) : (
-                <Square className={`w-3.5 h-3.5 transition-colors ${isHoveringControls === 'max' ? 'text-foreground' : 'text-muted-foreground'}`} />
+                <Square className={`w-3.5 h-3.5 transition-colors duration-150 ${isHoveringControls === 'max' ? 'text-foreground' : 'text-muted-foreground'}`} />
               )}
             </button>
 
@@ -266,10 +267,10 @@ export const Window = ({
               onClick={onClose}
               onMouseEnter={() => setIsHoveringControls('close')}
               onMouseLeave={() => setIsHoveringControls(null)}
-              className="w-11 h-11 flex items-center justify-center transition-colors hover:bg-destructive"
+              className="w-11 h-11 flex items-center justify-center transition-colors duration-150 hover:bg-destructive"
               title="Close"
             >
-              <X className={`w-4 h-4 transition-colors ${isHoveringControls === 'close' ? 'text-white' : 'text-muted-foreground'}`} />
+              <X className={`w-4 h-4 transition-colors duration-150 ${isHoveringControls === 'close' ? 'text-white' : 'text-muted-foreground'}`} />
             </button>
           </div>
         </div>
@@ -283,25 +284,30 @@ export const Window = ({
           }}
         >
           {loading ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-              <div className="flex flex-col items-center gap-3">
-                <Loader2 className="w-8 h-8 text-primary animate-spin" />
-                <div className="text-sm text-muted-foreground font-mono">Loading {title}...</div>
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm gap-4">
+              {/* Shimmer skeleton loading */}
+              <div className="w-4/5 space-y-3">
+                <div className="h-4 rounded-lg animate-shimmer" />
+                <div className="h-4 rounded-lg animate-shimmer w-3/4" style={{ animationDelay: '0.1s' }} />
+                <div className="h-4 rounded-lg animate-shimmer w-1/2" style={{ animationDelay: '0.2s' }} />
+                <div className="h-20 rounded-lg animate-shimmer mt-4" style={{ animationDelay: '0.3s' }} />
+                <div className="h-4 rounded-lg animate-shimmer w-2/3" style={{ animationDelay: '0.4s' }} />
               </div>
+              <div className="text-xs text-muted-foreground font-mono mt-2">Loading {title}...</div>
             </div>
           ) : (
             children
           )}
         </div>
 
-        {/* Resize Handle */}
+        {/* Resize Handle - larger hit target */}
         {!isMaximized && !isSnapped && (
           <div
             onMouseDown={handleResizeStart}
-            className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize group z-10"
+            className="absolute bottom-0 right-0 w-6 h-6 cursor-se-resize group z-10"
           >
             <svg 
-              className="absolute bottom-1 right-1 w-2.5 h-2.5 text-muted-foreground/30 group-hover:text-primary/50 transition-colors"
+              className="absolute bottom-1 right-1 w-2.5 h-2.5 text-muted-foreground/30 group-hover:text-primary/50 group-hover:scale-110 transition-all duration-150"
               viewBox="0 0 10 10"
             >
               <path d="M9 1v8H1" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>

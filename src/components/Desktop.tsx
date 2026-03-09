@@ -165,7 +165,7 @@ export const Desktop = ({
 
       {/* Subtle grid overlay */}
       <div 
-        className="absolute inset-0 opacity-[0.02] pointer-events-none"
+        className="absolute inset-0 opacity-[0.015] pointer-events-none"
         style={{
           backgroundImage: `linear-gradient(to right, hsl(var(--primary)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--primary)) 1px, transparent 1px)`,
           backgroundSize: '60px 60px'
@@ -183,8 +183,8 @@ export const Desktop = ({
 
       <div className="absolute inset-0 z-10 pt-16 px-6 pb-24 pointer-events-none">
         <div className="grid gap-3 pointer-events-auto" style={{ gridTemplateColumns: 'repeat(auto-fill, 90px)', gridAutoRows: '100px' }}>
-          {apps.map((app) => (
-            <DesktopIcon key={app.id} app={app} />
+          {apps.map((app, index) => (
+            <DesktopIcon key={app.id} app={app} index={index} />
           ))}
         </div>
       </div>

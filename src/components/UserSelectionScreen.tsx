@@ -166,10 +166,10 @@ export const UserSelectionScreen = ({ onLogin, onShutdown, onRestart }: UserSele
               key={user.id}
               onClick={() => handleUserSelect(user.id)}
               disabled={loading}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left w-64 transition-all ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left w-64 transition-all duration-200 ${
                 selectedUser === user.id
                   ? "bg-cyan-500/20 border-cyan-500/50 scale-[1.02]"
-                  : "bg-slate-800/60 border-slate-700/50 hover:bg-slate-700/60 hover:border-cyan-500/30"
+                  : "bg-slate-800/60 border-slate-700/50 hover:bg-slate-700/60 hover:border-cyan-500/30 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/5"
               }`}
             >
               <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border ${
@@ -234,7 +234,7 @@ export const UserSelectionScreen = ({ onLogin, onShutdown, onRestart }: UserSele
           </div>
         ) : (
           /* User selected - show password form */
-          <div className="w-full max-w-md mx-4">
+          <div className="w-full max-w-md mx-4 animate-fade-in">
             <div className="rounded-2xl border border-cyan-500/30 bg-slate-800/80 backdrop-blur-lg p-8 shadow-2xl shadow-cyan-500/10">
               {/* Back button */}
               <button
@@ -280,7 +280,7 @@ export const UserSelectionScreen = ({ onLogin, onShutdown, onRestart }: UserSele
                       placeholder="Enter password"
                       autoFocus
                       disabled={loading}
-                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-900/60 border border-slate-600/50 text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all"
+                      className={`w-full pl-12 pr-4 py-3 rounded-xl bg-slate-900/60 border border-slate-600/50 text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all ${error ? 'animate-shake' : ''}`}
                     />
                   </div>
 
@@ -334,7 +334,7 @@ export const UserSelectionScreen = ({ onLogin, onShutdown, onRestart }: UserSele
 
       {/* BOTTOM RIGHT - Clock */}
       <div className="absolute bottom-8 right-8 text-right z-10">
-        <div className="text-5xl font-extralight text-white/80 tracking-wide">
+        <div className="text-5xl font-extralight text-white/80 tracking-wide tabular-nums">
           {formatTime(time)}
         </div>
         <div className="text-sm text-slate-400 mt-1">

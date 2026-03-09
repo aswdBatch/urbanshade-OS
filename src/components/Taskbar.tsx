@@ -111,13 +111,15 @@ export const Taskbar = ({
       {/* Bottom Right - Clock */}
       <div className="fixed right-6 bottom-6 z-[750] text-right">
         <button onClick={() => { setQuickSettingsOpen(!quickSettingsOpen); setNotificationsOpen(false); }} className="text-right hover:opacity-80 transition-opacity">
-          <div className="text-5xl font-light tracking-wide text-foreground/90 font-mono">{formatTime(time)}</div>
+          <div className="text-5xl font-light tracking-wide text-foreground/90 font-mono tabular-nums">{formatTime(time)}</div>
           <div className="text-sm text-muted-foreground mt-1">{formatDate(time)}</div>
         </button>
       </div>
 
       {/* Top Taskbar */}
-      <div className="fixed left-0 right-0 top-0 h-12 flex justify-between items-center px-4 z-[800] bg-background/40 backdrop-blur-xl border-b border-primary/10">
+      <div className="fixed left-0 right-0 top-0 h-12 flex justify-between items-center px-4 z-[800] bg-background/40 backdrop-blur-xl border-b border-primary/10 relative">
+        {/* Glass edge highlight */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/15 to-transparent" />
         <div className="flex items-center gap-2">
           <button onClick={onStartClick} data-start-button className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all duration-200">
             <img src="/favicon.svg" alt="U" className="w-7 h-7" />
@@ -126,7 +128,7 @@ export const Taskbar = ({
           <div className="h-6 w-px bg-primary/10 mx-1" />
           <div className="flex gap-1">
             {pinnedApps.map(app => (
-              <button key={app.id} onClick={() => onPinnedClick(app)} className="w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white/5 transition-all duration-200" title={app.name}>
+              <button key={app.id} onClick={() => onPinnedClick(app)} className="w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white/5 transition-all duration-200 hover:-translate-y-0.5" title={app.name}>
                 <div className="w-5 h-5 flex items-center justify-center [&>svg]:w-5 [&>svg]:h-5">{app.icon}</div>
               </button>
             ))}
@@ -160,7 +162,7 @@ export const Taskbar = ({
                                   <p className="text-xs font-medium text-foreground truncate">{win.app.name}</p>
                                   <p className="text-[10px] text-muted-foreground">{win.minimized ? 'Minimized' : 'Active'}</p>
                                 </div>
-                                {!win.minimized && <div className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />}
+                                {!win.minimized && <div className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0 animate-dot-appear" />}
                               </button>
                             ))}
                           </div>
@@ -178,7 +180,7 @@ export const Taskbar = ({
           {windows.some(w => !w.minimized) && (
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-primary/5 border border-primary/10 mr-1">
               <Clock className="w-3 h-3 text-muted-foreground" />
-              <span className="text-xs font-mono text-foreground/80">{formatTime(time)}</span>
+              <span className="text-xs font-mono text-foreground/80 tabular-nums">{formatTime(time)}</span>
             </div>
           )}
           {syncEnabled && (!isOnline || pendingChanges.length > 0) && (
