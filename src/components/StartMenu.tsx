@@ -2,11 +2,9 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { App } from "@/types/window";
 import { 
-  LogOut, RotateCcw, Power, Shield, HardDrive, Clock, X, 
-  Search, ChevronRight, Zap
+  LogOut, RotateCcw, Power, Shield, HardDrive, X, Search
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { useRecentFiles, RecentFile } from "@/hooks/useRecentFiles";
 import { ScrollArea } from "./ui/scroll-area";
 import * as icons from "lucide-react";
 
