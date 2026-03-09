@@ -1,11 +1,11 @@
 {
   "major": 3,
-  "minor": 8,
-  "patch": 1,
-  "codename": "Modular",
-  "build": 8735,
-  "fullVersion": "3.8.1",
-  "displayVersion": "V3.8.1",
-  "shortVersion": "3.8.1",
+  "minor": 5,
+  "patch": 0,
+  "codename": "Polished",
+  "build": 8736,
+  "fullVersion": "3.5.0",
+  "displayVersion": "V3.5.0",
+  "shortVersion": "3.5.0",
   "releaseDate": "2026-03-09"
 }

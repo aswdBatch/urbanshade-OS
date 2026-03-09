@@ -99,8 +99,8 @@ export const UpdateScreen = ({ onComplete }: UpdateScreenProps) => {
 
       {/* Bottom Info */}
       <div className="absolute bottom-8 text-center text-sm opacity-70 animate-fade-in space-y-1" style={{ animationDelay: "0.6s" }}>
-        <p className="font-bold">UrbanShade OS v2.2.0</p>
-        <p className="text-xs opacity-60">Build 2024.12.02</p>
+        <p className="font-bold">UrbanShade OS V3.5.0</p>
+        <p className="text-xs opacity-60">Build 8736</p>
       </div>
     </div>
   );
