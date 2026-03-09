@@ -63,79 +63,11 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }
 
   const changelogs: Record<string, VersionData> = {
-    "3.8.1": {
-      icon: <Sparkles className="w-5 h-5" />,
-      color: "from-cyan-500 to-blue-600",
-      tagline: "MODULAR",
-      overview: "Architecture refinement: Window management extracted to useWindowManager hook, WindowManager refactored from 300-line switch to clean app map, FloatingDefDev now uses shared state, Taskbar imports cleaned up, duplicate snap logic removed, and typed window globals.",
-      sections: {
-        "🪟 Window Management Hook": [
-          { text: "New useWindowManager hook extracts all window state from Desktop.tsx", isHighlight: true },
-          { text: "Desktop.tsx reduced from 436 to ~200 lines — now a pure render component" },
-          { text: "openWindow, closeWindow, focusWindow, minimizeWindow, restoreWindow all in one hook" },
-        ],
-        "🗺️ WindowManager App Map": [
-          { text: "60-case switch statement replaced with Record<string, () => JSX.Element>", isHighlight: true },
-          { text: "Duplicate 'music-player' case bug fixed (was rendering VideoPlayer)" },
-          { text: "Stale 'v3.1' in fallback text updated to use VERSION.displayVersion" },
-        ],
-        "🔧 FloatingDefDev Fix": [
-          { text: "FloatingDefDev now uses shared useDefDevState — no more duplicated console capture", isHighlight: true },
-          { text: "Removed 35 lines of redundant log interception code" },
-        ],
-        "🧹 Code Cleanup": [
-          { text: "Taskbar NotificationButton moved below all imports" },
-          { text: "Removed duplicate useWindowSnap from Desktop (Window.tsx is sole owner)" },
-          { text: "Unused imports cleaned up (PersonnelDirectory, Lock, UrbanshadeInstaller)" },
-        ],
-        "🔒 Typed Globals": [
-          { text: "window.naviSecurity now typed via NaviSecurityGlobals interface", isHighlight: true },
-          { text: "getStatus() returns violation count (number) instead of array" },
-        ],
-        "📋 System": [
-          { text: "Version bumped to 3.8.1 'Modular'", isHighlight: true },
-          { text: "Build number updated to 8735" },
-        ],
-      }
-    },
-    "3.8.0": {
-      icon: <Sparkles className="w-5 h-5" />,
-      color: "from-amber-500 to-orange-600",
-      tagline: "STREAMLINED",
-      overview: "Massive architecture overhaul: Index.tsx god component eliminated via useBootSequence hook, DEF-DEV console consolidated with shared state, 6 missing sidebar tabs restored, status bar added, keyboard shortcuts expanded, and window globals typed.",
-      sections: {
-        "🏗️ State Machine Extraction": [
-          { text: "Index.tsx reduced from 1082 lines to ~200 — now a thin renderer", isHighlight: true },
-          { text: "All boot/crash/shutdown state managed by useBootSequence hook" },
-          { text: "SiteLockedScreen extracted to its own component" },
-          { text: "useModerationGates hook handles fake mod state" },
-        ],
-        "🔧 DEF-DEV Consolidation": [
-          { text: "DefDevMain now uses shared useDefDevState hook — no duplicated state", isHighlight: true },
-          { text: "6 missing sidebar tabs restored: Boot Analyzer, Crash Analyzer, Memory, Components, Supabase, Mods" },
-          { text: "New status bar showing log counts, errors, storage usage, and session uptime" },
-          { text: "Header version updated to DEF-DEV 3.5 Console" },
-        ],
-        "⌨️ Keyboard Shortcuts": [
-          { text: "Ctrl+Shift+1-9 switches DEF-DEV tabs", isHighlight: true },
-          { text: "Ctrl+L clears console, Ctrl+K focuses search" },
-          { text: "Ctrl+Shift+T focuses terminal tab" },
-        ],
-        "🔒 Typed Window Globals": [
-          { text: "UrbanShadeGlobals interface in vite-env.d.ts", isHighlight: true },
-          { text: "adminPanel(), maintenanceMode(), devMode(), systemBus all typed" },
-        ],
-        "📋 System": [
-          { text: "Version bumped to 3.8.0 'Streamlined'", isHighlight: true },
-          { text: "Build number updated to 8720" },
-        ],
-      }
-    },
     "3.5.0": {
       icon: <Sparkles className="w-5 h-5" />,
       color: "from-purple-500 to-indigo-600",
       tagline: "POLISHED",
-      overview: "The polish update: site lock, DEF-DEV cleanup, documentation overhaul, architecture refactor, moderation gates, ban appeal emails, and developer console enhancements — all rolled into one massive release.",
+      overview: "The polish update: site lock, DEF-DEV cleanup, documentation overhaul, architecture refactor, moderation gates, ban appeal emails, developer console enhancements, window manager refactor, and massive code cleanup — all rolled into one massive release.",
       sections: {
         "🔒 Site Lock (Working!)": [
           { text: "Admin site lock now persists to Supabase and blocks non-admin users", isHighlight: true },
@@ -155,11 +87,19 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
         ],
         "🏗️ Architecture Refactor": [
           { text: "Extracted useBootSequence hook — all boot/crash/shutdown state in one place", isHighlight: true },
+          { text: "Index.tsx reduced from 1082 lines to ~200 — now a thin renderer" },
           { text: "Created shared App and WindowData types in src/types/window.ts" },
           { text: "Centralized app registry in src/lib/appRegistry.tsx (70+ apps)" },
           { text: "Extracted useModerationGates hook for fake mod testing state" },
           { text: "Removed duplicate WindowData interfaces across 5 files" },
           { text: "Cleaned up unused icon aliases and dead VIP code" },
+        ],
+        "🪟 Window Management Overhaul": [
+          { text: "New useWindowManager hook extracts all window state from Desktop.tsx", isHighlight: true },
+          { text: "Desktop.tsx reduced from 436 to ~200 lines — now a pure render component" },
+          { text: "WindowManager 60-case switch replaced with clean app content map" },
+          { text: "Duplicate 'music-player' case bug fixed (was rendering VideoPlayer)" },
+          { text: "Removed duplicate useWindowSnap from Desktop (Window.tsx is sole owner)" },
         ],
         "⚠️ Moderation Gates": [
           { text: "Warnings now show a dialog popup — users must check 'I Understand' to continue", isHighlight: true },
@@ -168,15 +108,21 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
           { text: "Edge function authenticates users and verifies active ban before sending" },
           { text: "New 'Screens' tab in DEF-DEV for previewing ban/warn screens" },
         ],
-        "🧹 DEF-DEV Cleanup": [
+        "🔧 DEF-DEV Consolidation": [
           { text: "Removed legacy 1500-line DevMode.tsx monolith", isHighlight: true },
-          { text: "/def-dev now exclusively uses the modular DefDevMain architecture" },
-          { text: "All 17 tabs preserved in sidebar-based layout" },
+          { text: "DefDevMain and FloatingDefDev now use shared useDefDevState hook" },
+          { text: "6 missing sidebar tabs restored: Boot Analyzer, Crash Analyzer, Memory, Components, Supabase, Mods" },
+          { text: "New status bar showing log counts, errors, storage usage, and session uptime" },
+          { text: "Keyboard shortcuts for quick tab switching (Ctrl+Shift+1-9)" },
         ],
-        "🔧 Developer Console Enhancements": [
-          { text: "Floating DEF-DEV overlay available from main OS" },
-          { text: "Console, performance, and network tabs in mini mode" },
-          { text: "Keyboard shortcuts for quick tab switching" },
+        "🔒 Typed Window Globals": [
+          { text: "UrbanShadeGlobals interface in vite-env.d.ts — no more (window as any)", isHighlight: true },
+          { text: "naviSecurity, adminPanel, maintenanceMode, devMode, systemBus all typed" },
+        ],
+        "🧹 Code Cleanup": [
+          { text: "Taskbar NotificationButton moved below all imports" },
+          { text: "Unused imports cleaned up across multiple files" },
+          { text: "Stale version strings in fallback text updated to use VERSION.displayVersion" },
         ],
         "📋 System Polish": [
           { text: "Version bumped to 3.5.0 across all references", isHighlight: true },
