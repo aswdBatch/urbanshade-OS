@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getShortVersion, getBuildNumber } from "@/lib/versionInfo";
 import { toast } from "sonner";
 import { CrashType, CrashData, triggerCrash } from "@/components/CrashScreen";
 import { BugcheckData, createBugcheck } from "@/components/BugcheckScreen";
