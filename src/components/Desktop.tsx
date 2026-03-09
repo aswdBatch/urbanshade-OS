@@ -183,8 +183,8 @@ export const Desktop = ({
 
       <div className="absolute inset-0 z-10 pt-16 px-6 pb-24 pointer-events-none">
         <div className="grid gap-3 pointer-events-auto" style={{ gridTemplateColumns: 'repeat(auto-fill, 90px)', gridAutoRows: '100px' }}>
-          {apps.map((app) => (
-            <DesktopIcon key={app.id} app={app} />
+          {apps.map((app, index) => (
+            <DesktopIcon key={app.id} app={app} index={index} />
           ))}
         </div>
       </div>

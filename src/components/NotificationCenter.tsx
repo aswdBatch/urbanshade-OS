@@ -99,7 +99,7 @@ export const NotificationCenter = ({ open, onClose, anchorRef }: NotificationCen
       key={notification.id}
       onClick={() => markAsRead(notification.id)}
       className={`
-        relative p-3 rounded-lg transition-all cursor-pointer group 
+        relative p-3 rounded-lg transition-all cursor-pointer group animate-stagger-in
         border-l-2 ${getTypeBorder(notification.type)}
         ${notification.read ? "opacity-50 hover:opacity-70" : "bg-white/[0.02] hover:bg-white/[0.04]"}
       `}

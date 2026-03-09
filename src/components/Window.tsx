@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Minus, Square, Copy, Loader2 } from "lucide-react";
+import { X, Minus, Square, Copy } from "lucide-react";
 import { useWindowSnap, SnapZone } from "@/hooks/useWindowSnap";
 
 interface WindowProps {

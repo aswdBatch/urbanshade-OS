@@ -74,17 +74,27 @@ export const BootScreen = ({ onComplete, onSafeMode }: BootScreenProps) => {
 
       {/* Loading section */}
       <div className="w-64">
-        {/* Simple progress bar */}
-        <div className="h-0.5 bg-white/10 rounded-full overflow-hidden">
+        {/* Progress bar with shine sweep */}
+        <div className="h-0.5 bg-white/10 rounded-full overflow-hidden relative">
           <div 
-            className="h-full bg-primary/80 transition-all duration-300 ease-out"
+            className="h-full bg-primary/80 transition-all duration-300 ease-out relative"
             style={{ width: `${progress}%` }}
-          />
+          >
+            {/* Shine sweep */}
+            <div 
+              className="absolute inset-0 overflow-hidden"
+            >
+              <div 
+                className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                style={{ animation: 'progress-shine 2s ease-in-out infinite' }}
+              />
+            </div>
+          </div>
         </div>
         
-        {/* Status text */}
+        {/* Status text with crossfade */}
         <div className="text-center mt-4">
-          <span className="text-xs text-white/50 font-mono">
+          <span key={statusText} className="text-xs text-white/50 font-mono animate-text-crossfade inline-block">
             {statusText}
           </span>
         </div>

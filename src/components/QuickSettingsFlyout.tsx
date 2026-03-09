@@ -146,7 +146,7 @@ export const QuickSettingsFlyout = ({ open, onClose, onOpenSettings }: QuickSett
 
   return (
     <div 
-      className="fixed right-3 bottom-[78px] w-[340px] rounded-xl backdrop-blur-2xl bg-background/95 border border-border/50 z-[900] shadow-2xl overflow-hidden animate-fade-in"
+      className="fixed right-3 bottom-[78px] w-[340px] rounded-xl backdrop-blur-2xl bg-background/95 border border-border/50 z-[900] shadow-2xl overflow-hidden animate-notif-slide-in"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header with Battery */}

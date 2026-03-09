@@ -334,7 +334,7 @@ export const UserSelectionScreen = ({ onLogin, onShutdown, onRestart }: UserSele
 
       {/* BOTTOM RIGHT - Clock */}
       <div className="absolute bottom-8 right-8 text-right z-10">
-        <div className="text-5xl font-extralight text-white/80 tracking-wide">
+        <div className="text-5xl font-extralight text-white/80 tracking-wide tabular-nums">
           {formatTime(time)}
         </div>
         <div className="text-sm text-slate-400 mt-1">
