@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { getShortVersion, getBuildNumber } from "@/lib/versionInfo";
-import { toast } from "sonner";
-import { CrashType, CrashData, triggerCrash } from "@/components/CrashScreen";
+import { CrashData, triggerCrash } from "@/components/CrashScreen";
 import { BugcheckData, createBugcheck } from "@/components/BugcheckScreen";
 
 export type SimpleCrashType = "kernel" | "virus" | "bluescreen" | "memory" | "corruption" | "overload";
-import { actionDispatcher } from "@/lib/actionDispatcher";
 import { systemBus } from "@/lib/systemBus";
 import { useIdleLock } from "@/hooks/useIdleLock";
 import { useBootKeyboard } from "@/hooks/useBootKeyboard";

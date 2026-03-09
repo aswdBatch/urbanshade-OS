@@ -5,7 +5,7 @@ import { BugcheckData, createBugcheck } from "@/components/BugcheckScreen";
 import { actionDispatcher } from "@/lib/actionDispatcher";
 import { systemBus } from "@/lib/systemBus";
 import { commandQueue, QueuedCommand } from "@/lib/commandQueue";
-import type { SimpleCrashType } from "./useBootSequence";
+
 import type { FakeBanData, FakeTempBanData, FakeWarnData } from "./useModerationGates";
 
 interface UseCommandQueueHandlerProps {
