@@ -1,11 +1,11 @@
 /// <reference types="vite/client" />
 
-// NAVI security global interface
+// NAVI security global interface - matches useNaviSecurity hook
 interface NaviSecurityGlobals {
-  reportViolation: (reason: string) => void;
+  reportViolation: (type: string, target: string, severity?: string) => void;
   triggerLockout: (reason: string) => void;
   clearLockout: () => void;
-  getStatus: () => { violations: number; warningLevel: string; isLockedOut: boolean };
+  getStatus: () => { violations: number; warningLevel: number; isLockedOut: boolean };
 }
 
 // Extend Window interface for UrbanShade globals

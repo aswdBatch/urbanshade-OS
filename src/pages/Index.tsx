@@ -48,13 +48,14 @@ const Index = () => {
     onFakeWarn: modGates.setFakeWarnData,
   });
 
-  // Expose NAVI security to window (typed via UrbanShadeGlobals in vite-env.d.ts)
+  // Expose NAVI security to window (typed via vite-env.d.ts)
   (window as Window).naviSecurity = {
-    reportViolation: naviSecurity.reportViolation,
+    reportViolation: (type: string, target: string, severity?: string) => 
+      naviSecurity.reportViolation(type as any, target, severity as any),
     triggerLockout: naviSecurity.triggerLockout,
     clearLockout: naviSecurity.clearLockout,
     getStatus: () => ({
-      violations: naviSecurity.violations,
+      violations: naviSecurity.violations.length,
       warningLevel: naviSecurity.warningLevel,
       isLockedOut: naviSecurity.isLockedOut,
     }),
