@@ -91,25 +91,8 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
   if (!open && !isClosing) return null;
 
   const handleOpenApp = (app: App) => {
-    addRecent({ name: app.name, type: "app", appId: app.id });
     onOpenApp(app);
     handleClose();
-  };
-
-  const getRecentIcon = (item: RecentFile) => {
-    if (item.type === "app") {
-      const app = apps.find(a => a.id === item.appId);
-      return app?.icon || <Zap className="w-4 h-4" />;
-    }
-    return <Zap className="w-4 h-4" />;
-  };
-
-  const formatRecentTime = (timestamp: number) => {
-    const diff = Date.now() - timestamp;
-    if (diff < 60000) return "Just now";
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-    return new Date(timestamp).toLocaleDateString();
   };
 
   const isSearching = search.length > 0;
