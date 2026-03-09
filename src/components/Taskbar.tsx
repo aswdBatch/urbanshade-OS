@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Bell, Volume2, VolumeX, Power, Cloud, CloudOff, Loader2, BellOff, WifiOff, Lock, Clock } from "lucide-react";
+import { Bell, Volume2, VolumeX, Power, Cloud, CloudOff, Loader2, BellOff, WifiOff, Clock } from "lucide-react";
 import { VERSION } from "@/lib/versionInfo";
 import { App, WindowData } from "@/types/window";
 import { NotificationCenter } from "./NotificationCenter";

@@ -64,7 +64,7 @@ import { Inventory } from "./apps/Inventory";
 import { SystemMessages } from "./apps/SystemMessages";
 import { NotificationHistory } from "./NotificationHistory";
 import { ToasterSimulator } from "./apps/ToasterSimulator";
-import { UrbanshadeInstaller } from "./apps/UrbanshadeInstaller";
+
 
 interface WindowManagerProps {
   windows: WindowData[];
