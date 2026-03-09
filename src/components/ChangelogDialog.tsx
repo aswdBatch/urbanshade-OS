@@ -22,25 +22,8 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   const open = isControlled ? controlledOpen : internalOpen;
   const setOpen = isControlled ? (onOpenChange || (() => {})) : setInternalOpen;
 
-  useEffect(() => {
-    // Only auto-open on first visit if not controlled
-    if (isControlled) return;
-    
-    // Compare both version string AND build number
-    const lastSeenVersion = localStorage.getItem("urbanshade_last_seen_version");
-    const lastSeenBuild = localStorage.getItem("urbanshade_last_seen_build");
-    
-    const isNewVersion = lastSeenVersion !== currentVersion;
-    const isNewBuild = lastSeenBuild !== String(currentBuild);
-    
-    if (isNewVersion || isNewBuild) {
-      // Small delay to avoid race conditions with boot screens
-      const timer = setTimeout(() => {
-        setInternalOpen(true);
-      }, 800);
-      return () => clearTimeout(timer);
-    }
-  }, [isControlled, currentVersion, currentBuild]);
+  // Auto-open is handled by useBootSequence via controlled props.
+  // Uncontrolled mode kept for standalone usage (e.g. Settings button).
 
   const handleClose = () => {
     localStorage.setItem("urbanshade_last_seen_version", currentVersion);

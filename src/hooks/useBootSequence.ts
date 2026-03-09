@@ -7,8 +7,10 @@ import { BugcheckData, createBugcheck } from "@/components/BugcheckScreen";
 export type SimpleCrashType = "kernel" | "virus" | "bluescreen" | "memory" | "corruption" | "overload";
 import { actionDispatcher } from "@/lib/actionDispatcher";
 import { systemBus } from "@/lib/systemBus";
-import { commandQueue, QueuedCommand } from "@/lib/commandQueue";
 import { useIdleLock } from "@/hooks/useIdleLock";
+import { useBootKeyboard } from "@/hooks/useBootKeyboard";
+import { useBootConsoleCommands } from "@/hooks/useBootConsoleCommands";
+import { useCommandQueueHandler } from "@/hooks/useCommandQueueHandler";
 import type { FakeBanData, FakeTempBanData, FakeWarnData } from "./useModerationGates";
 
 interface UseBootSequenceProps {
@@ -61,7 +63,6 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
   const [needsRecovery, setNeedsRecovery] = useState(false);
   const [inRecoveryMode, setInRecoveryMode] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
-  const [keyBuffer, setKeyBuffer] = useState("");
   const [oobeComplete, setOobeComplete] = useState(() => localStorage.getItem("urbanshade_oobe_complete") === "true");
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(() => localStorage.getItem("urbanshade_disclaimer_accepted") === "true");
   const [devModeOpen, setDevModeOpen] = useState(false);
@@ -73,6 +74,37 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
     onLock: () => setIsLocked(true),
     idleTimeMinutes: 5,
     enabled: loggedIn && !crashed && !shuttingDown && !rebooting && !isLocked,
+  });
+
+  // ── Extracted sub-hooks ──
+  useBootKeyboard({
+    booted, inRecoveryMode, rebooting,
+    setRebooting, setBlackScreen, setBiosComplete, setInRecoveryMode,
+  });
+
+  useBootConsoleCommands({
+    setShowAdminPanel, setMaintenanceMode, setDevModeOpen,
+  });
+
+  // ── Handlers (declared before useCommandQueueHandler needs them) ──
+  const handleReboot = () => {
+    setLoggedIn(false);
+    setRebooting(true);
+  };
+
+  const handleShutdown = () => {
+    setLoggedIn(false);
+    setShuttingDown(true);
+  };
+
+  useCommandQueueHandler({
+    crashed, lockdownMode, loggedIn,
+    setCrashData, setCrashed, setBugcheckData,
+    setLockdownProtocol, setLockdownMode, setInRecoveryMode,
+    setLoggingOut, setIsLocked, setOobeComplete, setShowChangelog,
+    setMaintenanceMode, setSafeMode, setIsUpdating,
+    handleReboot, handleShutdown,
+    onFakeBan, onFakeTempBan, onFakeWarn,
   });
 
   // ── Site lock check ──
@@ -110,7 +142,7 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
     return () => clearInterval(interval);
   }, []);
 
-  // ── Admin setup check + keyboard shortcuts + console commands ──
+  // ── Admin setup check ──
   useEffect(() => {
     try {
       const adminData = localStorage.getItem("urbanshade_admin");
@@ -131,261 +163,7 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
       localStorage.removeItem("urbanshade_admin");
       setAdminSetupComplete(false);
     }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key.length === 1) {
-        const newBuffer = (keyBuffer + e.key.toLowerCase()).slice(-10);
-        setKeyBuffer(newBuffer);
-        if (newBuffer.endsWith("del") || newBuffer.endsWith("delete")) {
-          if (!booted && !inRecoveryMode) {
-            e.preventDefault();
-            if (rebooting) {
-              setRebooting(false);
-              setBlackScreen(false);
-            }
-            setShowingBiosTransition(true);
-            setTimeout(() => {
-              setBiosComplete(false);
-              setShowingBiosTransition(false);
-            }, 1500);
-            toast.info("Entering BIOS Setup...");
-            setKeyBuffer("");
-          }
-        }
-      }
-      if (e.key === "F2" && !booted && !inRecoveryMode) {
-        e.preventDefault();
-        setInRecoveryMode(true);
-        toast.info("Entering Recovery Mode...");
-      }
-      if ((e.key === "Delete" || e.key === "Del") && !booted && !inRecoveryMode) {
-        e.preventDefault();
-        if (rebooting) {
-          setRebooting(false);
-          setBlackScreen(false);
-        }
-        setShowingBiosTransition(true);
-        setTimeout(() => {
-          setBiosComplete(false);
-          setShowingBiosTransition(false);
-        }, 1500);
-        toast.info("Entering BIOS Setup...");
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    // Console commands
-    (window as any).adminPanel = () => {
-      setShowAdminPanel(true);
-      console.log("%c[SYSTEM] Admin Panel Opened", "color: #00ff00; font-weight: bold");
-    };
-    (window as any).maintenanceMode = () => {
-      setMaintenanceMode(true);
-      console.log("%c[SYSTEM] Entering Maintenance Mode...", "color: #ffff00; font-weight: bold");
-    };
-    (window as any).normalMode = () => {
-      setMaintenanceMode(false);
-      console.log("%c[SYSTEM] Returning to Normal Mode...", "color: #00ff00; font-weight: bold");
-    };
-    (window as any).devMode = () => {
-      setDevModeOpen(true);
-      console.log("%c[SYSTEM] Opening Developer Console...", "color: #ff00ff; font-weight: bold");
-    };
-
-    console.log("%c[URBANSHADE OS] Console Commands Available", "color: #00ffff; font-weight: bold; font-size: 14px");
-    console.log("%cadminPanel() - Access admin panel (password required)", "color: #888888");
-    console.log("%cmaintenanceMode() - Enter maintenance mode", "color: #888888");
-    console.log("%cnormalMode() - Return to normal mode", "color: #888888");
-    console.log("%cdevMode() - Open developer console", "color: #ff00ff");
-    console.log("%c\nHint: Check the HTML source for hidden secrets...", "color: #ffaa00; font-style: italic");
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [loggedIn, lockdownMode, crashed, shuttingDown, rebooting, booted, biosComplete, inRecoveryMode, keyBuffer]);
-
-  // ── Command Queue Polling ──
-  useEffect(() => {
-    const handleCommand = (cmd: QueuedCommand) => {
-      actionDispatcher.system(`Executing queued command: ${cmd.type}`, { source: cmd.source });
-
-      switch (cmd.type) {
-        case "CRASH": {
-          const crash = triggerCrash(cmd.payload.type as CrashType, { process: cmd.payload.process || "queue.exe" });
-          setCrashData(crash);
-          setCrashed(true);
-          break;
-        }
-        case "BUGCHECK": {
-          const bugcheck = createBugcheck(cmd.payload.code, cmd.payload.description, cmd.source);
-          setBugcheckData(bugcheck);
-          break;
-        }
-        case "REBOOT":
-          handleReboot();
-          break;
-        case "SHUTDOWN":
-          handleShutdown();
-          break;
-        case "LOCKDOWN":
-          setLockdownProtocol(cmd.payload.protocol || "ALPHA");
-          setLockdownMode(true);
-          break;
-        case "RECOVERY":
-          setInRecoveryMode(true);
-          break;
-        case "WIPE":
-          localStorage.clear();
-          window.location.reload();
-          break;
-        case "WRITE_STORAGE":
-          if (cmd.payload.key && cmd.payload.value !== undefined) {
-            localStorage.setItem(cmd.payload.key, cmd.payload.value);
-            actionDispatcher.file(`Storage write: ${cmd.payload.key}`);
-          }
-          break;
-        case "DELETE_STORAGE":
-          if (cmd.payload.key) {
-            localStorage.removeItem(cmd.payload.key);
-            actionDispatcher.file(`Storage delete: ${cmd.payload.key}`);
-          }
-          break;
-        case "TOAST": {
-          const toastType = cmd.payload.type || "info";
-          if (toastType === "success") toast.success(cmd.payload.message);
-          else if (toastType === "error") toast.error(cmd.payload.message);
-          else if (toastType === "warning") toast.warning(cmd.payload.message);
-          else toast.info(cmd.payload.message);
-          break;
-        }
-        case "CUSTOM":
-          systemBus.emit("CUSTOM_COMMAND", cmd.payload);
-          break;
-        case "LOGOUT":
-          setLoggingOut(true);
-          break;
-        case "LOCK":
-          setIsLocked(true);
-          break;
-        case "OOBE":
-          localStorage.removeItem("urbanshade_oobe_complete");
-          setOobeComplete(false);
-          break;
-        case "CHANGELOG":
-          setShowChangelog(true);
-          break;
-        case "MAINTENANCE":
-          setMaintenanceMode(cmd.payload.enable ?? true);
-          break;
-        case "SAFE_MODE":
-          sessionStorage.setItem("urbanshade_safe_mode", "true");
-          setSafeMode(true);
-          handleReboot();
-          break;
-        case "UPDATE":
-          setIsUpdating(true);
-          break;
-        case "FAKE_BAN":
-          onFakeBan({ reason: cmd.payload.reason || "Testing ban screen", duration: cmd.payload.duration, isFake: true });
-          break;
-        case "FAKE_TEMP_BAN":
-          onFakeTempBan({
-            reason: cmd.payload.reason || "Testing temp ban",
-            duration: cmd.payload.duration || "7 days",
-            expiresAt: cmd.payload.expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-            isFake: true,
-          });
-          break;
-        case "FAKE_WARN":
-          onFakeWarn({ reason: cmd.payload.reason || "Testing warning", isFake: true });
-          break;
-        case "FAKE_MUTE":
-          toast.error(`🔇 MUTED: ${cmd.payload.reason || "Testing mute"}`, {
-            description: `Duration: ${cmd.payload.duration || "30 minutes"} [FAKE - DEF-DEV Testing Mode]`,
-            duration: 8000,
-          });
-          break;
-        case "FAKE_KICK":
-          toast.error(`👢 KICKED: ${cmd.payload.reason || "Testing kick"}`, {
-            description: "[FAKE - DEF-DEV Testing Mode]",
-            duration: 5000,
-          });
-          setTimeout(() => {
-            setLoggingOut(true);
-            setTimeout(() => setLoggingOut(false), 2000);
-          }, 1000);
-          break;
-        case "TIMEOUT":
-          toast.error("⏱️ Operation timed out", { description: "[Simulated]" });
-          break;
-        case "NETWORK_FAILURE":
-          toast.error("🌐 Network connection lost", { description: "[Simulated]" });
-          break;
-        case "STORAGE_FULL":
-          toast.error("💾 Storage quota exceeded", { description: "[Simulated]" });
-          break;
-        case "AUTH_FAILURE":
-          toast.error("🔐 Authentication failed", { description: "[Simulated]" });
-          break;
-        case "DB_ERROR":
-          toast.error(`🗄️ ${cmd.payload.message || "Database error"}`, { description: "[Simulated]" });
-          break;
-        case "HANDSHAKE_REQUEST": {
-          const currentUser = localStorage.getItem("urbanshade_current_user");
-          let username = "Unknown";
-          try {
-            if (currentUser) username = JSON.parse(currentUser).name || "Unknown";
-          } catch {}
-          const handshakeResponse = {
-            status: "online" as const,
-            user: username,
-            systemState: crashed ? "crashed" : lockdownMode ? "lockdown" : loggedIn ? "desktop" : "boot",
-            timestamp: new Date().toISOString(),
-          };
-          localStorage.setItem("urbanshade_handshake_response", JSON.stringify(handshakeResponse));
-          actionDispatcher.system("Handshake response sent to DEF-DEV");
-          break;
-        }
-      }
-    };
-
-    const unsubscribe = commandQueue.onAny(handleCommand);
-    commandQueue.startPolling(250);
-
-    // Legacy pending crashes/bugchecks
-    const pendingCrash = localStorage.getItem("urbanshade_pending_crash");
-    if (pendingCrash) {
-      localStorage.removeItem("urbanshade_pending_crash");
-      try {
-        const data = JSON.parse(pendingCrash);
-        actionDispatcher.system(`Processing legacy pending crash: ${data.type}`);
-        const crash = triggerCrash(data.type as CrashType, { process: data.process || "admin.exe" });
-        setCrashData(crash);
-        setCrashed(true);
-      } catch (e) {
-        console.error("Failed to parse pending crash", e);
-      }
-    }
-
-    const pendingBugcheck = localStorage.getItem("urbanshade_pending_bugcheck");
-    if (pendingBugcheck) {
-      localStorage.removeItem("urbanshade_pending_bugcheck");
-      try {
-        const data = JSON.parse(pendingBugcheck);
-        actionDispatcher.system(`Processing legacy pending bugcheck: ${data.code}`);
-        const bugcheck = createBugcheck(data.code, data.description, "DEF-DEV Admin");
-        setBugcheckData(bugcheck);
-      } catch (e) {
-        console.error("Failed to parse pending bugcheck", e);
-      }
-    }
-
-    return () => {
-      unsubscribe();
-      commandQueue.stopPolling();
-    };
-  }, [crashed, lockdownMode, loggedIn]);
+  }, []);
 
   // ── System Bus listeners ──
   useEffect(() => {
@@ -435,7 +213,6 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
   // ── Changelog + Tour check ──
   useEffect(() => {
     if (loggedIn && !crashed && !lockdownMode) {
-      // Changelog auto-open
       const lastSeenVersion = localStorage.getItem("urbanshade_last_seen_version");
       const lastSeenBuild = localStorage.getItem("urbanshade_last_seen_build");
       const isNewVersion = lastSeenVersion !== getShortVersion();
@@ -444,7 +221,6 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
         setTimeout(() => setShowChangelog(true), 500);
       }
 
-      // Tour check
       const tourCompleted = localStorage.getItem("urbanshade_tour_completed");
       if (!tourCompleted) {
         setTimeout(() => setShowTour(true), 2000);
@@ -452,12 +228,7 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
     }
   }, [loggedIn, crashed, lockdownMode]);
 
-  // ── Handlers ──
-  const handleReboot = () => {
-    setLoggedIn(false);
-    setRebooting(true);
-  };
-
+  // ── Remaining Handlers ──
   const handleRebootComplete = () => {
     setRebooting(false);
     setLoggedIn(false);
@@ -534,11 +305,6 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
     setLoggedIn(false);
     setIsGuestMode(false);
     localStorage.removeItem("urbanshade_current_user");
-  };
-
-  const handleShutdown = () => {
-    setLoggedIn(false);
-    setShuttingDown(true);
   };
 
   const handleCriticalKill = (
