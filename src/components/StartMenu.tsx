@@ -201,7 +201,7 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
       </div>
 
       {/* Footer */}
-      <div className="border-t border-border/30 p-3 bg-muted/20 flex items-center justify-between">
+      <div className="border-t border-border/30 p-3 bg-muted/20 flex items-center justify-between transition-colors">
         <button 
           onClick={() => {
             navigate("/acc-manage");

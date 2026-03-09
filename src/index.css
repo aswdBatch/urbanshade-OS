@@ -562,11 +562,26 @@
   backface-visibility: hidden;
 }
 
-/* Window Animations */
+/* Dragging performance hint - add during drag only */
+.is-dragging {
+  will-change: transform;
+  cursor: grabbing !important;
+}
+
+/* Tabular nums for clocks/counters */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Window Animations - Spring curves */
 @keyframes window-open {
   0% {
     opacity: 0;
-    transform: scale(0.95) translateY(10px);
+    transform: scale(0.92) translateY(12px);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.02) translateY(-2px);
   }
   100% {
     opacity: 1;
@@ -577,11 +592,11 @@
 @keyframes window-close {
   0% {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) translateY(0);
   }
   100% {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.9) translateY(8px);
   }
 }
 
@@ -627,11 +642,11 @@
 }
 
 .animate-window-open {
-  animation: window-open 0.15s ease-out forwards;
+  animation: window-open 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .animate-window-close {
-  animation: window-close 0.1s ease-in forwards;
+  animation: window-close 0.15s ease-in forwards;
 }
 
 .animate-window-minimize {
@@ -648,6 +663,124 @@
 
 .animate-window-snap {
   animation: window-snap 0.15s ease-out;
+}
+
+/* Shake animation for error feedback */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 50%, 90% { transform: translateX(-4px); }
+  30%, 70% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Shimmer loading skeleton */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 25%,
+    hsl(var(--muted-foreground) / 0.08) 50%,
+    hsl(var(--muted)) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Boot progress bar shine */
+@keyframes progress-shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+/* Stagger fade-in for lists */
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-stagger-in {
+  animation: stagger-in 0.3s ease-out both;
+}
+
+/* Status dot scale-in */
+@keyframes dot-appear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-dot-appear {
+  animation: dot-appear 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Notification slide in from right with spring */
+@keyframes notif-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateX(20px) scale(0.96);
+  }
+  70% {
+    transform: translateX(-3px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.animate-notif-slide-in {
+  animation: notif-slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Text crossfade */
+@keyframes text-crossfade {
+  0% { opacity: 0; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-text-crossfade {
+  animation: text-crossfade 0.3s ease-out;
+}
+
+/* Toggle pulse for quick settings */
+@keyframes toggle-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.animate-toggle-pulse {
+  animation: toggle-pulse 0.2s ease-out;
 }
 
 /* OS Toast progress bar animation */

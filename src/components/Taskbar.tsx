@@ -180,7 +180,7 @@ export const Taskbar = ({
           {windows.some(w => !w.minimized) && (
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-primary/5 border border-primary/10 mr-1">
               <Clock className="w-3 h-3 text-muted-foreground" />
-              <span className="text-xs font-mono text-foreground/80">{formatTime(time)}</span>
+              <span className="text-xs font-mono text-foreground/80 tabular-nums">{formatTime(time)}</span>
             </div>
           )}
           {syncEnabled && (!isOnline || pendingChanges.length > 0) && (
