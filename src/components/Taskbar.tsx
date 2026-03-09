@@ -111,7 +111,7 @@ export const Taskbar = ({
       {/* Bottom Right - Clock */}
       <div className="fixed right-6 bottom-6 z-[750] text-right">
         <button onClick={() => { setQuickSettingsOpen(!quickSettingsOpen); setNotificationsOpen(false); }} className="text-right hover:opacity-80 transition-opacity">
-          <div className="text-5xl font-light tracking-wide text-foreground/90 font-mono">{formatTime(time)}</div>
+          <div className="text-5xl font-light tracking-wide text-foreground/90 font-mono tabular-nums">{formatTime(time)}</div>
           <div className="text-sm text-muted-foreground mt-1">{formatDate(time)}</div>
         </button>
       </div>
