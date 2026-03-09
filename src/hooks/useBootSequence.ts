@@ -432,9 +432,10 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
     };
   }, []);
 
-  // ── Changelog auto-open ──
+  // ── Changelog + Tour check ──
   useEffect(() => {
     if (loggedIn && !crashed && !lockdownMode) {
+      // Changelog auto-open
       const lastSeenVersion = localStorage.getItem("urbanshade_last_seen_version");
       const lastSeenBuild = localStorage.getItem("urbanshade_last_seen_build");
       const isNewVersion = lastSeenVersion !== getShortVersion();
@@ -442,12 +443,8 @@ export const useBootSequence = ({ onFakeBan, onFakeTempBan, onFakeWarn }: UseBoo
       if (isNewVersion || isNewBuild) {
         setTimeout(() => setShowChangelog(true), 500);
       }
-    }
-  }, [loggedIn, crashed, lockdownMode]);
 
-  // ── Tour check ──
-  useEffect(() => {
-    if (loggedIn && !crashed && !lockdownMode) {
+      // Tour check
       const tourCompleted = localStorage.getItem("urbanshade_tour_completed");
       if (!tourCompleted) {
         setTimeout(() => setShowTour(true), 2000);
