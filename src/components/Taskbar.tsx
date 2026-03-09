@@ -162,7 +162,7 @@ export const Taskbar = ({
                                   <p className="text-xs font-medium text-foreground truncate">{win.app.name}</p>
                                   <p className="text-[10px] text-muted-foreground">{win.minimized ? 'Minimized' : 'Active'}</p>
                                 </div>
-                                {!win.minimized && <div className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />}
+                                {!win.minimized && <div className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0 animate-dot-appear" />}
                               </button>
                             ))}
                           </div>
