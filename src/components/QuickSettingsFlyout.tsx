@@ -118,17 +118,25 @@ export const QuickSettingsFlyout = ({ open, onClose, onOpenSettings }: QuickSett
     disabled?: boolean;
   }) => {
     const DisplayIcon = active && ActiveIcon ? ActiveIcon : Icon;
+    const [justToggled, setJustToggled] = useState(false);
+    
+    const handleClick = () => {
+      onClick();
+      setJustToggled(true);
+      setTimeout(() => setJustToggled(false), 200);
+    };
+    
     return (
       <button
-        onClick={onClick}
+        onClick={handleClick}
         disabled={disabled}
-        className={`flex flex-col items-center justify-center gap-2 p-3 rounded-xl transition-all ${
+        className={`flex flex-col items-center justify-center gap-2 p-3 rounded-xl transition-all duration-200 ${
           disabled ? "opacity-50 cursor-not-allowed" : ""
         } ${
           active 
             ? "bg-primary/20 text-primary border border-primary/30" 
             : "bg-muted/50 text-muted-foreground hover:bg-muted border border-transparent"
-        }`}
+        } ${justToggled ? "animate-toggle-pulse" : ""}`}
       >
         <DisplayIcon className="w-5 h-5" />
         <span className="text-[10px] font-medium">{label}</span>
