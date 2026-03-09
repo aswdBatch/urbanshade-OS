@@ -74,7 +74,7 @@ export const LockScreen = ({ onUnlock, username = "Administrator" }: LockScreenP
 
       {/* Time Display */}
       <div className={`relative z-10 text-center mb-12 transition-all duration-500 ${showPasswordField ? 'translate-y-[-50px] opacity-80 scale-90' : ''}`}>
-        <div className="text-8xl font-extralight text-foreground tracking-tight mb-2 animate-fade-in">
+        <div className="text-8xl font-extralight text-foreground tracking-tight mb-2 animate-fade-in tabular-nums">
           {formatTime(time)}
         </div>
         <div className="text-2xl text-muted-foreground font-light animate-fade-in" style={{ animationDelay: '100ms' }}>
