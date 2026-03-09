@@ -7,17 +7,15 @@ interface NaviSecurityGlobals {
   getStatus: () => { violations: number; warningLevel: string; isLockedOut: boolean };
 }
 
-interface UrbanShadeGlobals {
-  adminPanel?: () => void;
-  maintenanceMode?: () => void;
-  normalMode?: () => void;
-  devMode?: () => void;
-  naviSecurity?: NaviSecurityGlobals;
-  systemBus?: any;
-}
-
 declare global {
-  interface Window extends UrbanShadeGlobals {}
+  interface Window {
+    adminPanel?: () => void;
+    maintenanceMode?: () => void;
+    normalMode?: () => void;
+    devMode?: () => void;
+    naviSecurity?: NaviSecurityGlobals;
+    systemBus?: any;
+  }
 }
 
 export {};
