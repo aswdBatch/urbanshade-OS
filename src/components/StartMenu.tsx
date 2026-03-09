@@ -55,14 +55,6 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
     );
   }, [apps, search]);
 
-  const pinnedApps = apps.slice(0, 9);
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  };
 
   // Close with animation
   const handleClose = () => {
