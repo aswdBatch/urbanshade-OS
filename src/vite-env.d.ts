@@ -8,14 +8,16 @@ interface NaviSecurityGlobals {
 }
 
 interface UrbanShadeGlobals {
-  adminPanel: () => void;
-  maintenanceMode: () => void;
-  normalMode: () => void;
-  devMode: () => void;
-  naviSecurity: NaviSecurityGlobals;
-  systemBus: any;
+  adminPanel?: () => void;
+  maintenanceMode?: () => void;
+  normalMode?: () => void;
+  devMode?: () => void;
+  naviSecurity?: NaviSecurityGlobals;
+  systemBus?: any;
 }
 
 declare global {
-  interface Window extends Partial<UrbanShadeGlobals> {}
+  interface Window extends UrbanShadeGlobals {}
 }
+
+export {};
