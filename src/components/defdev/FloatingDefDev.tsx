@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Minimize2, Maximize2, Move, Bug, Terminal, Activity, Globe, Layers, Database, Settings } from "lucide-react";
+import { X, Minimize2, Maximize2, Bug, Terminal, Activity, Globe } from "lucide-react";
 import { PerformanceTab } from "./tabs/PerformanceTab";
 import NetworksTab from "./tabs/NetworksTab";
 import ConsoleTab from "./tabs/ConsoleTab";
-import { LogEntry } from "./hooks/useDefDevState";
+import { useDefDevState } from "./hooks/useDefDevState";
 
 interface FloatingDefDevProps {
   isOpen: boolean;
@@ -19,66 +19,26 @@ const FloatingDefDev = ({ isOpen, onClose }: FloatingDefDevProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [activeTab, setActiveTab] = useState<MiniTab>('console');
-  const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [filter, setFilter] = useState<"all" | "error" | "warn" | "info" | "system">("all");
-  const [showTechnical, setShowTechnical] = useState(true);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStartRef = useRef({ x: 0, y: 0 });
-  const logsEndRef = useRef<HTMLDivElement>(null);
-  const logIdRef = useRef(0);
 
-  // Console capture
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const originalConsole = {
-      log: console.log,
-      warn: console.warn,
-      error: console.error,
-      info: console.info,
-    };
-
-    const addLog = (type: LogEntry["type"], ...args: any[]) => {
-      const message = args.map(arg => 
-        typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg)
-      ).join(" ");
-      
-      setLogs(prev => [...prev.slice(-200), {
-        id: logIdRef.current++,
-        type,
-        timestamp: new Date(),
-        message,
-        raw: message,
-      }]);
-    };
-
-    console.log = (...args) => { originalConsole.log(...args); addLog("info", ...args); };
-    console.warn = (...args) => { originalConsole.warn(...args); addLog("warn", ...args); };
-    console.error = (...args) => { originalConsole.error(...args); addLog("error", ...args); };
-    console.info = (...args) => { originalConsole.info(...args); addLog("info", ...args); };
-
-    return () => {
-      console.log = originalConsole.log;
-      console.warn = originalConsole.warn;
-      console.error = originalConsole.error;
-      console.info = originalConsole.info;
-    };
-  }, [isOpen]);
+  // Use shared DEF-DEV state instead of duplicating console capture
+  const {
+    logs, filter, setFilter, showTechnical, setShowTechnical,
+    filteredLogs, setLogs, logsEndRef
+  } = useDefDevState();
 
   // Dragging
   useEffect(() => {
     if (!isDragging) return;
-
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({
         x: Math.max(0, Math.min(window.innerWidth - size.width, e.clientX - dragStartRef.current.x)),
         y: Math.max(0, Math.min(window.innerHeight - 40, e.clientY - dragStartRef.current.y))
       });
     };
-
     const handleMouseUp = () => setIsDragging(false);
-
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return () => {
@@ -90,16 +50,13 @@ const FloatingDefDev = ({ isOpen, onClose }: FloatingDefDevProps) => {
   // Resizing
   useEffect(() => {
     if (!isResizing) return;
-
     const handleMouseMove = (e: MouseEvent) => {
       setSize({
         width: Math.max(300, e.clientX - position.x),
         height: Math.max(200, e.clientY - position.y)
       });
     };
-
     const handleMouseUp = () => setIsResizing(false);
-
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return () => {
@@ -109,16 +66,11 @@ const FloatingDefDev = ({ isOpen, onClose }: FloatingDefDevProps) => {
   }, [isResizing, position]);
 
   const handleDragStart = (e: React.MouseEvent) => {
-    dragStartRef.current = {
-      x: e.clientX - position.x,
-      y: e.clientY - position.y
-    };
+    dragStartRef.current = { x: e.clientX - position.x, y: e.clientY - position.y };
     setIsDragging(true);
   };
 
   if (!isOpen) return null;
-
-  const filteredLogs = filter === "all" ? logs : logs.filter(l => l.type === filter);
 
   const tabs: { id: MiniTab; icon: React.ElementType; label: string }[] = [
     { id: 'console', icon: Terminal, label: 'Console' },
@@ -131,8 +83,7 @@ const FloatingDefDev = ({ isOpen, onClose }: FloatingDefDevProps) => {
       ref={containerRef}
       className="fixed z-[9999] bg-slate-900/95 backdrop-blur-sm border border-slate-700 rounded-lg shadow-2xl overflow-hidden"
       style={{
-        left: position.x,
-        top: position.y,
+        left: position.x, top: position.y,
         width: isMinimized ? 200 : size.width,
         height: isMinimized ? 40 : size.height,
       }}
@@ -148,16 +99,10 @@ const FloatingDefDev = ({ isOpen, onClose }: FloatingDefDevProps) => {
           <span className="text-[10px] text-slate-500">Floating</span>
         </div>
         <div className="flex items-center gap-1">
-          <button
-            onClick={() => setIsMinimized(!isMinimized)}
-            className="p-1 hover:bg-slate-700 rounded transition-colors"
-          >
+          <button onClick={() => setIsMinimized(!isMinimized)} className="p-1 hover:bg-slate-700 rounded transition-colors">
             {isMinimized ? <Maximize2 className="w-3 h-3" /> : <Minimize2 className="w-3 h-3" />}
           </button>
-          <button
-            onClick={onClose}
-            className="p-1 hover:bg-red-500/20 rounded transition-colors text-red-400"
-          >
+          <button onClick={onClose} className="p-1 hover:bg-red-500/20 rounded transition-colors text-red-400">
             <X className="w-3 h-3" />
           </button>
         </div>
@@ -172,9 +117,7 @@ const FloatingDefDev = ({ isOpen, onClose }: FloatingDefDevProps) => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 px-2 py-1 rounded text-xs transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-cyan-500/20 text-cyan-400'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  activeTab === tab.id ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }`}
               >
                 <tab.icon className="w-3 h-3" />
@@ -187,13 +130,9 @@ const FloatingDefDev = ({ isOpen, onClose }: FloatingDefDevProps) => {
           <div className="flex-1 overflow-hidden" style={{ height: size.height - 80 }}>
             {activeTab === 'console' && (
               <ConsoleTab
-                logs={logs}
-                filter={filter}
-                onFilterChange={setFilter}
-                showTechnical={showTechnical}
-                onShowTechnicalChange={setShowTechnical}
-                filteredLogs={filteredLogs}
-                onClearLogs={() => setLogs([])}
+                logs={logs} filter={filter} onFilterChange={setFilter}
+                showTechnical={showTechnical} onShowTechnicalChange={setShowTechnical}
+                filteredLogs={filteredLogs} onClearLogs={() => setLogs([])}
                 logsEndRef={logsEndRef}
               />
             )}
@@ -202,13 +141,7 @@ const FloatingDefDev = ({ isOpen, onClose }: FloatingDefDevProps) => {
           </div>
 
           {/* Resize handle */}
-          <div
-            className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize"
-            onMouseDown={(e) => {
-              e.preventDefault();
-              setIsResizing(true);
-            }}
-          >
+          <div className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize" onMouseDown={(e) => { e.preventDefault(); setIsResizing(true); }}>
             <div className="absolute bottom-1 right-1 w-2 h-2 border-r-2 border-b-2 border-slate-600" />
           </div>
         </>

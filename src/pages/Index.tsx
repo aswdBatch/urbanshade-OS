@@ -48,8 +48,8 @@ const Index = () => {
     onFakeWarn: modGates.setFakeWarnData,
   });
 
-  // Expose NAVI security to window
-  (window as any).naviSecurity = {
+  // Expose NAVI security to window (typed via UrbanShadeGlobals)
+  window.naviSecurity = {
     reportViolation: naviSecurity.reportViolation,
     triggerLockout: naviSecurity.triggerLockout,
     clearLockout: naviSecurity.clearLockout,
