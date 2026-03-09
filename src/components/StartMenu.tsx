@@ -183,7 +183,10 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
           <div className="w-[300px] border-r border-border/20 flex flex-col">
             <ScrollArea className="flex-1">
               <div className="p-4 pt-3">
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Pinned</h3>
+                <div className="mb-4">
+                  <h2 className="text-lg font-semibold text-foreground">{getGreeting()}, {userName.split(' ')[0]} 👋</h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">{new Date().toLocaleDateString("en-US", { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+                </div>
                 <div className="grid grid-cols-3 gap-2">
                   {pinnedApps.map((app, i) => (
                     <button
