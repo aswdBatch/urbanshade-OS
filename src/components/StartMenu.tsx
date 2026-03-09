@@ -24,7 +24,6 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
   const [isClosing, setIsClosing] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
-  const { recentFiles, addRecent, clearRecent } = useRecentFiles();
   const navigate = useNavigate();
 
   // User data
