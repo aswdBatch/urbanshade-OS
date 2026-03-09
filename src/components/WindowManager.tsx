@@ -1,8 +1,10 @@
 import { Window } from "./Window";
 import { WindowData } from "@/types/window";
+import { VERSION } from "@/lib/versionInfo";
+
+// Lazy imports for all app components
 import { FileExplorer } from "./apps/FileExplorer";
 import { SystemMonitor } from "./apps/SystemMonitor";
-import { PersonnelDirectory } from "./apps/PersonnelDirectory";
 import { ActionLogger } from "./apps/ActionLogger";
 import { NetworkScanner } from "./apps/NetworkScanner";
 import { Terminal } from "./apps/Terminal";
@@ -62,7 +64,7 @@ import { Inventory } from "./apps/Inventory";
 import { SystemMessages } from "./apps/SystemMessages";
 import { NotificationHistory } from "./NotificationHistory";
 import { ToasterSimulator } from "./apps/ToasterSimulator";
-import { UrbanshadeInstaller } from "./apps/UrbanshadeInstaller";
+
 
 interface WindowManagerProps {
   windows: WindowData[];
@@ -76,209 +78,112 @@ interface WindowManagerProps {
   onUpdate?: () => void;
 }
 
+// Helper for GenericApp entries
+const generic = (title: string, description: string, features: string[]) => 
+  () => <GenericApp title={title} description={description} features={features} />;
+
 export const WindowManager = ({ windows, onClose, onFocus, onMinimize, allWindows, onCloseWindow, onCriticalKill, onLockdown, onUpdate }: WindowManagerProps) => {
+  
+  // Build the app content map with closures over props
+  const appContentMap: Record<string, () => JSX.Element> = {
+    "app-store": () => <AppStore onInstall={() => window.dispatchEvent(new Event('storage'))} />,
+    "explorer": () => <FileExplorer onVirusDetected={() => setTimeout(() => onCriticalKill("VIRUS_INFECTION", "virus"), 3000)} />,
+    "monitor": () => <SystemMonitor />,
+    "personnel-center": () => <PersonnelCenter />,
+    "signal-interceptor": () => <SignalInterceptor />,
+    "logger": () => <ActionLogger />,
+    "network": () => <NetworkScanner />,
+    "terminal": () => <Terminal onCrash={(type) => onCriticalKill("terminal.exe", type)} />,
+    "task-manager": () => <TaskManager windows={allWindows} onCloseWindow={onCloseWindow} onCriticalKill={onCriticalKill} />,
+    "system-messages": () => <SystemMessages />,
+    "notification-history": () => <NotificationHistory />,
+    "messages": () => <GlobalChat />,
+    "incidents": () => <IncidentReports />,
+    "database": () => <DatabaseViewer />,
+    "browser": () => <Browser />,
+    "audio-logs": () => <AudioLogs />,
+    "cameras": () => <SecurityCameras />,
+    "protocols": () => <EmergencyProtocols onLockdown={onLockdown} />,
+    "map": () => <FacilityMap />,
+    "research": () => <ResearchNotes />,
+    "power": () => <PowerGrid />,
+    "containment": () => <ContainmentMonitor />,
+    "environment": () => <EnvironmentalControl />,
+    "calculator": () => <Calculator />,
+    "planner": () => <FacilityPlanner />,
+    "downloads": () => <Downloads />,
+    "plugin-store": () => <PluginStore />,
+    "containment-game": () => <ContainmentGame onClose={() => { const wid = windows.find(w => w.app.id === 'containment-game')?.id; if (wid) onCloseWindow(wid); }} />,
+    "crash-app": () => <CrashApp onCrash={(_, process) => onCriticalKill(process || "system.exe", "bluescreen")} />,
+    "settings": () => <Settings onUpdate={onUpdate} />,
+    "registry": () => <RegistryEditor />,
+    "disk-manager": () => <DiskManager />,
+    "vpn": () => <VPN />,
+    "firewall": () => <Firewall />,
+    "notepad": () => <Notepad />,
+    "paint": () => <Paint />,
+    "music-player": () => <MusicPlayer />,
+    "weather": () => <Weather />,
+    "clock": () => <Clock />,
+    "calendar": generic("Event Calendar", "Schedule and event management system", ["Create and manage events", "Set reminders and notifications", "Sync with external calendars", "View monthly and weekly layouts"]),
+    "notes": generic("Advanced Notes", "Rich text note-taking application", ["Rich text formatting", "Image and file attachments", "Organize with tags and folders", "Search and filter notes"]),
+    "antivirus": generic("Virus Scanner", "Real-time threat detection and removal", ["Real-time scanning", "Quarantine management", "Scheduled scans", "Automatic updates"]),
+    "backup": generic("Data Backup", "Automated backup system", ["Scheduled backups", "Incremental backups", "Cloud storage support", "One-click restore"]),
+    "compression": generic("File Compressor", "Archive and compress files", ["Multiple format support", "Batch compression", "Encryption options", "Extract archives"]),
+    "pdf-reader": () => <PdfReader />,
+    "file-reader": () => <FileReader />,
+    "installer": () => <GenericInstaller onComplete={() => { const wid = windows.find(w => w.app.id === "installer")?.id; if (wid) onCloseWindow(wid); }} />,
+    "spreadsheet": () => <Spreadsheet />,
+    "presentation": generic("Slide Maker", "Create professional presentations", ["Slide templates", "Animations and transitions", "Media embedding", "Presenter mode"]),
+    "video-player": () => <VideoPlayer />,
+    "video-editor": generic("Video Editor", "Edit and cut video files", ["Cut and trim clips", "Apply effects and filters", "Add audio tracks", "Export in multiple formats"]),
+    "image-viewer": () => <ImageViewer />,
+    "audio-editor": generic("Sound Editor", "Record and edit audio files", ["Multi-track recording", "Audio effects", "Noise reduction", "Format conversion"]),
+    "game-center": () => <GameHub />,
+    "ucg": () => <UntitledCardGame />,
+    "untitled-card-game": () => <UntitledCardGame />,
+    "dice-roller": () => <DiceRoller />,
+    "reaction-test": () => <ReactionTest />,
+    "fortune": () => <FortuneApp />,
+    "chat": () => <InstantChat />,
+    "video-call": generic("Video Conference", "Video calls and meetings", ["HD video calls", "Screen sharing", "Recording capability", "Virtual backgrounds"]),
+    "email-client": () => <EmailClient />,
+    "ftp": generic("FTP Manager", "File transfer protocol client", ["Secure FTP/SFTP", "Drag and drop transfers", "Queue management", "Site bookmarks"]),
+    "ssh": generic("SSH Terminal", "Secure shell connections", ["SSH/SFTP support", "Key authentication", "Session management", "Port forwarding"]),
+    "packet-analyzer": generic("Packet Sniffer", "Network traffic analysis tool", ["Capture network packets", "Protocol analysis", "Traffic statistics", "Filter expressions"]),
+    "performance": generic("Performance Analyzer", "System diagnostics and optimization", ["CPU and memory profiling", "Disk performance", "Network analysis", "Optimization recommendations"]),
+    "scanner": generic("Document Scanner", "Scan physical documents", ["High-resolution scanning", "OCR text recognition", "Multi-page documents", "Cloud upload"]),
+    "translator": generic("Language Translator", "Multi-language translation service", ["50+ languages", "Voice translation", "Offline mode", "Phrase book"]),
+    "dictionary": generic("Digital Dictionary", "Comprehensive word lookup", ["Definitions and synonyms", "Pronunciation guide", "Word of the day", "History and etymology"]),
+    "encyclopedia": generic("Encyclopedia", "General knowledge database", ["Millions of articles", "Multimedia content", "Regular updates", "Cross-references"]),
+    "map-viewer": generic("Map Navigator", "Interactive mapping system", ["Detailed maps", "Route planning", "Points of interest", "Offline maps"]),
+    "gps": generic("GPS Tracker", "Location tracking system", ["Real-time location", "Route history", "Geofencing", "Location sharing"]),
+    "astronomy": generic("Star Chart", "Celestial object tracking", ["Star maps", "Planet tracking", "Constellation guides", "Night sky simulation"]),
+    "chemistry": generic("Chemistry Lab", "Molecular modeling tools", ["Periodic table", "Molecule builder", "Reaction simulator", "Chemical equations"]),
+    "physics": generic("Physics Simulator", "Physical phenomena modeling", ["Motion simulation", "Force calculations", "Energy systems", "Wave dynamics"]),
+    "biometric": generic("Biometric Scanner", "Fingerprint and iris scanning", ["Fingerprint authentication", "Iris recognition", "Face detection", "Security logging"]),
+    "encryption": generic("File Encryptor", "Military-grade encryption", ["AES-256 encryption", "Password protection", "Secure deletion", "Batch encryption"]),
+    "password-manager": generic("Password Vault", "Secure password storage", ["Encrypted vault", "Password generator", "Auto-fill forms", "Secure sharing"]),
+    "account-settings": () => <AccountSettings />,
+    "image-editor": () => <ImageEditor />,
+    "img-editor": () => <ImageEditor />,
+    "uur-manager": () => <UURApp onClose={() => { const wid = windows.find(w => w.app.id === "uur-manager")?.id; if (wid) onCloseWindow(wid); }} />,
+    "computer-management": () => <ComputerManagement />,
+    "shop": () => <Shop />,
+    "certificate-viewer": () => <CertificateViewer />,
+    "inventory": () => <Inventory />,
+    "toaster-simulator": () => <ToasterSimulator />,
+  };
+
   const getAppContent = (appId: string) => {
-    switch (appId) {
-      case "app-store":
-        return <AppStore onInstall={() => {
-          // Refresh desktop when apps are installed
-          window.dispatchEvent(new Event('storage'));
-        }} />;
-      case "explorer":
-        return <FileExplorer onVirusDetected={() => {
-          setTimeout(() => {
-            onCriticalKill("VIRUS_INFECTION", "virus");
-          }, 3000);
-        }} />;
-      case "monitor":
-        return <SystemMonitor />;
-      case "personnel-center":
-        return <PersonnelCenter />;
-      case "signal-interceptor":
-        return <SignalInterceptor />;
-      case "logger":
-        return <ActionLogger />;
-      case "network":
-        return <NetworkScanner />;
-      case "terminal":
-        return <Terminal onCrash={(type) => onCriticalKill("terminal.exe", type)} />;
-      case "task-manager":
-        return <TaskManager windows={allWindows} onCloseWindow={onCloseWindow} onCriticalKill={onCriticalKill} />;
-      case "system-messages":
-        return <SystemMessages />;
-      case "notification-history":
-        return <NotificationHistory />;
-      case "messages":
-        return <GlobalChat />;
-      case "incidents":
-        return <IncidentReports />;
-      case "database":
-        return <DatabaseViewer />;
-      case "browser":
-        return <Browser />;
-      case "audio-logs":
-        return <AudioLogs />;
-      case "cameras":
-        return <SecurityCameras />;
-      case "protocols":
-        return <EmergencyProtocols onLockdown={onLockdown} />;
-      case "map":
-        return <FacilityMap />;
-      case "research":
-        return <ResearchNotes />;
-      case "power":
-        return <PowerGrid />;
-      case "containment":
-        return <ContainmentMonitor />;
-      case "environment":
-        return <EnvironmentalControl />;
-      case "calculator":
-        return <Calculator />;
-      case "planner":
-        return <FacilityPlanner />;
-      case "downloads":
-        return <Downloads />;
-      case "plugin-store":
-        return <PluginStore />;
-      case "containment-game":
-        return <ContainmentGame onClose={() => {
-          const windowId = windows.find(w => w.app.id === 'containment-game')?.id;
-          if (windowId) onCloseWindow(windowId);
-        }} />;
-      case "crash-app":
-        return <CrashApp onCrash={(crashType, process) => onCriticalKill(process || "system.exe", "bluescreen")} />;
-      case "settings":
-        return <Settings onUpdate={onUpdate} />;
-      case "registry":
-        return <RegistryEditor />;
-      case "disk-manager":
-        return <DiskManager />;
-      case "vpn":
-        return <VPN />;
-      case "firewall":
-        return <Firewall />;
-      case "notepad":
-        return <Notepad />;
-      case "paint":
-        return <Paint />;
-      case "music-player":
-        return <MusicPlayer />;
-      case "weather":
-        return <Weather />;
-      case "clock":
-        return <Clock />;
-      case "calendar":
-        return <GenericApp title="Event Calendar" description="Schedule and event management system" features={["Create and manage events", "Set reminders and notifications", "Sync with external calendars", "View monthly and weekly layouts"]} />;
-      case "notes":
-        return <GenericApp title="Advanced Notes" description="Rich text note-taking application" features={["Rich text formatting", "Image and file attachments", "Organize with tags and folders", "Search and filter notes"]} />;
-      case "antivirus":
-        return <GenericApp title="Virus Scanner" description="Real-time threat detection and removal" features={["Real-time scanning", "Quarantine management", "Scheduled scans", "Automatic updates"]} />;
-      case "backup":
-        return <GenericApp title="Data Backup" description="Automated backup system" features={["Scheduled backups", "Incremental backups", "Cloud storage support", "One-click restore"]} />;
-      case "compression":
-        return <GenericApp title="File Compressor" description="Archive and compress files" features={["Multiple format support", "Batch compression", "Encryption options", "Extract archives"]} />;
-      case "pdf-reader":
-        return <PdfReader />;
-      case "file-reader":
-        return <FileReader />;
-      case "installer":
-        return <GenericInstaller onComplete={() => {
-          const windowId = windows.find(w => w.app.id === appId)?.id;
-          if (windowId) onCloseWindow(windowId);
-        }} />;
-      case "spreadsheet":
-        return <Spreadsheet />;
-      case "presentation":
-        return <GenericApp title="Slide Maker" description="Create professional presentations" features={["Slide templates", "Animations and transitions", "Media embedding", "Presenter mode"]} />;
-      case "music-player":
-        return <VideoPlayer />;
-      case "video-editor":
-        return <GenericApp title="Video Editor" description="Edit and cut video files" features={["Cut and trim clips", "Apply effects and filters", "Add audio tracks", "Export in multiple formats"]} />;
-      case "image-viewer":
-        return <ImageViewer />;
-      case "audio-editor":
-        return <GenericApp title="Sound Editor" description="Record and edit audio files" features={["Multi-track recording", "Audio effects", "Noise reduction", "Format conversion"]} />;
-      case "game-center":
-        return <GameHub />;
-      case "ucg":
-      case "untitled-card-game":
-        return <UntitledCardGame />;
-      case "dice-roller":
-        return <DiceRoller />;
-      case "reaction-test":
-        return <ReactionTest />;
-      case "fortune":
-        return <FortuneApp />;
-      case "chat":
-        return <InstantChat />;
-      case "video-call":
-        return <GenericApp title="Video Conference" description="Video calls and meetings" features={["HD video calls", "Screen sharing", "Recording capability", "Virtual backgrounds"]} />;
-      case "email-client":
-        return <EmailClient />;
-      case "ftp":
-        return <GenericApp title="FTP Manager" description="File transfer protocol client" features={["Secure FTP/SFTP", "Drag and drop transfers", "Queue management", "Site bookmarks"]} />;
-      case "ssh":
-        return <GenericApp title="SSH Terminal" description="Secure shell connections" features={["SSH/SFTP support", "Key authentication", "Session management", "Port forwarding"]} />;
-      case "packet-analyzer":
-        return <GenericApp title="Packet Sniffer" description="Network traffic analysis tool" features={["Capture network packets", "Protocol analysis", "Traffic statistics", "Filter expressions"]} />;
-      case "performance":
-        return <GenericApp title="Performance Analyzer" description="System diagnostics and optimization" features={["CPU and memory profiling", "Disk performance", "Network analysis", "Optimization recommendations"]} />;
-      case "scanner":
-        return <GenericApp title="Document Scanner" description="Scan physical documents" features={["High-resolution scanning", "OCR text recognition", "Multi-page documents", "Cloud upload"]} />;
-      case "translator":
-        return <GenericApp title="Language Translator" description="Multi-language translation service" features={["50+ languages", "Voice translation", "Offline mode", "Phrase book"]} />;
-      case "dictionary":
-        return <GenericApp title="Digital Dictionary" description="Comprehensive word lookup" features={["Definitions and synonyms", "Pronunciation guide", "Word of the day", "History and etymology"]} />;
-      case "encyclopedia":
-        return <GenericApp title="Encyclopedia" description="General knowledge database" features={["Millions of articles", "Multimedia content", "Regular updates", "Cross-references"]} />;
-      case "map-viewer":
-        return <GenericApp title="Map Navigator" description="Interactive mapping system" features={["Detailed maps", "Route planning", "Points of interest", "Offline maps"]} />;
-      case "gps":
-        return <GenericApp title="GPS Tracker" description="Location tracking system" features={["Real-time location", "Route history", "Geofencing", "Location sharing"]} />;
-      case "astronomy":
-        return <GenericApp title="Star Chart" description="Celestial object tracking" features={["Star maps", "Planet tracking", "Constellation guides", "Night sky simulation"]} />;
-      case "chemistry":
-        return <GenericApp title="Chemistry Lab" description="Molecular modeling tools" features={["Periodic table", "Molecule builder", "Reaction simulator", "Chemical equations"]} />;
-      case "physics":
-        return <GenericApp title="Physics Simulator" description="Physical phenomena modeling" features={["Motion simulation", "Force calculations", "Energy systems", "Wave dynamics"]} />;
-      case "biometric":
-        return <GenericApp title="Biometric Scanner" description="Fingerprint and iris scanning" features={["Fingerprint authentication", "Iris recognition", "Face detection", "Security logging"]} />;
-      case "encryption":
-        return <GenericApp title="File Encryptor" description="Military-grade encryption" features={["AES-256 encryption", "Password protection", "Secure deletion", "Batch encryption"]} />;
-      case "password-manager":
-        return <GenericApp title="Password Vault" description="Secure password storage" features={["Encrypted vault", "Password generator", "Auto-fill forms", "Secure sharing"]} />;
-      case "account-settings":
-        return <AccountSettings />;
-      case "image-editor":
-      case "img-editor":
-        return <ImageEditor />;
-      case "uur-manager":
-        return <UURApp onClose={() => {
-          const windowId = windows.find(w => w.app.id === "uur-manager")?.id;
-          if (windowId) onCloseWindow(windowId);
-        }} />;
-      case "computer-management":
-        return <ComputerManagement />;
-      case "shop":
-        return <Shop />;
-      case "certificate-viewer":
-        return <CertificateViewer />;
-      case "inventory":
-        return <Inventory />;
-      case "toaster-simulator":
-        return <ToasterSimulator />;
-      default:
-        return (
-          <div className="p-4 text-muted-foreground">
-            <p className="font-mono text-sm">
-              [{appId.toUpperCase()}] Application interface loading...
-            </p>
-            <p className="mt-4 text-xs">
-              Urbanshade OS v3.1 — Application module
-            </p>
-          </div>
-        );
-    }
+    const factory = appContentMap[appId];
+    if (factory) return factory();
+    return (
+      <div className="p-4 text-muted-foreground">
+        <p className="font-mono text-sm">[{appId.toUpperCase()}] Application interface loading...</p>
+        <p className="mt-4 text-xs">Urbanshade OS {VERSION.displayVersion} — Application module</p>
+      </div>
+    );
   };
 
   return (

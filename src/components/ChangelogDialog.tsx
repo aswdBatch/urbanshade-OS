@@ -63,6 +63,41 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }
 
   const changelogs: Record<string, VersionData> = {
+    "3.8.1": {
+      icon: <Sparkles className="w-5 h-5" />,
+      color: "from-cyan-500 to-blue-600",
+      tagline: "MODULAR",
+      overview: "Architecture refinement: Window management extracted to useWindowManager hook, WindowManager refactored from 300-line switch to clean app map, FloatingDefDev now uses shared state, Taskbar imports cleaned up, duplicate snap logic removed, and typed window globals.",
+      sections: {
+        "🪟 Window Management Hook": [
+          { text: "New useWindowManager hook extracts all window state from Desktop.tsx", isHighlight: true },
+          { text: "Desktop.tsx reduced from 436 to ~200 lines — now a pure render component" },
+          { text: "openWindow, closeWindow, focusWindow, minimizeWindow, restoreWindow all in one hook" },
+        ],
+        "🗺️ WindowManager App Map": [
+          { text: "60-case switch statement replaced with Record<string, () => JSX.Element>", isHighlight: true },
+          { text: "Duplicate 'music-player' case bug fixed (was rendering VideoPlayer)" },
+          { text: "Stale 'v3.1' in fallback text updated to use VERSION.displayVersion" },
+        ],
+        "🔧 FloatingDefDev Fix": [
+          { text: "FloatingDefDev now uses shared useDefDevState — no more duplicated console capture", isHighlight: true },
+          { text: "Removed 35 lines of redundant log interception code" },
+        ],
+        "🧹 Code Cleanup": [
+          { text: "Taskbar NotificationButton moved below all imports" },
+          { text: "Removed duplicate useWindowSnap from Desktop (Window.tsx is sole owner)" },
+          { text: "Unused imports cleaned up (PersonnelDirectory, Lock, UrbanshadeInstaller)" },
+        ],
+        "🔒 Typed Globals": [
+          { text: "window.naviSecurity now typed via NaviSecurityGlobals interface", isHighlight: true },
+          { text: "getStatus() returns violation count (number) instead of array" },
+        ],
+        "📋 System": [
+          { text: "Version bumped to 3.8.1 'Modular'", isHighlight: true },
+          { text: "Build number updated to 8735" },
+        ],
+      }
+    },
     "3.8.0": {
       icon: <Sparkles className="w-5 h-5" />,
       color: "from-amber-500 to-orange-600",

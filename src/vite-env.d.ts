@@ -1,19 +1,19 @@
 /// <reference types="vite/client" />
 
-interface UrbanShadeGlobals {
-  adminPanel: () => void;
-  maintenanceMode: () => void;
-  normalMode: () => void;
-  devMode: () => void;
-  naviSecurity: {
-    reportViolation: (reason: string) => void;
-    triggerLockout: (reason: string) => void;
-    clearLockout: () => void;
-    getStatus: () => { violations: number; warningLevel: string; isLockedOut: boolean };
-  };
-  systemBus: any;
+// NAVI security global interface - matches useNaviSecurity hook
+interface NaviSecurityGlobals {
+  reportViolation: (type: string, target: string, severity?: string) => void;
+  triggerLockout: (reason: string) => void;
+  clearLockout: () => void;
+  getStatus: () => { violations: number; warningLevel: number; isLockedOut: boolean };
 }
 
-declare global {
-  interface Window extends Partial<UrbanShadeGlobals> {}
+// Extend Window interface for UrbanShade globals
+interface Window {
+  adminPanel?: () => void;
+  maintenanceMode?: () => void;
+  normalMode?: () => void;
+  devMode?: () => void;
+  naviSecurity?: NaviSecurityGlobals;
+  systemBus?: any;
 }

@@ -1,11 +1,11 @@
 {
   "major": 3,
   "minor": 8,
-  "patch": 0,
-  "codename": "Streamlined",
-  "build": 8720,
-  "fullVersion": "3.8.0",
-  "displayVersion": "V3.8.0",
-  "shortVersion": "3.8.0",
-  "releaseDate": "2026-03-08"
+  "patch": 1,
+  "codename": "Modular",
+  "build": 8735,
+  "fullVersion": "3.8.1",
+  "displayVersion": "V3.8.1",
+  "shortVersion": "3.8.1",
+  "releaseDate": "2026-03-09"
 }
