@@ -221,7 +221,7 @@ export const NotificationCenter = ({ open, onClose, anchorRef }: NotificationCen
   return (
     <div
       ref={panelRef}
-      className="fixed right-2 top-[52px] w-[380px] max-h-[calc(100vh-70px)] rounded-xl overflow-hidden z-[99999] shadow-2xl animate-scale-in flex flex-col"
+      className="fixed right-2 top-[52px] w-[380px] max-h-[calc(100vh-70px)] rounded-xl overflow-hidden z-[99999] shadow-2xl animate-notif-slide-in flex flex-col"
       style={{
         background: 'hsl(var(--glass-strong))',
         backdropFilter: 'blur(20px)',
