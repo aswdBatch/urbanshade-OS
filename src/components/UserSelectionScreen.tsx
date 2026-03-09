@@ -234,7 +234,7 @@ export const UserSelectionScreen = ({ onLogin, onShutdown, onRestart }: UserSele
           </div>
         ) : (
           /* User selected - show password form */
-          <div className="w-full max-w-md mx-4">
+          <div className="w-full max-w-md mx-4 animate-fade-in">
             <div className="rounded-2xl border border-cyan-500/30 bg-slate-800/80 backdrop-blur-lg p-8 shadow-2xl shadow-cyan-500/10">
               {/* Back button */}
               <button
