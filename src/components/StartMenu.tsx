@@ -148,10 +148,10 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
               <button
                 key={app.id}
                 onClick={() => handleOpenApp(app)}
-                className="flex flex-col items-center gap-1.5 p-3 rounded-xl hover:bg-muted/60 transition-all group"
-                style={{ animationDelay: `${index * 15}ms` }}
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl hover:bg-muted/60 transition-all group active:scale-95 animate-stagger-in"
+                style={{ animationDelay: `${index * 20}ms` }}
               >
-                <div className="w-10 h-10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-200">
                   {app.icon}
                 </div>
                 <span className="text-[11px] text-center text-foreground/80 leading-tight line-clamp-2 group-hover:text-foreground">
