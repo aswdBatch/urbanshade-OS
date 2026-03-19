@@ -12,7 +12,7 @@ export const useIdleLock = ({
   idleTimeMinutes = 5,
   enabled = false 
 }: UseIdleLockOptions) => {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastActivityRef = useRef<number>(Date.now());
 
   const resetTimer = useCallback(() => {
