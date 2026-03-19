@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sparkles, Cloud, Rocket, Shield, Monitor, Star, ArrowRight, Info, Paintbrush, Heart, Gift, Terminal, ChevronDown, ChevronRight } from "lucide-react";
+import { Sparkles, Cloud, Rocket, Shield, Monitor, Star, ArrowRight, Info, Paintbrush, Heart, Gift, Terminal, ChevronDown, ChevronRight, Clock } from "lucide-react";
 import { VERSION, getShortVersion, getBuildNumber } from "@/lib/versionInfo";
 
 interface ChangelogDialogProps {
@@ -10,20 +10,32 @@ interface ChangelogDialogProps {
   onOpenChange?: (open: boolean) => void;
 }
 
+interface ChangeItem {
+  text: string;
+  isHighlight?: boolean;
+}
+
+interface VersionData {
+  icon: React.ReactNode;
+  color: string;
+  tagline: string;
+  overview: string;
+  thankyou?: string;
+  apology?: string;
+  sections: Record<string, ChangeItem[]>;
+}
+
 export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: ChangelogDialogProps = {}) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const [selectedVersion, setSelectedVersion] = useState(VERSION.fullVersion);
   const [legacyExpanded, setLegacyExpanded] = useState(false);
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
   const currentVersion = getShortVersion();
   const currentBuild = getBuildNumber();
   
-  // Support both controlled and uncontrolled modes
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
   const setOpen = isControlled ? (onOpenChange || (() => {})) : setInternalOpen;
-
-  // Auto-open is handled by useBootSequence via controlled props.
-  // Uncontrolled mode kept for standalone usage (e.g. Settings button).
 
   const handleClose = () => {
     localStorage.setItem("urbanshade_last_seen_version", currentVersion);
@@ -31,25 +43,21 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
     setOpen(false);
   };
 
-  interface ChangeItem {
-    text: string;
-    isHighlight?: boolean;
-  }
+  const toggleSection = useCallback((section: string) => {
+    setCollapsedSections(prev => {
+      const next = new Set(prev);
+      if (next.has(section)) next.delete(section);
+      else next.add(section);
+      return next;
+    });
+  }, []);
 
-  interface VersionData {
-    icon: React.ReactNode;
-    color: string;
-    tagline: string;
-    overview: string;
-    thankyou?: string;
-    sections: Record<string, ChangeItem[]>;
-  }
-
-  const changelogs: Record<string, VersionData> = {
+  const changelogs: Record<string, VersionData> = useMemo(() => ({
     "3.5.0": {
       icon: <Sparkles className="w-5 h-5" />,
       color: "from-purple-500 to-indigo-600",
       tagline: "POLISHED",
+      apology: "We know this update took a while — and we're sorry for the wait. V3.5.0 was a massive behind-the-scenes overhaul, and we wanted to get it right. At the same time, school was hitting us hard and I, Aswd, was experimenting on side projects. Thank you for your patience, and we hope it'll be worth it.",
       overview: "The polish update: site lock, DEF-DEV cleanup, documentation overhaul, architecture refactor, moderation gates, ban appeal emails, developer console enhancements, window manager refactor, and massive code cleanup — all rolled into one massive release.",
       sections: {
         "🔒 Site Lock (Working!)": [
@@ -398,7 +406,7 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
         ],
       }
     }
-  };
+  }), []);
 
   // Group versions by era
   const currentVersionKey = VERSION.fullVersion;
@@ -408,7 +416,7 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   const versionData = changelogs[selectedVersion];
   const isLatestVersion = selectedVersion === currentVersion;
 
-  const renderVersionButton = (version: string, isCurrentGroup = false) => {
+  const renderVersionButton = useCallback((version: string, isCurrentGroup = false) => {
     const data = changelogs[version];
     const isSelected = selectedVersion === version;
     const isLatest = version === currentVersion;
@@ -451,7 +459,7 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
         </div>
       </button>
     );
-  };
+  }, [changelogs, selectedVersion, currentVersion]);
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -521,13 +529,13 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
 
           {/* Right Content - Changelog Details */}
           <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-            {/* Version Header */}
-            <div className={`relative px-6 py-6 bg-gradient-to-br ${versionData?.color || "from-primary to-primary/60"} overflow-hidden shrink-0`}>
+            {/* Version Header - slightly reduced padding */}
+            <div className={`relative px-6 py-5 bg-gradient-to-br ${versionData?.color || "from-primary to-primary/60"} overflow-hidden shrink-0`}>
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yIDItNCAyLTRzLTItMi00LTJjLTQgMC00IDQtNCA0czAgNCA0IDRjMiAwIDItMiAyLTJ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30" />
               <div className="relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-                    {versionData?.icon || <Sparkles className="w-6 h-6 text-white" />}
+                  <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+                    {versionData?.icon || <Sparkles className="w-5 h-5 text-white" />}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
@@ -544,10 +552,27 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
               </div>
             </div>
 
-            {/* Changelog Content - Scrollable */}
+            {/* Changelog Content - Scrollable with fade transition */}
             <ScrollArea className="flex-1 min-h-0">
-              <div className="p-5 space-y-4 pb-4">
-                {/* Thank You Message - Only for v3.0 */}
+              <div key={selectedVersion} className="p-5 space-y-4 pb-4 animate-fade-in">
+                {/* Apology Banner - v3.5.0 */}
+                {versionData?.apology && (
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center shrink-0">
+                        <Clock className="w-4 h-4 text-amber-400" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-sm text-amber-400 mb-1">Sorry for the wait!</h3>
+                        <p className="text-sm text-foreground/80 leading-relaxed">
+                          {versionData.apology}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Thank You Message */}
                 {versionData?.thankyou && (
                   <div className="p-4 rounded-xl bg-gradient-to-br from-rose-500/10 to-pink-500/10 border border-rose-500/20">
                     <div className="flex items-start gap-3">
@@ -577,46 +602,55 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
                   </div>
                 )}
 
-                {/* Change Sections */}
-                {Object.entries(versionData?.sections || {}).map(([section, items], sectionIndex) => (
-                  <div 
-                    key={section} 
-                    className="rounded-xl border border-border/50 overflow-hidden animate-fade-in bg-card/50"
-                    style={{ animationDelay: `${sectionIndex * 60}ms` }}
-                  >
-                    <div className="px-4 py-2.5 bg-muted/50 border-b border-border/30 flex items-center gap-2">
-                      <h3 className="font-bold text-foreground text-sm">{section}</h3>
-                      <span className="ml-auto text-[9px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium">
-                        {items.length}
-                      </span>
+                {/* Change Sections - Collapsible */}
+                {Object.entries(versionData?.sections || {}).map(([section, items], sectionIndex) => {
+                  const isCollapsed = collapsedSections.has(section);
+                  return (
+                    <div 
+                      key={section} 
+                      className="rounded-xl border border-border/50 overflow-hidden animate-fade-in bg-card/50"
+                      style={{ animationDelay: `${sectionIndex * 60}ms` }}
+                    >
+                      <button
+                        onClick={() => toggleSection(section)}
+                        className="w-full px-4 py-2.5 bg-muted/50 border-b border-border/30 flex items-center gap-2 hover:bg-muted/70 transition-colors cursor-pointer"
+                      >
+                        <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${isCollapsed ? '-rotate-90' : ''}`} />
+                        <h3 className="font-bold text-foreground text-sm">{section}</h3>
+                        <span className="ml-auto text-[9px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-medium">
+                          {items.length}
+                        </span>
+                      </button>
+                      {!isCollapsed && (
+                        <ul className="p-3 space-y-1.5">
+                          {items.map((item, i) => {
+                            const changeItem = typeof item === 'string' ? { text: item } : item;
+                            return (
+                              <li
+                                key={i}
+                                className={`flex items-start gap-2 text-sm animate-fade-in group ${
+                                  changeItem.isHighlight ? 'bg-primary/5 -mx-1 px-1 py-1 rounded-lg' : ''
+                                }`}
+                                style={{ animationDelay: `${(sectionIndex * 60) + (i * 30)}ms` }}
+                              >
+                                {changeItem.isHighlight ? (
+                                  <Star className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
+                                ) : (
+                                  <ArrowRight className="w-3 h-3 text-muted-foreground mt-1 shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                                )}
+                                <span className={`leading-relaxed ${
+                                  changeItem.isHighlight ? 'text-foreground font-medium' : 'text-foreground/80'
+                                }`}>
+                                  {changeItem.text}
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
                     </div>
-                    <ul className="p-3 space-y-1.5">
-                      {items.map((item, i) => {
-                        const changeItem = typeof item === 'string' ? { text: item } : item;
-                        return (
-                          <li
-                            key={i}
-                            className={`flex items-start gap-2 text-sm animate-fade-in group ${
-                              changeItem.isHighlight ? 'bg-primary/5 -mx-1 px-1 py-1 rounded-lg' : ''
-                            }`}
-                            style={{ animationDelay: `${(sectionIndex * 60) + (i * 30)}ms` }}
-                          >
-                            {changeItem.isHighlight ? (
-                              <Star className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
-                            ) : (
-                              <ArrowRight className="w-3 h-3 text-muted-foreground mt-1 shrink-0 group-hover:translate-x-0.5 transition-transform" />
-                            )}
-                            <span className={`leading-relaxed ${
-                              changeItem.isHighlight ? 'text-foreground font-medium' : 'text-foreground/80'
-                            }`}>
-                              {changeItem.text}
-                            </span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </ScrollArea>
 
