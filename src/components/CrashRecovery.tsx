@@ -114,7 +114,7 @@ export const CrashRecoveryDialog = ({ onRecover, onSkip }: CrashRecoveryProps) =
   const [showPoints, setShowPoints] = useState(false);
   const [selectedPointIndex, setSelectedPointIndex] = useState(0);
   const [showCursor, setShowCursor] = useState(false);
-  const cursorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const cursorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setRecoveryData(getCrashRecoveryData());

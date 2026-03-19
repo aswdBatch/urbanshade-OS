@@ -38,7 +38,7 @@ export const RecoveryEnvironment = ({
   const [rebootProgress, setRebootProgress] = useState(0);
   const [showCursor, setShowCursor] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const cursorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const cursorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load recovery images from localStorage
   useEffect(() => {

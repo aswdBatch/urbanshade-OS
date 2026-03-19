@@ -62,8 +62,8 @@ export const SignalInterceptor = () => {
   const [transmissions, setTransmissions] = useState<Transmission[]>([]);
   const [signalStrength, setSignalStrength] = useState(0);
   const [activeSignal, setActiveSignal] = useState<string | null>(null);
-  const scanIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const signalIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const scanIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const signalIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Simulate signal strength fluctuation
   useEffect(() => {

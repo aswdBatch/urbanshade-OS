@@ -12,7 +12,7 @@ export const useIdleLock = ({
   idleTimeMinutes = 5,
   enabled = false 
 }: UseIdleLockOptions) => {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastActivityRef = useRef<number>(Date.now());
 
   const resetTimer = useCallback(() => {
@@ -52,7 +52,7 @@ export const useIdleLock = ({
     ];
 
     // Throttle the reset to avoid excessive calls
-    let throttleTimer: NodeJS.Timeout | null = null;
+    let throttleTimer: ReturnType<typeof setTimeout> | null = null;
     const throttledReset = () => {
       if (throttleTimer) return;
       throttleTimer = setTimeout(() => {
