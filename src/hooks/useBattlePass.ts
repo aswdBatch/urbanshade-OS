@@ -35,7 +35,7 @@ export const useBattlePass = (userId?: string) => {
   const [season, setSeason] = useState<BattlePassSeason | null>(null);
   const [progress, setProgress] = useState<UserBattlePass | null>(null);
   const [loading, setLoading] = useState(true);
-  const passiveXpInterval = useRef<NodeJS.Timeout | null>(null);
+  const passiveXpInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Fetch active season and user progress
   const fetchBattlePass = useCallback(async () => {

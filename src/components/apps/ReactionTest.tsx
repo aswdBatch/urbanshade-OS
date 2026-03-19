@@ -18,7 +18,7 @@ export const ReactionTest = () => {
     const saved = localStorage.getItem("urbanshade_reaction_scores");
     return saved ? JSON.parse(saved) : [];
   });
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {

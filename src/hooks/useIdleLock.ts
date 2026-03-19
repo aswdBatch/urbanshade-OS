@@ -52,7 +52,7 @@ export const useIdleLock = ({
     ];
 
     // Throttle the reset to avoid excessive calls
-    let throttleTimer: NodeJS.Timeout | null = null;
+    let throttleTimer: ReturnType<typeof setTimeout> | null = null;
     const throttledReset = () => {
       if (throttleTimer) return;
       throttleTimer = setTimeout(() => {

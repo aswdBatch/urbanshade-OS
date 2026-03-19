@@ -33,7 +33,7 @@ interface UtilityPluginConfig {
 const activeStyles = new Map<string, HTMLStyleElement>();
 
 // Active intervals for utility plugins
-const activeIntervals = new Map<string, NodeJS.Timeout>();
+const activeIntervals = new Map<string, ReturnType<typeof setInterval>>();
 
 // Sample plugin implementations
 const PLUGIN_IMPLEMENTATIONS: Record<string, any> = {

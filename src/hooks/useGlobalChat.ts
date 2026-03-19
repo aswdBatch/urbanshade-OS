@@ -58,7 +58,7 @@ export const useGlobalChat = () => {
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ id: string; displayName: string; role?: string; isVip?: boolean } | null>(null);
-  const cooldownTimer = useRef<NodeJS.Timeout | null>(null);
+  const cooldownTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastMessageTime = useRef<number>(0);
 
   // Check auth status

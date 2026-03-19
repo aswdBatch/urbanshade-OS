@@ -305,7 +305,7 @@ export const BugcheckScreen = ({ bugcheck, onRestart, onReportToDev, onRecovery 
   const [showDetails, setShowDetails] = useState(false);
   const [counter, setCounter] = useState(0);
   const [showCursor, setShowCursor] = useState(false);
-  const cursorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const cursorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const codeInfo = BUGCHECK_CODES[bugcheck.code] || {
     hex: "0x000000DE",
