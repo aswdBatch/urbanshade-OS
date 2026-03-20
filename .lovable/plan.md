@@ -1,25 +1,48 @@
-# Changelog: Apology Banner + Window Optimization
 
-## 1. Apology banner for v3.5.0
 
-Add a new `apology` field to the v3.5.0 changelog entry, rendered as a styled card above the thank-you/overview section. Warm tone, short message acknowledging the long wait for the optimization update.
+# V3.5.1 Update: App Polish, Desktop Experience & UUR Improvements
 
-Text along the lines of: *"We know this update took a while - and we're sorry for the wait. V3.5.0 was a massive behind-the-scenes overhaul, and we wanted to get it right. At the same time, school was hitting us hard and I, Aswd, was experimenting on side projects. Thank you for your patience, and we hope it'll be worth it."*
+## 1. UUR App Overhaul
+**File:** `src/components/apps/UURApp.tsx`
 
-Rendered as a card with an amber/yellow gradient tint and a `Heart` or `Clock` icon, similar to the existing `thankyou` card style.
+- **GUI mode redesign**: Replace the flat list layout with category tabs/filters using `UUR_CATEGORIES`, so users can browse by App, Game, Utility, etc.
+- **Package detail view**: Clicking a package opens a detail panel showing description, author, version, download count, stars, tags, and dependencies
+- **Search in GUI mode**: Wire up the existing search input (currently non-functional) to actually filter packages
+- **Install progress animation**: Add a brief progress bar/spinner during install instead of instant swap
+- **Better empty states**: Show illustration + message when no packages found or none installed
 
-## 2. Changelog window optimizations
+## 2. Taskbar Polish
+**File:** `src/components/Taskbar.tsx`
 
-**Performance:**
+- **Window thumbnail previews**: Expand the tooltip hover cards to show a mini colored preview placeholder (app accent color) instead of just text labels
+- **Drag-to-reorder**: Allow dragging open app icons on the taskbar to reorder them
+- **Grouped window count badge**: Show a small count badge (e.g., "3") on grouped app icons instead of just dots
+- **Active app underline**: Add a subtle animated underline indicator for the currently focused window's icon
 
-- Wrap `changelogs` object in `useMemo` (it's currently recreated every render with JSX icon nodes)
-- Memoize `renderVersionButton` with `useCallback`
+## 3. Context Menu Upgrade
+**File:** `src/components/ContextMenu.tsx`
 
-**UI polish:**
+- **Submenu support**: Add expandable submenus (e.g., "New >" with File, Folder options)
+- **Keyboard shortcuts labels**: Show shortcut hints (e.g., "Ctrl+R") next to menu items
+- **Icon support**: Add icons to context menu items for faster visual scanning
 
-- Add `transition-all duration-200` to the main content area for smoother version switching
-- Add a subtle fade transition when switching between versions (key the content by `selectedVersion`)
-- Reduce the header gradient height slightly for less wasted space
-- Make section cards collapsible (click header to toggle) to reduce scroll fatigue on large changelogs like v3.5.0
+## 4. App Polish Pass
+Quick improvements across several existing apps:
 
-All changes in `src/components/ChangelogDialog.tsx`.
+- **Terminal** (`Terminal.tsx`): Add command history with Up/Down arrow navigation if not already present
+- **Calculator** (`Calculator.tsx`): Add keyboard input support for numbers and operators
+- **Notepad** (`Notepad.tsx`): Add word count in status bar, unsaved changes indicator
+
+## 5. Version Bump
+- Bump to V3.5.1 "Refined" in `src/lib/version.json`
+- Add changelog entry for these improvements
+
+---
+
+### Suggested implementation order
+1. UUR GUI overhaul (biggest user-facing change)
+2. Taskbar active indicator + count badges (quick wins)
+3. Context menu icons + shortcut labels
+4. App polish pass
+5. Version bump + changelog
+
