@@ -53,6 +53,34 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
   }, []);
 
   const changelogs: Record<string, VersionData> = useMemo(() => ({
+    "3.5.1": {
+      icon: <Sparkles className="w-5 h-5" />,
+      color: "from-teal-500 to-cyan-600",
+      tagline: "REFINED",
+      overview: "App polish, desktop experience improvements, and UUR overhaul. Category-based package browsing, taskbar active indicators, context menu submenus, calculator keyboard support, and more.",
+      sections: {
+        "📦 UUR App Overhaul": [
+          { text: "Category tabs/filters for browsing packages by type (App, Game, Utility, etc.)", isHighlight: true },
+          { text: "Package detail view with description, stats, tags, and dependencies", isHighlight: true },
+          { text: "GUI search now actually filters packages by name, description, author, and tags" },
+          { text: "Install progress animation with loading bar instead of instant swap" },
+          { text: "Featured packages section on the main browse view" },
+          { text: "Better empty states with contextual messages and clear-search action" },
+        ],
+        "🖥️ Taskbar Polish": [
+          { text: "Active app underline indicator — focused windows get a glowing accent bar", isHighlight: true },
+          { text: "Grouped window count badge replaces dot indicators (shows '2', '3', etc.)" },
+        ],
+        "📋 Context Menu Upgrade": [
+          { text: "Submenu support — View, Sort by, and New items expand into submenus", isHighlight: true },
+          { text: "Keyboard shortcut labels shown next to menu items (Ctrl+R, Del, etc.)" },
+        ],
+        "🔧 App Polish": [
+          { text: "Calculator now supports full keyboard input (0-9, operators, Enter, Escape, Backspace)", isHighlight: true },
+          { text: "Notepad status bar now shows word count alongside character and line counts" },
+        ],
+      }
+    },
     "3.5.0": {
       icon: <Sparkles className="w-5 h-5" />,
       color: "from-purple-500 to-indigo-600",

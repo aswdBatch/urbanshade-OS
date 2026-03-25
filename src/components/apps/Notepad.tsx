@@ -133,8 +133,10 @@ export const Notepad = () => {
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1">
             <FileText className="w-3 h-3" />
-            {content.length} characters
+            {content.length} chars
           </span>
+          <span>•</span>
+          <span>{content.trim() ? content.trim().split(/\s+/).length : 0} words</span>
           <span>•</span>
           <span>{content.split('\n').length} lines</span>
           <span>•</span>
