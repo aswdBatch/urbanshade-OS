@@ -147,9 +147,13 @@ export const Taskbar = ({
                           <button onClick={() => onRestoreWindow?.(firstWin.id)} className={`relative w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 ${hasOpen ? "text-primary bg-primary/10 border border-primary/20" : "text-muted-foreground hover:text-primary hover:bg-white/5"}`}>
                             <div className="w-5 h-5 flex items-center justify-center [&>svg]:w-5 [&>svg]:h-5">{firstWin.app.icon}</div>
                             {wins.length > 1 && (
-                              <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 flex gap-0.5">
-                                {wins.slice(0, 3).map((_, i) => <span key={i} className="w-1 h-1 rounded-full bg-primary" />)}
+                              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center bg-primary text-primary-foreground text-[9px] font-bold rounded-full">
+                                {wins.length}
                               </span>
+                            )}
+                            {/* Active underline indicator */}
+                            {hasOpen && (
+                              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-primary rounded-full animate-scale-in" />
                             )}
                           </button>
                         </TooltipTrigger>
