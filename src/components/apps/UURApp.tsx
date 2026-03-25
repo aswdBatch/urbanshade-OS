@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Package, Download, Star, CheckCircle, Trash2, Search, X, LayoutGrid, Play, Loader2, ChevronLeft, Tag, User, ArrowDownToLine, Sparkles, Grid3x3 } from "lucide-react";
 import { 
-  UUR_REAL_PACKAGES, 
   getUURAppHtml, 
   getInstalledUURApps, 
   installUURApp, 
