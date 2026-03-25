@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { 
   FileText, 
   FolderPlus, 
-  Settings, 
   Trash2, 
   Copy, 
   RefreshCw, 
