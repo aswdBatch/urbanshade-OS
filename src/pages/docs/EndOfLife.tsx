@@ -1,4 +1,4 @@
-import { ArrowLeft, Skull, Heart, School, Code, Layers, Clock, Users, Sparkles, AlertTriangle, Paintbrush, TrendingUp, Database, Bot } from "lucide-react";
+import { ArrowLeft, Skull, Heart, School, Code, Layers, Clock, Users, Sparkles, AlertTriangle, Paintbrush, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import SEO from "@/components/SEO";
 
