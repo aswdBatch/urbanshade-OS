@@ -96,6 +96,10 @@ const GlobalChat: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full bg-background">
+      {/* EOL Banner */}
+      <div className="px-3 py-2 bg-red-500/10 border-b border-red-500/30 text-center">
+        <p className="text-[11px] font-medium text-red-400">⚰️ UrbanShade OS has reached End of Life. Chat remains open but unmoderated.</p>
+      </div>
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-border/50">
         <div className="flex items-center gap-2">

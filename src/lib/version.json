@@ -2,10 +2,10 @@
   "major": 3,
   "minor": 5,
   "patch": 1,
-  "codename": "Refined",
+  "codename": "End of Life",
   "build": 8742,
   "fullVersion": "3.5.1",
-  "displayVersion": "V3.5.1",
+  "displayVersion": "V3.5.1 — End of Life",
   "shortVersion": "3.5.1",
-  "releaseDate": "2026-03-25"
+  "releaseDate": "2026-04-08"
 }

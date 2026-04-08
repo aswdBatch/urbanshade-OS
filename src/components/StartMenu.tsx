@@ -281,6 +281,12 @@ export const StartMenu = ({ open, apps, onClose, onOpenApp, onReboot, onShutdown
         </ScrollArea>
       )}
 
+      {/* EOL Banner */}
+      <div className="mx-3 mt-2 mb-1 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-center">
+        <p className="text-[11px] font-semibold text-red-400">⚰️ UrbanShade OS — End of Life</p>
+        <p className="text-[10px] text-red-400/70">No further updates. Thank you for everything.</p>
+      </div>
+
       {/* Footer */}
       <div className="border-t border-border/30 px-3 py-2.5 bg-muted/20 flex items-center justify-between">
         <button 
