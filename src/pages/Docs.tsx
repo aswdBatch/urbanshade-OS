@@ -125,6 +125,12 @@ const Docs = () => {
       icon: Users, title: "Moderation Guide",
       description: "Admin tools, user management, and NAVI AI monitoring.",
       link: "/docs/moderation", category: "Staff", accent: "red", readTime: 8
+    },
+    {
+      icon: Skull, title: "Why We Ended UrbanShade OS",
+      description: "The full story behind End of Life — school, scope, and saying goodbye.",
+      link: "/docs/end-of-life", category: "Guide", accent: "red",
+      featured: true, readTime: 4
     }
   ];
 
