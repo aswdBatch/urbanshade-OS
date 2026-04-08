@@ -138,6 +138,12 @@ export const BattlePassGrid = ({ userId }: BattlePassGridProps) => {
 
   return (
     <div className="space-y-4">
+      {/* EOL Banner */}
+      <div className="px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-center">
+        <p className="text-sm font-semibold text-red-400">⚰️ End of Life — Battle Pass Discontinued</p>
+        <p className="text-xs text-red-400/70 mt-1">UrbanShade OS is no longer receiving updates. Battle Pass seasons will not be renewed. Your progress and rewards are preserved.</p>
+      </div>
+
       {/* Season Header with Tabs */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
