@@ -30,6 +30,7 @@ import UURDocs from "./pages/docs/UUR";
 import Features from "./pages/docs/Features";
 import Safety from "./pages/docs/Safety";
 import Moderation from "./pages/docs/Moderation";
+import EndOfLife from "./pages/docs/EndOfLife";
 
 // Developer docs
 import DevDocsIndex from "./pages/docs/dev/Index";
