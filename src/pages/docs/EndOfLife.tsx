@@ -1,4 +1,4 @@
-import { ArrowLeft, Skull, Heart, School, Code, Layers, Clock, Users, Sparkles, ChevronRight } from "lucide-react";
+import { ArrowLeft, Skull, Heart, School, Code, Layers, Clock, Users, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import SEO from "@/components/SEO";
 

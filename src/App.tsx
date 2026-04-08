@@ -110,6 +110,7 @@ const App = () => (
         <Route path="/docs/def-dev/diagnostics" element={<DefDevDiagnostics />} />
         <Route path="/docs/uur" element={<UURDocs />} />
         <Route path="/docs/features" element={<Features />} />
+        <Route path="/docs/end-of-life" element={<EndOfLife />} />
         
         {/* Safety docs - hub and sub-pages */}
         <Route path="/docs/safety" element={<Safety />} />
