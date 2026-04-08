@@ -239,14 +239,14 @@ const Docs = () => {
               </p>
             </div>
 
-            {/* What's New Banner */}
+            {/* EOL Banner */}
             <Link
-              to="/docs/advanced"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 border border-cyan-500/20 hover:border-cyan-500/40 transition-all group"
+              to="/docs/end-of-life"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-500/10 via-rose-500/10 to-red-500/10 border border-red-500/30 hover:border-red-500/50 transition-all group"
             >
-              <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span className="text-sm text-cyan-300">What's New in v{VERSION.shortVersion}</span>
-              <ChevronRight className="w-3 h-3 text-cyan-500 group-hover:translate-x-1 transition-transform" />
+              <Skull className="w-4 h-4 text-red-400" />
+              <span className="text-sm text-red-300">UrbanShade OS has reached End of Life</span>
+              <ChevronRight className="w-3 h-3 text-red-500 group-hover:translate-x-1 transition-transform" />
             </Link>
 
             {/* Quick stats */}
