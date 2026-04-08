@@ -54,30 +54,33 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
 
   const changelogs: Record<string, VersionData> = useMemo(() => ({
     "3.5.1": {
-      icon: <Sparkles className="w-5 h-5" />,
-      color: "from-teal-500 to-cyan-600",
-      tagline: "REFINED",
-      overview: "App polish, desktop experience improvements, and UUR overhaul. Category-based package browsing, taskbar active indicators, context menu submenus, calculator keyboard support, and more.",
+      icon: <Skull className="w-5 h-5" />,
+      color: "from-red-600 to-rose-800",
+      tagline: "END OF LIFE",
+      apology: "UrbanShade OS has reached End of Life. After months of building, polishing, and having a blast — this is where we stop. No more updates, no more features, no more patches. The project will remain online and playable, but active development has officially ended. Thank you to everyone who used it, broke it, and made it what it was. It's been a ride. — Aswd & the UrbanShade team",
+      overview: "This is the final release of UrbanShade OS. V3.5.1 was the last feature update, bringing app polish, UUR overhaul, and desktop improvements. The OS will remain accessible but will no longer receive updates or maintenance.",
       sections: {
-        "📦 UUR App Overhaul": [
+        "⚰️ End of Life": [
+          { text: "UrbanShade OS is no longer in active development", isHighlight: true },
+          { text: "The site will remain online and fully functional" },
+          { text: "No further updates, patches, or new features will be released" },
+          { text: "All existing accounts and data remain intact" },
+          { text: "Battle Pass seasons will not be renewed" },
+          { text: "Global Chat will remain open but unmoderated" },
+        ],
+        "📦 Final Features (V3.5.1)": [
           { text: "Category tabs/filters for browsing packages by type (App, Game, Utility, etc.)", isHighlight: true },
-          { text: "Package detail view with description, stats, tags, and dependencies", isHighlight: true },
+          { text: "Package detail view with description, stats, tags, and dependencies" },
           { text: "GUI search now actually filters packages by name, description, author, and tags" },
-          { text: "Install progress animation with loading bar instead of instant swap" },
-          { text: "Featured packages section on the main browse view" },
-          { text: "Better empty states with contextual messages and clear-search action" },
+          { text: "Active app underline indicator — focused windows get a glowing accent bar" },
+          { text: "Submenu support in context menus" },
+          { text: "Calculator keyboard input and Notepad word count" },
         ],
-        "🖥️ Taskbar Polish": [
-          { text: "Active app underline indicator — focused windows get a glowing accent bar", isHighlight: true },
-          { text: "Grouped window count badge replaces dot indicators (shows '2', '3', etc.)" },
-        ],
-        "📋 Context Menu Upgrade": [
-          { text: "Submenu support — View, Sort by, and New items expand into submenus", isHighlight: true },
-          { text: "Keyboard shortcut labels shown next to menu items (Ctrl+R, Del, etc.)" },
-        ],
-        "🔧 App Polish": [
-          { text: "Calculator now supports full keyboard input (0-9, operators, Enter, Escape, Backspace)", isHighlight: true },
-          { text: "Notepad status bar now shows word count alongside character and line counts" },
+        "💬 Thank You": [
+          { text: "Thanks to every user who created an account and explored the OS", isHighlight: true },
+          { text: "Thanks to contributors, testers, and the Global Chat regulars" },
+          { text: "Thanks to everyone who submitted UUR packages" },
+          { text: "This was a school project that turned into something way bigger than expected" },
         ],
       }
     },
