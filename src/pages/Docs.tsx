@@ -1,4 +1,4 @@
-import { ArrowLeft, Search, Rocket, Folder, Map, Terminal, Shield, Zap, Keyboard, HelpCircle, Package, Cpu, Bug, Code, Users, BookOpen, ChevronRight, Star, Sparkles, Clock, TrendingUp, Filter } from "lucide-react";
+import { ArrowLeft, Search, Rocket, Folder, Map, Terminal, Shield, Zap, Keyboard, HelpCircle, Package, Cpu, Bug, Code, Users, BookOpen, ChevronRight, Star, Sparkles, Clock, TrendingUp, Filter, Skull } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { VERSION } from "@/lib/versionInfo";
