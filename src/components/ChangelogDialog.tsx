@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sparkles, Cloud, Rocket, Shield, Monitor, Star, ArrowRight, Info, Paintbrush, Heart, Gift, Terminal, ChevronDown, ChevronRight, Clock } from "lucide-react";
+import { Sparkles, Cloud, Rocket, Shield, Monitor, Star, ArrowRight, Info, Paintbrush, Heart, Gift, Terminal, ChevronDown, ChevronRight, Clock, Skull } from "lucide-react";
 import { VERSION, getShortVersion, getBuildNumber } from "@/lib/versionInfo";
 
 interface ChangelogDialogProps {
