@@ -30,6 +30,7 @@ import UURDocs from "./pages/docs/UUR";
 import Features from "./pages/docs/Features";
 import Safety from "./pages/docs/Safety";
 import Moderation from "./pages/docs/Moderation";
+import EndOfLife from "./pages/docs/EndOfLife";
 
 // Developer docs
 import DevDocsIndex from "./pages/docs/dev/Index";
@@ -109,6 +110,7 @@ const App = () => (
         <Route path="/docs/def-dev/diagnostics" element={<DefDevDiagnostics />} />
         <Route path="/docs/uur" element={<UURDocs />} />
         <Route path="/docs/features" element={<Features />} />
+        <Route path="/docs/end-of-life" element={<EndOfLife />} />
         
         {/* Safety docs - hub and sub-pages */}
         <Route path="/docs/safety" element={<Safety />} />

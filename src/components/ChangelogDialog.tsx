@@ -57,7 +57,7 @@ export const ChangelogDialog = ({ open: controlledOpen, onOpenChange }: Changelo
       icon: <Skull className="w-5 h-5" />,
       color: "from-red-600 to-rose-800",
       tagline: "END OF LIFE",
-      apology: "UrbanShade OS has reached End of Life. After months of building, polishing, and having a blast — this is where we stop. No more updates, no more features, no more patches. The project will remain online and playable, but active development has officially ended. Thank you to everyone who used it, broke it, and made it what it was. It's been a ride. — Aswd & the UrbanShade team",
+      apology: "UrbanShade OS has reached End of Life. After months of building, polishing, and having a blast — this is where we stop. No more updates, no more features, no more patches. The project will remain online and playable, but active development has officially ended. School, other projects, and the sheer scale of this codebase made it impossible to keep going — even with AI help. Everything we wanted to build got built. Read the full story at Docs → Why We Ended UrbanShade OS. Thank you to everyone who used it, broke it, and made it what it was. — Aswd & the UrbanShade team",
       overview: "This is the final release of UrbanShade OS. V3.5.1 was the last feature update, bringing app polish, UUR overhaul, and desktop improvements. The OS will remain accessible but will no longer receive updates or maintenance.",
       sections: {
         "⚰️ End of Life": [
