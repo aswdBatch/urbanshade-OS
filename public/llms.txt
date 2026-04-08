@@ -1,10 +1,24 @@
 # Urbanshade OS - AI/LLM Summary
 
-## What is Urbanshade OS?
-Urbanshade OS is a free, browser-based operating system simulation. It provides a complete desktop environment experience directly in your web browser, featuring windows, a taskbar, start menu, file explorer, terminal, and many built-in applications.
+> ⚠️ **END OF LIFE**: UrbanShade OS has reached End of Life as of V3.5.1. No further updates, patches, or features will be released. The site remains online but is no longer maintained. Online features (accounts, chat) depend on Supabase and will stop working if the database pauses due to inactivity.
 
-## Purpose
-This is a passion project by the Urbanshade Team, created purely for fun and experimentation. It simulates a full operating system experience without requiring any installation.
+## What is Urbanshade OS?
+Urbanshade OS is a free, browser-based operating system simulation built as a design project that grew into a full interactive experience. It provides a complete desktop environment in your web browser with windows, a taskbar, start menu, terminal, 85+ apps, online accounts, and developer tools.
+
+## Status
+- **Current Version**: V3.5.1 "End of Life"
+- **Status**: End of Life — no longer in active development
+- **Online features**: May stop working when Supabase free tier pauses due to inactivity
+- **Offline features**: Desktop, apps, and terminal continue to work indefinitely
+
+## Why It Ended
+UrbanShade OS started as a design project — a visual experiment exploring what a browser-based OS could look like. It was built almost entirely through Lovable (AI-powered development platform) with Claude as the coding AI. Over months of development it grew to 200+ components and 85+ apps, far exceeding the original scope. Development ended due to:
+1. School commitments
+2. Other projects needing attention
+3. The codebase becoming too large to maintain, even with AI assistance
+4. Every planned feature having been implemented — the vision was complete
+
+Full story: https://urbanshade.lovable.app/docs/end-of-life
 
 ## Key Features
 
@@ -13,9 +27,9 @@ This is a passion project by the Urbanshade Team, created purely for fun and exp
 - Taskbar with start menu and system tray
 - Multiple virtual desktops
 - Customizable themes and wallpapers
-- Right-click context menus
+- Right-click context menus with submenus
 
-### Built-in Applications
+### Built-in Applications (85+)
 - Terminal with command-line interface and custom commands
 - File Explorer with virtual file system
 - Web Browser (simulated)
@@ -23,6 +37,7 @@ This is a passion project by the Urbanshade Team, created purely for fun and exp
 - Settings app for system configuration
 - Clock, Weather, and more utilities
 - Games and entertainment apps
+- UUR Package Repository
 
 ### Developer Tools (DEF-DEV)
 - Built-in developer console for debugging
@@ -32,11 +47,11 @@ This is a passion project by the Urbanshade Team, created purely for fun and exp
 - Network request debugging
 - Boot sequence analyzer
 
-### Online Features
+### Online Features (may become unavailable)
 - User accounts with authentication
-- Global chat system
+- Global chat system (unmoderated)
 - Achievements and progression system
-- Battle Pass with seasonal rewards
+- Battle Pass with seasonal rewards (discontinued)
 - Leaderboards
 - Friend system and messaging
 
@@ -52,10 +67,12 @@ This is a passion project by the Urbanshade Team, created purely for fun and exp
 - Backend: Supabase (PostgreSQL, Authentication, Edge Functions)
 - State Management: React Query, Custom hooks
 - UI Components: Radix UI primitives
+- Development: Built with Lovable + Claude AI
 
 ## Links
 - Main Application: https://urbanshade.lovable.app
 - Documentation: https://urbanshade.lovable.app/docs
+- End of Life Notice: https://urbanshade.lovable.app/docs/end-of-life
 - Getting Started Guide: https://urbanshade.lovable.app/docs/getting-started
 - Terminal Guide: https://urbanshade.lovable.app/docs/terminal
 - Team Page: https://urbanshade.lovable.app/team
@@ -65,6 +82,7 @@ This is a passion project by the Urbanshade Team, created purely for fun and exp
 ## Static HTML Documentation (No JavaScript Required)
 For AI systems that cannot execute JavaScript, static HTML versions are available:
 - Documentation Hub: https://urbanshade.lovable.app/static/docs.html
+- End of Life: https://urbanshade.lovable.app/static/end-of-life.html
 - Getting Started: https://urbanshade.lovable.app/static/getting-started.html
 - Applications: https://urbanshade.lovable.app/static/applications.html
 - Terminal Commands: https://urbanshade.lovable.app/static/terminal.html
@@ -77,9 +95,6 @@ For AI systems that cannot execute JavaScript, static HTML versions are availabl
 - Moderation Guide: https://urbanshade.lovable.app/static/moderation.html
 - Terms of Service: https://urbanshade.lovable.app/static/terms.html
 - Privacy Policy: https://urbanshade.lovable.app/static/privacy.html
-
-## Current Version
-V3.0 Patch 2
 
 ## Target Audience
 - Web development enthusiasts
@@ -97,4 +112,4 @@ V3.0 Patch 2
 This is a passion project. All rights reserved by the Urbanshade Team.
 
 ---
-Last updated: January 2026
+Last updated: April 2026 (Final)

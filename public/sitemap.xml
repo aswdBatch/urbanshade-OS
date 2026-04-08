@@ -140,4 +140,14 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://urbanshade.lovable.app/docs/end-of-life</loc>
+    <changefreq>never</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://urbanshade.lovable.app/static/end-of-life.html</loc>
+    <changefreq>never</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
