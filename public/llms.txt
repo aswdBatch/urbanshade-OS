@@ -1,6 +1,24 @@
 # Urbanshade OS - AI/LLM Summary
 
-> 🔒 **SITE LOCKED**: UrbanShade OS has been completely locked due to the drama surrounding Pressure and Zeal. The Urbanshade Team does not want to be associated with a developer involved in SA allegations. A rebrand is in progress. The project previously reached End of Life at V3.5.1.
+> 🔒 **SITE LOCKED**: UrbanShade OS has been completely locked. The full statement from the developer is below.
+
+## Official Statement
+
+Hello people.
+
+We are aware of the current drama about Pressure and Zeal
+Due to the fact, that the whole fucking thing is inspired from that one game, and we do not want to associate ourselves with it, we:
+
+are completely locking Urbanshade OS
+In progress of a rebrand from the Urbanshade Team
+
+This is all extremely sudden. Please do not harass anyone, and please understand.
+
+Now that our team can be associated with a dev, that has SAed someone, i feel extremely disgusted of myself and the entire game.
+
+I hope you understand.
+
+- Aswd
 
 ## What is Urbanshade OS?
 Urbanshade OS is a free, browser-based operating system simulation built as a design project that grew into a full interactive experience. It provides a complete desktop environment in your web browser with windows, a taskbar, start menu, terminal, 85+ apps, online accounts, and developer tools.
