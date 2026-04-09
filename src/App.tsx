@@ -77,12 +77,26 @@ const queryClient = new QueryClient();
 // ========== SITE BLOCK TOGGLE ==========
 // Set to false to restore the site
 const SITE_BLOCKED = true;
-const BLOCK_MESSAGE = "TEXT";
+const BLOCK_MESSAGE = `Hello people.
+
+We are aware of the current drama about Pressure and Zeal
+Due to the fact, that the whole fucking thing is inspired from that one game, and we do not want to associate ourselves with it, we:
+
+are completely locking Urbanshade OS
+In progress of a rebrand from the Urbanshade Team
+
+This is all extremely sudden. Please do not harass anyone, and please understand.
+
+Now that our team can be associated with a dev, that has SAed someone, i feel extremely disgusted of myself and the entire game.
+
+I hope you understand.
+
+- Aswd`;
 // ========================================
 
 const BlockPage = () => (
   <div style={{ position: 'fixed', inset: 0, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
-    <p style={{ color: '#fff', fontFamily: 'monospace', fontSize: '1.25rem', textAlign: 'center', padding: '2rem', whiteSpace: 'pre-wrap' }}>
+    <p style={{ color: '#fff', fontFamily: 'monospace', fontSize: '1.1rem', textAlign: 'left', padding: '2rem', whiteSpace: 'pre-wrap', maxWidth: '600px', lineHeight: '1.7' }}>
       {BLOCK_MESSAGE}
     </p>
   </div>
