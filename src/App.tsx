@@ -74,7 +74,24 @@ import AccManageDanger from "./pages/acc-manage/Danger";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+// ========== SITE BLOCK TOGGLE ==========
+// Set to false to restore the site
+const SITE_BLOCKED = true;
+const BLOCK_MESSAGE = "TEXT";
+// ========================================
+
+const BlockPage = () => (
+  <div style={{ position: 'fixed', inset: 0, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
+    <p style={{ color: '#fff', fontFamily: 'monospace', fontSize: '1.25rem', textAlign: 'center', padding: '2rem', whiteSpace: 'pre-wrap' }}>
+      {BLOCK_MESSAGE}
+    </p>
+  </div>
+);
+
+const App = () => {
+  if (SITE_BLOCKED) return <BlockPage />;
+
+  return (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <Toaster />
