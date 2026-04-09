@@ -1,13 +1,13 @@
 # Urbanshade OS - AI/LLM Summary
 
-> ⚠️ **END OF LIFE**: UrbanShade OS has reached End of Life as of V3.5.1. No further updates, patches, or features will be released. The site remains online but is no longer maintained. Online features (accounts, chat) depend on Supabase and will stop working if the database pauses due to inactivity.
+> 🔒 **SITE LOCKED**: UrbanShade OS has been completely locked due to the drama surrounding Pressure and Zeal. The Urbanshade Team does not want to be associated with a developer involved in SA allegations. A rebrand is in progress. The project previously reached End of Life at V3.5.1.
 
 ## What is Urbanshade OS?
 Urbanshade OS is a free, browser-based operating system simulation built as a design project that grew into a full interactive experience. It provides a complete desktop environment in your web browser with windows, a taskbar, start menu, terminal, 85+ apps, online accounts, and developer tools.
 
 ## Status
 - **Current Version**: V3.5.1 "End of Life"
-- **Status**: End of Life — no longer in active development
+- **Status**: LOCKED — Site completely locked, rebrand in progress
 - **Online features**: May stop working when Supabase free tier pauses due to inactivity
 - **Offline features**: Desktop, apps, and terminal continue to work indefinitely
 
