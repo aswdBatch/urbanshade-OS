@@ -183,6 +183,7 @@ const App = () => {
       </BrowserRouter>
     </QueryClientProvider>
   </HelmetProvider>
-);
+  );
+};
 
 export default App;
