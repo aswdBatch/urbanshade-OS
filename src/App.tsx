@@ -77,25 +77,7 @@ const queryClient = new QueryClient();
 // ========== SITE BLOCK TOGGLE ==========
 // Set to false to restore the site
 const SITE_BLOCKED = true;
-const BLOCK_MESSAGE = `Hello people.
-
-We are aware of the current drama about Pressure and Zeal
-Due to the fact, that the whole fucking thing is inspired from that one game, and we do not want to associate ourselves with it, we:
-
-are completely locking Urbanshade OS
-In progress of a rebrand from the Urbanshade Team
-
-This is all extremely sudden. Please do not harass anyone, and please understand.
-
-Now that our team can be associated with a dev, that has SAed someone, i feel extremely disgusted of myself, this OS and the entire game.
-
-I stand with the developers and Gianni - this is completely unacceptable.
-
-I hope you understand.
-
-If you really, REALLY still want to use this, fork the github page, go into app.tsx and set SITE_BLOCKED to false.
-
-- Aswd`;
+const BLOCK_MESSAGE = `Fuck you Ren.`;
 // ========================================
 
 const BlockPage = () => (
