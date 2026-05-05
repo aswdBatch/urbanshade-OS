@@ -24,6 +24,10 @@ I hope you understand.
 If you really, REALLY still want to use this, fork the github page, go into app.tsx and set SITE_BLOCKED to false.
 
 - Aswd
+### UPDATE at 5th of May
+
+Fuck you Ren.
+
 
 ## What is Urbanshade OS?
 Urbanshade OS is a free, browser-based operating system simulation built as a design project that grew into a full interactive experience. It provides a complete desktop environment in your web browser with windows, a taskbar, start menu, terminal, 85+ apps, online accounts, and developer tools.
